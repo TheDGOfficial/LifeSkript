@@ -21,22 +21,6 @@
 
 package ch.njol.skript.hooks.regions.events;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventException;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPortalEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.plugin.EventExecutor;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptConfig;
 import ch.njol.skript.hooks.regions.RegionsPlugin;
@@ -49,19 +33,29 @@ import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import ch.njol.util.Checker;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventException;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.plugin.EventExecutor;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
-public class EvtRegionBorder extends SelfRegisteringSkriptEvent {
+public final class EvtRegionBorder extends SelfRegisteringSkriptEvent {
 	static {
-		Skript.registerEvent("Region Enter/Leave", EvtRegionBorder.class, RegionBorderEvent.class,
-				"(0¦enter[ing]|1¦leav(e|ing)|1¦exit[ing]) [of] ([a] region|[[the] region] %-regions%)",
-				"region (0¦enter[ing]|1¦leav(e|ing)|1¦exit[ing])")
-				.description("Called when a player enters or leaves a <a href='../classes/#region'>region</a>.",
-						"This event requires a supported regions plugin to be installed.")
-				.examples("on region exit:",
-						"	message \"Leaving %region%.\"")
-				.since("2.1");
+		Skript.registerEvent("Region Enter/Leave", EvtRegionBorder.class, RegionBorderEvent.class, "(0¦enter[ing]|1¦leav(e|ing)|1¦exit[ing]) [of] ([a] region|[[the] region] %-regions%)", "region (0¦enter[ing]|1¦leav(e|ing)|1¦exit[ing])").description("Called when a player enters or leaves a <a href='../classes/#region'>region</a>.", "This event requires a supported regions plugin to be installed.").examples("on region exit:", "	message \"Leaving %region%.\"").since("2.1");
 		EventValues.registerEventValue(RegionBorderEvent.class, Region.class, new Getter<Region, RegionBorderEvent>() {
 			@Override
 			public Region get(final RegionBorderEvent e) {
@@ -129,7 +123,7 @@ public class EvtRegionBorder extends SelfRegisteringSkriptEvent {
 		});
 	}
 	
-	final static void callEvent(final Region r, final PlayerMoveEvent me, final boolean enter) {
+	static void callEvent(final Region r, final PlayerMoveEvent me, final boolean enter) {
 		final Player p = me.getPlayer();
 		assert p != null;
 		final RegionBorderEvent e = new RegionBorderEvent(r, p, enter);
@@ -144,7 +138,7 @@ public class EvtRegionBorder extends SelfRegisteringSkriptEvent {
 	// even WorldGuard doesn't have events, and this way all region plugins are supported for sure.
 	private final static EventExecutor ee = new EventExecutor() {
 		@Nullable
-		Event last = null;
+		Event last;
 		
 		@SuppressWarnings("null")
 		@Override
@@ -168,9 +162,9 @@ public class EvtRegionBorder extends SelfRegisteringSkriptEvent {
 		}
 	};
 	
-	private static boolean registered = false;
+	private static boolean registered;
 	
-	private final static void register() {
+	private static void register() {
 		if (registered)
 			return;
 		Bukkit.getPluginManager().registerEvent(PlayerMoveEvent.class, new Listener() {}, SkriptConfig.defaultEventPriority.value(), ee, Skript.getInstance(), true);

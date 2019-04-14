@@ -21,13 +21,6 @@
 
 package ch.njol.skript.registrations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Comparator;
 import ch.njol.skript.classes.Comparator.ComparatorInfo;
@@ -36,12 +29,21 @@ import ch.njol.skript.classes.Converter;
 import ch.njol.skript.classes.InverseComparator;
 import ch.njol.util.Pair;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
-public class Comparators {
+public final class Comparators {
 	
-	private Comparators() {}
+	private Comparators() {
+		throw new UnsupportedOperationException();
+	}
 	
 	public final static Collection<ComparatorInfo<?, ?>> comparators = new ArrayList<ComparatorInfo<?, ?>>();
 	
@@ -61,7 +63,7 @@ public class Comparators {
 	}
 	
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	public final static Relation compare(final @Nullable Object o1, final @Nullable Object o2) {
+	public static Relation compare(final @Nullable Object o1, final @Nullable Object o2) {
 		if (o1 == null || o2 == null)
 			return Relation.NOT_EQUAL;
 		final Comparator c = getComparator(o1.getClass(), o2.getClass());
@@ -77,7 +79,7 @@ public class Comparators {
 		}
 	};
 	
-	public final static java.util.Comparator<Object> getJavaComparator() {
+	public static java.util.Comparator<Object> getJavaComparator() {
 		return javaComparator;
 	}
 	
@@ -85,7 +87,7 @@ public class Comparators {
 	
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public final static <F, S> Comparator<? super F, ? super S> getComparator(final Class<F> f, final Class<S> s) {
+	public static <F, S> Comparator<? super F, ? super S> getComparator(final Class<F> f, final Class<S> s) {
 		final Pair<Class<?>, Class<?>> p = new Pair<Class<?>, Class<?>>(f, s);
 		if (comparatorsQuickAccess.containsKey(p))
 			return (Comparator<? super F, ? super S>) comparatorsQuickAccess.get(p);
@@ -96,7 +98,7 @@ public class Comparators {
 	
 	@SuppressWarnings("unchecked")
 	@Nullable
-	private final static <F, S> Comparator<?, ?> getComparator_i(final Class<F> f, final Class<S> s) {
+	private static <F, S> Comparator<?, ?> getComparator_i(final Class<F> f, final Class<S> s) {
 		
 		// perfect match
 		for (final ComparatorInfo<?, ?> info : comparators) {

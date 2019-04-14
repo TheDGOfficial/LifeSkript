@@ -21,6 +21,21 @@
 
 package ch.njol.skript.hooks.regions;
 
+import ch.njol.skript.Skript;
+import ch.njol.skript.hooks.regions.classes.Region;
+import ch.njol.skript.util.AABB;
+import ch.njol.skript.variables.Variables;
+import ch.njol.yggdrasil.Fields;
+import ch.njol.yggdrasil.YggdrasilID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+
 import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.StreamCorruptedException;
@@ -30,21 +45,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.Skript;
-import ch.njol.skript.hooks.regions.classes.Region;
-import ch.njol.skript.util.AABB;
-import ch.njol.skript.variables.Variables;
-import ch.njol.yggdrasil.Fields;
-import ch.njol.yggdrasil.YggdrasilID;
 
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -56,7 +57,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 /**
  * @author Peter Güttinger
  */
-public class WorldGuardHook extends RegionsPlugin<WorldGuardPlugin> {
+public final class WorldGuardHook extends RegionsPlugin<WorldGuardPlugin> {
 	
 	public WorldGuardHook() throws IOException {}
 	
@@ -243,12 +244,12 @@ public class WorldGuardHook extends RegionsPlugin<WorldGuardPlugin> {
 	@SuppressWarnings({"null", "unused"})
 	@Override
 	public Collection<? extends Region> getRegionsAt_i(final Location l) {
-		final ArrayList<Region> r = new ArrayList<Region>();
 		if (l == null)
 			return Collections.emptyList();
 		if (l.getWorld() == null)
 			return Collections.emptyList();
 		final RegionManager manager = plugin.getRegionManager(l.getWorld());
+		final ArrayList<Region> r = new ArrayList<Region>();
 		if (manager == null)
 			return r;
 		final ApplicableRegionSet applicable = manager.getApplicableRegions(l);

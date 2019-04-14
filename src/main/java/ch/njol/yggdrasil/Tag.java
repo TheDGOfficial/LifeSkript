@@ -31,14 +31,10 @@ public enum Tag {
 	T_NULL(0x0, null, "null"),
 	
 	/** primitive types */
-	T_BYTE(0x1, byte.class, "byte"), T_SHORT(0x2, short.class, "short"), T_INT(0x3, int.class, "int"), T_LONG(0x4, long.class, "long"),
-	T_FLOAT(0x8, float.class, "float"), T_DOUBLE(0x9, double.class, "double"),
-	T_CHAR(0xe, char.class, "char"), T_BOOLEAN(0xf, boolean.class, "boolean"),
+	T_BYTE(0x1, byte.class, "byte"), T_SHORT(0x2, short.class, "short"), T_INT(0x3, int.class, "int"), T_LONG(0x4, long.class, "long"), T_FLOAT(0x8, float.class, "float"), T_DOUBLE(0x9, double.class, "double"), T_CHAR(0xe, char.class, "char"), T_BOOLEAN(0xf, boolean.class, "boolean"),
 	
 	/** wrapper types */
-	T_BYTE_OBJ(0x10 + T_BYTE.tag, Byte.class, "Byte"), T_SHORT_OBJ(0x10 + T_SHORT.tag, Short.class, "Short"), T_INT_OBJ(0x10 + T_INT.tag, Integer.class, "Integer"), T_LONG_OBJ(0x10 + T_LONG.tag, Long.class, "Long"),
-	T_FLOAT_OBJ(0x10 + T_FLOAT.tag, Float.class, "Float"), T_DOUBLE_OBJ(0x10 + T_DOUBLE.tag, Double.class, "Double"),
-	T_CHAR_OBJ(0x10 + T_CHAR.tag, Character.class, "Character"), T_BOOLEAN_OBJ(0x10 + T_BOOLEAN.tag, Boolean.class, "Boolean"),
+	T_BYTE_OBJ(0x10 + T_BYTE.tag, Byte.class, "Byte"), T_SHORT_OBJ(0x10 + T_SHORT.tag, Short.class, "Short"), T_INT_OBJ(0x10 + T_INT.tag, Integer.class, "Integer"), T_LONG_OBJ(0x10 + T_LONG.tag, Long.class, "Long"), T_FLOAT_OBJ(0x10 + T_FLOAT.tag, Float.class, "Float"), T_DOUBLE_OBJ(0x10 + T_DOUBLE.tag, Double.class, "Double"), T_CHAR_OBJ(0x10 + T_CHAR.tag, Character.class, "Character"), T_BOOLEAN_OBJ(0x10 + T_BOOLEAN.tag, Boolean.class, "Boolean"),
 	
 	/** saved as UTF-8 */
 	T_STRING(0x20, String.class, "string"),
@@ -66,7 +62,7 @@ public enum Tag {
 	public final Class<?> c;
 	public final String name;
 	
-	private Tag(final int tag, final @Nullable Class<?> c, final String name) {
+	Tag(final int tag, final @Nullable Class<?> c, final String name) {
 		assert 0 <= tag && tag <= 0xFF : tag;
 		this.tag = (byte) tag;
 		this.c = c;
@@ -121,23 +117,22 @@ public enum Tag {
 		final Tag t = types.get(c);
 		if (t != null)
 			return t;
-		return c.isArray() ? T_ARRAY
-				: Enum.class.isAssignableFrom(c) || PseudoEnum.class.isAssignableFrom(c) ? T_ENUM // isEnum() doesn't work for subclasses
+		return c.isArray() ? T_ARRAY : Enum.class.isAssignableFrom(c) || PseudoEnum.class.isAssignableFrom(c) ? T_ENUM // isEnum() doesn't work for subclasses
 				: T_OBJECT;
 	}
 	
 	@Nullable
-	public final static Tag byID(final byte tag) {
+	public static Tag byID(final byte tag) {
 		return byID[tag & 0xFF];
 	}
 	
 	@Nullable
-	public final static Tag byID(final int tag) {
+	public static Tag byID(final int tag) {
 		return byID[tag];
 	}
 	
 	@Nullable
-	public final static Tag byName(final String name) {
+	public static Tag byName(final String name) {
 		return byName.get(name);
 	}
 	
@@ -153,11 +148,11 @@ public enum Tag {
 		wrapperTypes.put(Boolean.class, T_BOOLEAN);
 	}
 	
-	public final static boolean isWrapper(final Class<?> c) {
+	public static boolean isWrapper(final Class<?> c) {
 		return wrapperTypes.containsKey(c);
 	}
 	
-	public final static Tag getPrimitiveFromWrapper(final Class<?> wrapper) {
+	public static Tag getPrimitiveFromWrapper(final Class<?> wrapper) {
 		final Tag t = wrapperTypes.get(wrapper);
 		if (t == null) {
 			assert false : wrapper;
@@ -166,7 +161,7 @@ public enum Tag {
 		return t;
 	}
 	
-	public final static Class<?> getWrapperClass(final Class<?> primitive) {
+	public static Class<?> getWrapperClass(final Class<?> primitive) {
 		assert primitive.isPrimitive();
 		final Tag t = types.get(primitive);
 		if (t == null) {

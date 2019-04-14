@@ -21,18 +21,6 @@
 
 package ch.njol.skript;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Locale;
-
-import org.bukkit.event.EventPriority;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.classes.Converter;
 import ch.njol.skript.config.Config;
 import ch.njol.skript.config.EnumParser;
@@ -47,42 +35,54 @@ import ch.njol.skript.util.Task;
 import ch.njol.skript.util.Timespan;
 import ch.njol.util.Setter;
 
+import org.bukkit.event.EventPriority;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @SuppressWarnings("unused")
-public abstract class SkriptConfig {
-	private SkriptConfig() {}
+public final class SkriptConfig {
+	
+	private SkriptConfig() {
+		throw new UnsupportedOperationException();
+	}
 	
 	@Nullable
 	static Config mainConfig;
 	static Collection<Config> configs = new ArrayList<Config>();
 	
-	final static Option<String> version = new Option<String>("version", Skript.getVersion().toString())
-			.optional(true);
+	final static Option<String> version = new Option<String>("version", Skript.getVersion().toString()).optional(true);
 	
-	public final static Option<String> language = new Option<String>("language", "english")
-			.optional(true)
-			.setter(new Setter<String>() {
-				@Override
-				public void set(final String s) {
-					if (!Language.load(s)) {
-						Skript.error("No language file found for '" + s + "'!");
-					}
-				}
-			});
+	public final static Option<String> language = new Option<String>("language", "english").optional(true).setter(new Setter<String>() {
+		@Override
+		public void set(final String s) {
+			if (!Language.load(s)) {
+				Skript.error("No language file found for '" + s + "'!");
+			}
+		}
+	});
 	
 	final static Option<Boolean> checkForNewVersion = new Option<Boolean>("check for new version", false);
-	final static Option<Timespan> updateCheckInterval = new Option<Timespan>("update check interval", new Timespan(0))
-			.setter(new Setter<Timespan>() {
-				@SuppressWarnings("null")
-				@Override
-				public void set(final Timespan t) {
-					final Task ct = Updater.checkerTask;
-					if (t.getTicks_i() != 0 && ct != null && !ct.isAlive())
-						ct.setNextExecution(t.getTicks_i());
-				}
-			});
+	final static Option<Timespan> updateCheckInterval = new Option<Timespan>("update check interval", new Timespan(0)).setter(new Setter<Timespan>() {
+		@SuppressWarnings("null")
+		@Override
+		public void set(final Timespan t) {
+			final Task ct = Updater.checkerTask;
+			if (t.getTicks_i() != 0 && ct != null && !ct.isAlive())
+				ct.setNextExecution(t.getTicks_i());
+		}
+	});
 	final static Option<Boolean> automaticallyDownloadNewVersion = new Option<Boolean>("automatically download new version", false);
 	
 	public final static Option<Boolean> enableEffectCommands = new Option<Boolean>("enable effect commands", false);
@@ -94,7 +94,6 @@ public abstract class SkriptConfig {
 	
 	public final static Option<Boolean> usePlayerUUIDsInVariableNames = new Option<Boolean>("use player UUIDs in variable names", false);
 	public final static Option<Boolean> enablePlayerVariableFix = new Option<Boolean>("player variable fix", true);
-
 	
 	@SuppressWarnings("null")
 	private final static DateFormat shortDateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
@@ -103,7 +102,7 @@ public abstract class SkriptConfig {
 		@Nullable
 		public DateFormat convert(final String s) {
 			try {
-				if (s.equalsIgnoreCase("default"))
+				if ("default".equalsIgnoreCase(s))
 					return null;
 				return new SimpleDateFormat(s);
 			} catch (final IllegalArgumentException e) {
@@ -113,20 +112,19 @@ public abstract class SkriptConfig {
 		}
 	});
 	
-	public final static String formatDate(final long timestamp) {
+	public static String formatDate(final long timestamp) {
 		final DateFormat f = dateFormat.value();
 		synchronized (f) {
 			return "" + f.format(timestamp);
 		}
 	}
 	
-	private final static Option<Verbosity> verbosity = new Option<Verbosity>("verbosity", Verbosity.NORMAL, new EnumParser<Verbosity>(Verbosity.class, "verbosity"))
-			.setter(new Setter<Verbosity>() {
-				@Override
-				public void set(final Verbosity v) {
-					SkriptLogger.setVerbosity(v);
-				}
-			});
+	private final static Option<Verbosity> verbosity = new Option<Verbosity>("verbosity", Verbosity.NORMAL, new EnumParser<Verbosity>(Verbosity.class, "verbosity")).setter(new Setter<Verbosity>() {
+		@Override
+		public void set(final Verbosity v) {
+			SkriptLogger.setVerbosity(v);
+		}
+	});
 	
 	public final static Option<EventPriority> defaultEventPriority = new Option<EventPriority>("plugin priority", EventPriority.NORMAL, new Converter<String, EventPriority>() {
 		@Override
@@ -151,6 +149,9 @@ public abstract class SkriptConfig {
 	public final static Option<Integer> maxTargetBlockDistance = new Option<Integer>("maximum target block distance", 100);
 	
 	public final static Option<Boolean> caseSensitive = new Option<Boolean>("case sensitive", false);
+	public final static Option<Boolean> disableDocumentationGeneration = new Option<Boolean>("disable documentation generation", false);
+	
+	// Disable warnings options
 	
 	public final static Option<Boolean> disableVariableConflictWarnings = new Option<Boolean>("disable variable conflict warnings", true);
 	public final static Option<Boolean> disableObjectCannotBeSavedWarnings = new Option<Boolean>("disable variable will not be saved warnings", true);
@@ -161,17 +162,21 @@ public abstract class SkriptConfig {
 	
 	public final static Option<Boolean> disableStartStopEventWarnings = new Option<Boolean>("disable start stop event warnings", false);
 	
-	public final static Option<Boolean> enableScriptCaching = new Option<Boolean>("enable script caching", false)
-			.optional(true);
+	public final static Option<Boolean> disableTooLongDelayWarnings = new Option<Boolean>("disable too long delay warnings", false);
 	
-	public final static Option<Boolean> keepConfigsLoaded = new Option<Boolean>("keep configs loaded", false)
-			.optional(true);
+	public final static Option<Boolean> disableDelaysInFunctionsWarnings = new Option<Boolean>("disable delays in functions causes function to return instantly warnings", false);
+	
+	// Disable warnings options
+	
+	public final static Option<Boolean> enableScriptCaching = new Option<Boolean>("enable script caching", false).optional(true);
+	
+	public final static Option<Boolean> keepConfigsLoaded = new Option<Boolean>("keep configs loaded", false).optional(true);
 	
 	/**
 	 * This should only be used in special cases
 	 */
 	@Nullable
-	public final static Config getConfig() {
+	public static Config getConfig() {
 		return mainConfig;
 	}
 	
@@ -210,7 +215,8 @@ public abstract class SkriptConfig {
 				try {
 					final InputStream in = Skript.getInstance().getResource("config.sk");
 					if (in == null) {
-						Skript.error("Your config is outdated, but Skript couldn't find the newest config in its jar. Please download Skript again from dev.bukkit.org.");
+						Skript.error("Your config is outdated, but Skript couldn't find the newest config in its jar. Please download Skript again from the link below:");
+						Skript.printDownloadLink();
 						return false;
 					}
 					final Config newConfig = new Config(in, "Skript.jar/config.sk", false, false, ":");

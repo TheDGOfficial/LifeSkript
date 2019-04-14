@@ -21,22 +21,6 @@
 
 package ch.njol.skript.util;
 
-import java.io.StreamCorruptedException;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Locale;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.Event;
-import org.bukkit.material.Directional;
-import org.bukkit.util.Vector;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
@@ -49,10 +33,27 @@ import ch.njol.util.Kleenean;
 import ch.njol.yggdrasil.Fields.FieldContext;
 import ch.njol.yggdrasil.YggdrasilSerializable.YggdrasilRobustSerializable;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Event;
+import org.bukkit.material.Directional;
+import org.bukkit.util.Vector;
+
+import java.io.StreamCorruptedException;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Locale;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
-public class Direction implements YggdrasilRobustSerializable {
+public final class Direction implements YggdrasilRobustSerializable {
 	
 	/**
 	 * A direction that doesn't point anywhere, i.e. equal to 'at'.
@@ -65,7 +66,7 @@ public class Direction implements YggdrasilRobustSerializable {
 	
 	public final static BlockFace BF_X = findFace(1, 0, 0), BF_Y = findFace(0, 1, 0), BF_Z = findFace(0, 0, 1);
 	
-	private final static BlockFace findFace(final int x, final int y, final int z) {
+	private static BlockFace findFace(final int x, final int y, final int z) {
 		for (final BlockFace f : BlockFace.values()) {
 			if (f.getModX() == x && f.getModY() == y && f.getModZ() == z)
 				return f;
@@ -191,7 +192,7 @@ public class Direction implements YggdrasilRobustSerializable {
 	 * @param pitch Notch-pitch
 	 * @return Mathematical pitch oriented from x/z to y axis (with the origin in the x/z plane)
 	 */
-	public final static double pitchToRadians(final float pitch) {
+	public static double pitchToRadians(final float pitch) {
 		return -Math.toRadians(pitch);
 	}
 	
@@ -199,7 +200,7 @@ public class Direction implements YggdrasilRobustSerializable {
 	 * @param pitch Mathematical pitch oriented from x/z to y axis (with the origin in the x/z plane)
 	 * @return Notch-pitch
 	 */
-	public final static float getPitch(final double pitch) {
+	public static float getPitch(final double pitch) {
 		return (float) Math.toDegrees(-pitch);
 	}
 	
@@ -207,7 +208,7 @@ public class Direction implements YggdrasilRobustSerializable {
 	 * @param yaw Notch-yaw
 	 * @return Mathematical yaw oriented from x to z axis (with the origin at the x axis)
 	 */
-	public final static double yawToRadians(final float yaw) {
+	public static double yawToRadians(final float yaw) {
 		return Math.toRadians(yaw) + Math.PI / 2;
 	}
 	
@@ -215,7 +216,7 @@ public class Direction implements YggdrasilRobustSerializable {
 	 * @param yaw Mathematical yaw oriented from x to z axis (with the origin at the x axis)
 	 * @return Notch-yaw
 	 */
-	public final static float getYaw(final double yaw) {
+	public static float getYaw(final double yaw) {
 		return (float) Math.toDegrees(yaw - Math.PI / 2);
 	}
 	
@@ -224,7 +225,7 @@ public class Direction implements YggdrasilRobustSerializable {
 	 * @return The facing of the block or {@link BlockFace#SELF} if the block doesn't have a facing.
 	 */
 	@SuppressWarnings({"deprecation", "null"})
-	public final static BlockFace getFacing(final Block b) {
+	public static BlockFace getFacing(final Block b) {
 		final Material m = b.getType();
 		if (!Directional.class.isAssignableFrom(m.getData()))
 			return BlockFace.SELF;
@@ -232,7 +233,7 @@ public class Direction implements YggdrasilRobustSerializable {
 	}
 	
 	@SuppressWarnings("null")
-	public final static BlockFace getFacing(final double yaw, final double pitch) {
+	public static BlockFace getFacing(final double yaw, final double pitch) {
 		if (-Math.PI / 4 < pitch && pitch < Math.PI / 4) {
 			if (yaw < Math.PI / 4 || yaw >= Math.PI * 7 / 4)
 				return BF_X;
@@ -248,20 +249,20 @@ public class Direction implements YggdrasilRobustSerializable {
 		return BlockFace.DOWN;
 	}
 	
-	public final static BlockFace getFacing(final Location l, final boolean horizontal) {
+	public static BlockFace getFacing(final Location l, final boolean horizontal) {
 		final double yaw = (yawToRadians(l.getYaw()) + 2 * Math.PI) % (2 * Math.PI);
 		final double pitch = horizontal ? 0 : pitchToRadians(l.getPitch());
 		return getFacing(yaw, pitch);
 	}
 	
-	public final static BlockFace getFacing(final Vector v, final boolean horizontal) {
+	public static BlockFace getFacing(final Vector v, final boolean horizontal) {
 		final double pitch = horizontal ? 0 : Math.atan2(v.getY(), Math.sqrt(Math.pow(v.getX(), 2) + Math.pow(v.getZ(), 2)));
 		final double yaw = Math.atan2(v.getZ(), v.getX());
 		return getFacing(yaw, pitch);
 	}
 	
 	@SuppressWarnings("null")
-	public final static Location[] getRelatives(final Block[] blocks, final Direction[] directions) {
+	public static Location[] getRelatives(final Block[] blocks, final Direction[] directions) {
 		final Location[] r = new Location[blocks.length * directions.length];
 		if (r.length == 0)
 			return r;
@@ -275,7 +276,7 @@ public class Direction implements YggdrasilRobustSerializable {
 	}
 	
 	@SuppressWarnings("null")
-	public final static Location[] getRelatives(final Location[] locations, final Direction[] directions) {
+	public static Location[] getRelatives(final Location[] locations, final Direction[] directions) {
 		final Location[] r = new Location[locations.length * directions.length];
 		if (r.length == 0)
 			return r;
@@ -293,7 +294,7 @@ public class Direction implements YggdrasilRobustSerializable {
 		return relative ? toString(pitchOrX == IGNORE_PITCH ? 0 : pitchOrX, yawOrY, lengthOrZ) : toString(new double[] {pitchOrX, yawOrY, lengthOrZ});
 	}
 	
-	public final static String toString(final double pitch, final double yaw, final double length) {
+	public static String toString(final double pitch, final double yaw, final double length) {
 		final double front = Math.cos(pitch) * Math.cos(yaw) * length;
 		final double left = Math.cos(pitch) * Math.sin(yaw) * length;
 		final double above = Math.sin(pitch) * length;
@@ -308,29 +309,26 @@ public class Direction implements YggdrasilRobustSerializable {
 		for (int i = 0; i < rd.length; i++) {
 			relativeDirections[i] = new Message("directions." + rd[i]);
 		}
-		final String[] ad = {
-				BF_X.name().toLowerCase(Locale.ENGLISH), BF_X.getOppositeFace().name().toLowerCase(Locale.ENGLISH),
-				BF_Y.name().toLowerCase(Locale.ENGLISH), BF_Y.getOppositeFace().name().toLowerCase(Locale.ENGLISH),
-				BF_Z.name().toLowerCase(Locale.ENGLISH), BF_Z.getOppositeFace().name().toLowerCase(Locale.ENGLISH)};
+		final String[] ad = {BF_X.name().toLowerCase(Locale.ENGLISH), BF_X.getOppositeFace().name().toLowerCase(Locale.ENGLISH), BF_Y.name().toLowerCase(Locale.ENGLISH), BF_Y.getOppositeFace().name().toLowerCase(Locale.ENGLISH), BF_Z.name().toLowerCase(Locale.ENGLISH), BF_Z.getOppositeFace().name().toLowerCase(Locale.ENGLISH)};
 		for (int i = 0; i < ad.length; i++) {
 			absoluteDirections[i] = new Message("directions." + ad[i]);
 		}
 	}
 	
-	public final static String toString(final double[] mod) {
+	public static String toString(final double[] mod) {
 		if (mod[0] == 0 && mod[1] == 0 && mod[2] == 0)
 			return m_at.toString();
 		return toString(mod, absoluteDirections);
 	}
 	
-	public final static String toString(final Vector dir) {
+	public static String toString(final Vector dir) {
 		if (dir.getX() == 0 && dir.getY() == 0 && dir.getZ() == 0)
 			return Language.get("directions.at");
 		return toString(new double[] {dir.getX(), dir.getY(), dir.getZ()}, absoluteDirections);
 	}
 	
 	@SuppressWarnings("null")
-	private final static String toString(final double[] mod, final Message[] names) {
+	private static String toString(final double[] mod, final Message[] names) {
 		assert mod.length == 3 && names.length == 6;
 		final StringBuilder b = new StringBuilder();
 		for (int i = 0; i < 3; i++) {
@@ -339,7 +337,7 @@ public class Direction implements YggdrasilRobustSerializable {
 		return b.toString();
 	}
 	
-	private final static void toString(final StringBuilder b, final double d, final Message direction, final Message oppositeDirection, final boolean prependAnd) {
+	private static void toString(final StringBuilder b, final double d, final Message direction, final Message oppositeDirection, final boolean prependAnd) {
 		if (d == 0)
 			return;
 		if (prependAnd)
@@ -380,21 +378,20 @@ public class Direction implements YggdrasilRobustSerializable {
 		}
 	}
 	
-	public final static Expression<Location> combine(final Expression<? extends Direction> dirs, final Expression<? extends Location> locs) {
+	public static Expression<Location> combine(final Expression<? extends Direction> dirs, final Expression<? extends Location> locs) {
 		return new SimpleExpression<Location>() {
 			@SuppressWarnings("null")
 			@Override
 			protected Location[] get(final Event e) {
 				final Direction[] ds = dirs.getArray(e);
 				final Location[] ls = locs.getArray(e);
-				final Location[] r = ls; //ds.length == 1 ? ls : new Location[ds.length * ls.length];
 				for (final Direction element : ds) {
 					for (int j = 0; j < ls.length; j++) {
 //						r[i + j * ds.length] = ds[i].getRelative(ls[j]);
-						r[j] = element.getRelative(r[j]);
+						ls[j] = element.getRelative(ls[j]);
 					}
 				}
-				return r;
+				return ls;
 			}
 			
 			@SuppressWarnings("null")
@@ -402,14 +399,13 @@ public class Direction implements YggdrasilRobustSerializable {
 			public Location[] getAll(final Event e) {
 				final Direction[] ds = dirs.getAll(e);
 				final Location[] ls = locs.getAll(e);
-				final Location[] r = ls; //ds.length == 1 ? ls : new Location[ds.length * ls.length];
 				for (final Direction element : ds) {
 					for (int j = 0; j < ls.length; j++) {
 //						r[i + j * ds.length] = ds[i].getRelative(ls[j]);
-						r[j] = element.getRelative(r[j]);
+						ls[j] = element.getRelative(ls[j]);
 					}
 				}
-				return r;
+				return ls;
 			}
 			
 			@Override
@@ -472,7 +468,7 @@ public class Direction implements YggdrasilRobustSerializable {
 	
 	@Override
 	public boolean excessiveField(@NonNull final FieldContext field) throws StreamCorruptedException {
-		if (field.getID().equals("mod")) {
+		if ("mod".equals(field.getID())) {
 			final double[] mod = field.getObject(double[].class);
 			if (mod == null)
 				return true;
@@ -482,13 +478,13 @@ public class Direction implements YggdrasilRobustSerializable {
 			set("yawOrY", mod[1]);
 			set("lengthOrZ", mod[1]);
 			return true;
-		} else if (field.getID().equals("pitch")) {
+		} else if ("pitch".equals(field.getID())) {
 			set("pitchOrX", field.getPrimitive(double.class));
 			return true;
-		} else if (field.getID().equals("yaw")) {
+		} else if ("yaw".equals(field.getID())) {
 			set("yawOrY", field.getPrimitive(double.class));
 			return true;
-		} else if (field.getID().equals("length")) {
+		} else if ("length".equals(field.getID())) {
 			set("lengthOrZ", field.getPrimitive(double.class));
 			return true;
 		} else {
@@ -498,7 +494,7 @@ public class Direction implements YggdrasilRobustSerializable {
 	
 	@Override
 	public boolean missingField(@NonNull final Field field) throws StreamCorruptedException {
-		return !field.getName().equals("relative");
+		return !"relative".equals(field.getName());
 	}
 	
 }

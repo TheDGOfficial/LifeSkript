@@ -21,13 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.World;
-import org.bukkit.event.Event;
-import org.bukkit.event.weather.ThunderChangeEvent;
-import org.bukkit.event.weather.WeatherChangeEvent;
-import org.bukkit.event.weather.WeatherEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.doc.Description;
@@ -45,13 +38,20 @@ import ch.njol.skript.util.WeatherType;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.World;
+import org.bukkit.event.Event;
+import org.bukkit.event.weather.ThunderChangeEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.event.weather.WeatherEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Weather")
 @Description("The weather in the given or the current world.")
-@Examples({"set weather to clear",
-		"weather in \"world\" is rainy"})
+@Examples({"set weather to clear", "weather in \"world\" is rainy"})
 @Since("1.0")
 @Events("weather change")
 public class ExprWeather extends PropertyExpression<World, WeatherType> {
@@ -107,7 +107,7 @@ public class ExprWeather extends PropertyExpression<World, WeatherType> {
 				} else if (e instanceof ThunderChangeEvent) {
 					if (((ThunderChangeEvent) e).toThunderState() && t != WeatherType.THUNDER)
 						((ThunderChangeEvent) e).setCancelled(true);
-					if (((ThunderChangeEvent) e).getWorld().hasStorm() != (t != WeatherType.CLEAR))
+					if (((ThunderChangeEvent) e).getWorld().hasStorm() == (t == WeatherType.CLEAR))
 						((ThunderChangeEvent) e).getWorld().setStorm(t != WeatherType.CLEAR);
 				}
 			} else {

@@ -21,9 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
@@ -40,13 +37,16 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.util.Experience;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Experience")
 @Description("How much experience was spawned in an <a href='../events/#experience_spawn'>experience spawn</a> event. Can be changed.")
-@Examples({"on experience spawn:",
-		"	add 5 to the spawned experience"})
+@Examples({"on experience spawn:", "	add 5 to the spawned experience"})
 @Since("2.1")
 @Events("experience spawn")
 public class ExprExperience extends SimpleExpression<Experience> {
@@ -123,7 +123,7 @@ public class ExprExperience extends SimpleExpression<Experience> {
 	}
 	
 	@Override
-	public Class<? extends Experience> getReturnType() {
+	public Class<Experience> getReturnType() {
 		return Experience.class;
 	}
 	

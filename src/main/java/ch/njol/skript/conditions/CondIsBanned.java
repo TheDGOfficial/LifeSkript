@@ -21,12 +21,6 @@
 
 package ch.njol.skript.conditions;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -40,21 +34,24 @@ import ch.njol.util.Kleenean;
 import ch.njol.util.Predicate;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Is Banned")
 @Description("Checks whether a player or IP is banned.")
-@Examples({"player is banned",
-		"victim is not IP-banned",
-		"\"127.0.0.1\" is banned"})
+@Examples({"player is banned", "victim is not IP-banned", "\"127.0.0.1\" is banned"})
 @Since("1.4")
 public class CondIsBanned extends Condition {
 	
 	static {
-		Skript.registerCondition(CondIsBanned.class,
-				"%offlineplayers/strings% (is|are) banned", "%players/strings% (is|are) IP(-| |)banned",
-				"%offlineplayers/strings% (isn't|is not|aren't|are not) banned", "%players/strings% (isn't|is not|aren't|are not) IP(-| |)banned");
+		Skript.registerCondition(CondIsBanned.class, "%offlineplayers/strings% (is|are) banned", "%players/strings% (is|are) IP(-| |)banned", "%offlineplayers/strings% (isn't|is not|aren't|are not) banned", "%players/strings% (isn't|is not|aren't|are not) IP(-| |)banned");
 	}
 	
 	@SuppressWarnings("null")
@@ -85,12 +82,11 @@ public class CondIsBanned extends Condition {
 				} else if (o instanceof OfflinePlayer) {
 					return ((OfflinePlayer) o).isBanned();
 				} else if (o instanceof String) {
-					return Bukkit.getIPBans().contains(o) || !ipBanned &&
-						CollectionUtils.contains(Bukkit.getBannedPlayers().toArray(new OfflinePlayer[Bukkit.getBannedPlayers().size()]), new Predicate<OfflinePlayer>() {
-							@Override
-							public boolean test(final @Nullable OfflinePlayer t) {
-								return t != null && ((String) o).equals(t.getName());
-							}
+					return Bukkit.getIPBans().contains(o) || !ipBanned && CollectionUtils.contains(Bukkit.getBannedPlayers().toArray(new OfflinePlayer[0]), new Predicate<OfflinePlayer>() {
+						@Override
+						public boolean test(final @Nullable OfflinePlayer t) {
+							return t != null && ((String) o).equals(t.getName());
+						}
 					});
 				}
 				assert false;

@@ -21,17 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.SkullType;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Skeleton.SkeletonType;
-import org.bukkit.entity.Zombie;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.doc.Description;
@@ -47,13 +36,24 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.SkullType;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Skeleton.SkeletonType;
+import org.bukkit.entity.Zombie;
+import org.bukkit.inventory.meta.SkullMeta;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Skull")
 @Description("Gets a skull item representing a player or an entity.")
-@Examples({"give the victim's skull to the attacker",
-		"set the block at the entity to the entity's skull"})
+@Examples({"give the victim's skull to the attacker", "set the block at the entity to the entity's skull"})
 @Since("2.0")
 public class ExprSkull extends SimplePropertyExpression<Object, ItemType> {
 	static {
@@ -99,7 +99,7 @@ public class ExprSkull extends SimplePropertyExpression<Object, ItemType> {
 	}
 	
 	@Override
-	public Class<? extends ItemType> getReturnType() {
+	public Class<ItemType> getReturnType() {
 		return ItemType.class;
 	}
 	

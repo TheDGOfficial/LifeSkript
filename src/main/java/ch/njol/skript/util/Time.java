@@ -21,20 +21,20 @@
 
 package ch.njol.skript.util;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.localization.Message;
 import ch.njol.util.Math2;
 import ch.njol.yggdrasil.YggdrasilSerializable;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
-public class Time implements YggdrasilSerializable {
+public final class Time implements YggdrasilSerializable {
 	
 	private final static int TICKS_PER_HOUR = 1000, TICKS_PER_DAY = 24 * TICKS_PER_HOUR;
 	private final static double TICKS_PER_MINUTE = 1000. / 60;
@@ -94,7 +94,7 @@ public class Time implements YggdrasilSerializable {
 	 */
 	@SuppressWarnings("null")
 	@Nullable
-	public final static Time parse(final String s) {
+	public static Time parse(final String s) {
 //		if (s.matches("\\d+")) {
 //			return new Time(Integer.parseInt(s));
 //		} else
@@ -129,7 +129,7 @@ public class Time implements YggdrasilSerializable {
 					Skript.error("" + m_error_60_minutes);
 					return null;
 				}
-				if (m.group(4).equalsIgnoreCase("pm"))
+				if ("pm".equalsIgnoreCase(m.group(4)))
 					hours += 12;
 				return new Time((int) Math.round(hours * TICKS_PER_HOUR - HOUR_ZERO + minutes * TICKS_PER_MINUTE));
 			}

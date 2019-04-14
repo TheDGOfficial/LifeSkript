@@ -21,9 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -35,52 +32,51 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author TheDGOfficial
  */
 @Name("None")
 @Description({"Represents the none (null) value."})
-@Examples({"function send(msg: text, p: player = none value of player):",
-	"if {_p} is set:",
-		"send {_msg} to {_p}",
-	"else:",
-		"broadcast {_msg}"})
+@Examples({"function send(msg: text, p: player = none value of player):", "if {_p} is set:", "send {_msg} to {_p}", "else:", "broadcast {_msg}"})
 @Since("2.2-Fixes-V10c")
-public class ExprNone extends SimpleExpression<Object> {
-    static {
-        Skript.registerExpression(ExprNone.class, Object.class, ExpressionType.SIMPLE,
-                "[the] (none|null) value of [the] [type] %*classinfo%");
-    }
-    
-    @Nullable
-    private Expression<?> noneType;
-    
+public final class ExprNone extends SimpleExpression<Object> {
+	static {
+		Skript.registerExpression(ExprNone.class, Object.class, ExpressionType.SIMPLE, "[the] (none|null) value of [the] [type] %*classinfo%");
+	}
+	
+	@Nullable
+	private Expression<?> noneType;
+	
 	@Override
-    @SuppressWarnings("null")
-	public final boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final ParseResult parseResult) {
+	@SuppressWarnings("null")
+	public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final ParseResult parseResult) {
 		noneType = exprs[0];
-        return true;
-    }
+		return true;
+	}
 	
 	@Override
 	@Nullable
-	protected final Object[] get(final Event e) {
+	protected Object[] get(final Event e) {
 		return null;
 	}
 	
-    @Override
-    public final boolean isSingle() {
-        return true;
-    }
-    
 	@Override
-    @SuppressWarnings("null")
-	public final Class<? extends Object> getReturnType() {
-        return noneType.getReturnType();
-    }
+	public boolean isSingle() {
+		return true;
+	}
+	
+	@Override
+	@SuppressWarnings("null")
+	public Class<?> getReturnType() {
+		return noneType.getReturnType();
+	}
 	
 	@SuppressWarnings("null")
-	public final String toString(final @Nullable Event e, final boolean debug) {
+	public String toString(final @Nullable Event e, final boolean debug) {
 		return "none value of " + getReturnType().getSimpleName().toLowerCase();
 	}
 }

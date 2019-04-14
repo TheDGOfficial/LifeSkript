@@ -21,30 +21,6 @@
 
 package ch.njol.skript.aliases;
 
-import java.io.NotSerializableException;
-import java.io.StreamCorruptedException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.NoSuchElementException;
-import java.util.Random;
-import java.util.RandomAccess;
-
-import org.bukkit.Bukkit;
-import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Unit;
 import ch.njol.skript.localization.Adjective;
@@ -63,6 +39,30 @@ import ch.njol.util.coll.iterator.SingleItemIterable;
 import ch.njol.yggdrasil.Fields;
 import ch.njol.yggdrasil.YggdrasilSerializable.YggdrasilExtendedSerializable;
 
+import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.io.NotSerializableException;
+import java.io.StreamCorruptedException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NoSuchElementException;
+import java.util.Random;
+import java.util.RandomAccess;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 @ContainerType(ItemStack.class)
 @SuppressWarnings("deprecation")
 public final class ItemType implements Unit, Iterable<ItemData>, Container<ItemStack>, YggdrasilExtendedSerializable {
@@ -77,30 +77,30 @@ public final class ItemType implements Unit, Iterable<ItemData>, Container<ItemS
 	 */
 	final ArrayList<ItemData> types = new ArrayList<ItemData>();
 	
-	private boolean all = false;
+	private boolean all;
 	
 	private int amount = -1;
 	
 	/**
 	 * How many different items this item type represents
 	 */
-	private int numItems = 0;
+	private int numItems;
 	
 	// TODO empty == unenchanted, add expression "unenchanted <item>"
 	@Nullable
-	transient Map<Enchantment, Integer> enchantments = null;
+	transient Map<Enchantment, Integer> enchantments;
 	
 	/**
 	 * Guaranteed to be of type ItemMeta.
 	 */
 	@Nullable
-	transient Object meta = null;
+	transient Object meta;
 	
 	/**
 	 * ItemTypes to use instead of this one if adding to an inventory or setting a block.
 	 */
 	@Nullable
-	private ItemType item = null, block = null;
+	private ItemType item, block;
 	
 	void setItem(final @Nullable ItemType item) {
 		if (equals(item)) { // can happen if someone defines a 'x' and 'x item/block' alias that have the same value, e.g. 'dirt' and 'dirt block'
@@ -246,7 +246,7 @@ public final class ItemType implements Unit, Iterable<ItemData>, Container<ItemS
 		}
 	}
 	
-	private final static void unsetItemMetaEnchs(final @Nullable ItemMeta meta) {
+	private static void unsetItemMetaEnchs(final @Nullable ItemMeta meta) {
 		if (meta == null)
 			return;
 		for (final Enchantment e : meta.getEnchants().keySet())
@@ -438,7 +438,7 @@ public final class ItemType implements Unit, Iterable<ItemData>, Container<ItemS
 		}
 	}
 	
-	public void addAll(final Collection<ItemData> types) {
+	public void addAll(final Iterable<ItemData> types) {
 		for (final ItemData type : types) {
 			if (type != null) {
 				this.types.add(type);
@@ -647,7 +647,7 @@ public final class ItemType implements Unit, Iterable<ItemData>, Container<ItemS
 		return addTo(getCopiedContents(invi));
 	}
 	
-	public final static ItemStack[] getCopiedContents(final Inventory invi) {
+	public static ItemStack[] getCopiedContents(final Inventory invi) {
 		final ItemStack[] buf = invi.getContents();
 		for (int i = 0; i < buf.length; i++)
 			if (buf[i] != null)
@@ -678,7 +678,7 @@ public final class ItemType implements Unit, Iterable<ItemData>, Container<ItemS
 	@Override
 	public Iterator<ItemData> iterator() {
 		return new Iterator<ItemData>() {
-			private int next = 0;
+			private int next;
 			
 			@Override
 			public boolean hasNext() {
@@ -912,7 +912,7 @@ public final class ItemType implements Unit, Iterable<ItemData>, Container<ItemS
 	 * @param sub
 	 * @return Whether all item types in <tt>sub</tt> have at least one {@link #isSupertypeOf(ItemType) super type} in <tt>set</tt>
 	 */
-	public final static boolean isSubset(final ItemType[] set, final ItemType[] sub) {
+	public static boolean isSubset(final ItemType[] set, final ItemType[] sub) {
 		outer: for (final ItemType i : sub) {
 			assert i != null;
 			for (final ItemType t : set) {
@@ -1032,7 +1032,7 @@ public final class ItemType implements Unit, Iterable<ItemData>, Container<ItemS
 //		}
 		final boolean plural = amount != 1 && amount != -1 || (flags & Language.F_PLURAL) != 0;
 		if (amount != -1 && amount != 1) {
-			b.append(amount + " ");
+			b.append(amount).append(" ");
 		} else {
 			b.append(Noun.getArticleWithSpace(types.get(0).getGender(), flags));
 		}
@@ -1041,7 +1041,7 @@ public final class ItemType implements Unit, Iterable<ItemData>, Container<ItemS
 		for (int i = 0; i < types.size(); i++) {
 			if (i != 0) {// this belongs here as size-1 can be 0
 				if (i == types.size() - 1)
-					b.append(" " + (isAll() ? GeneralWords.and : GeneralWords.or) + " ");
+					b.append(" ").append(isAll() ? GeneralWords.and : GeneralWords.or).append(" ");
 				else
 					b.append(", ");
 			}
@@ -1057,7 +1057,7 @@ public final class ItemType implements Unit, Iterable<ItemData>, Container<ItemS
 				if (i != enchs.size() - 1)
 					b.append(", ");
 				else
-					b.append(" " + GeneralWords.and + " ");
+					b.append(" ").append(GeneralWords.and).append(" ");
 			}
 			final Enchantment ench = e.getKey();
 			if (ench == null)
@@ -1070,8 +1070,8 @@ public final class ItemType implements Unit, Iterable<ItemData>, Container<ItemS
 		if (meta != null) {
 			final ItemMeta m = (ItemMeta) meta;
 			if (m.hasDisplayName()) {
-				b.append(" " + m_named.toString() + " ");
-				b.append("\"" + m.getDisplayName() + "\"");
+				b.append(" ").append(m_named.toString()).append(" ");
+				b.append("\"").append(m.getDisplayName()).append("\"");
 			}
 			if (debug)
 				b.append(" meta=[").append(meta).append("]");

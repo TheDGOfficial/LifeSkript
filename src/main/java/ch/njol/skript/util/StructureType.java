@@ -21,20 +21,21 @@
 
 package ch.njol.skript.util;
 
+import ch.njol.skript.localization.Language;
+import ch.njol.skript.localization.LanguageChangeListener;
+import ch.njol.skript.localization.Noun;
+import ch.njol.util.coll.CollectionUtils;
+
+import org.bukkit.Location;
+import org.bukkit.TreeType;
+import org.bukkit.block.Block;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import org.bukkit.Location;
-import org.bukkit.TreeType;
-import org.bukkit.block.Block;
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.localization.Language;
-import ch.njol.skript.localization.LanguageChangeListener;
-import ch.njol.skript.localization.Noun;
-import ch.njol.util.coll.CollectionUtils;
 
 /**
  * @author Peter Güttinger
@@ -42,21 +43,16 @@ import ch.njol.util.coll.CollectionUtils;
 public enum StructureType {
 	TREE(TreeType.TREE, TreeType.BIG_TREE, TreeType.REDWOOD, TreeType.TALL_REDWOOD, TreeType.SMALL_JUNGLE, TreeType.JUNGLE, TreeType.SWAMP),
 	
-	REGULAR(TreeType.TREE, TreeType.BIG_TREE), SMALL_REGULAR(TreeType.TREE), BIG_REGULAR(TreeType.BIG_TREE),
-	REDWOOD(TreeType.REDWOOD, TreeType.TALL_REDWOOD), SMALL_REDWOOD(TreeType.REDWOOD), BIG_REDWOOD(TreeType.TALL_REDWOOD),
-	JUNGLE(TreeType.SMALL_JUNGLE, TreeType.JUNGLE), SMALL_JUNGLE(TreeType.SMALL_JUNGLE), BIG_JUNGLE(TreeType.JUNGLE),
-	JUNGLE_BUSH(TreeType.JUNGLE_BUSH),
-	SWAMP(TreeType.SWAMP),
+	REGULAR(TreeType.TREE, TreeType.BIG_TREE), SMALL_REGULAR(TreeType.TREE), BIG_REGULAR(TreeType.BIG_TREE), REDWOOD(TreeType.REDWOOD, TreeType.TALL_REDWOOD), SMALL_REDWOOD(TreeType.REDWOOD), BIG_REDWOOD(TreeType.TALL_REDWOOD), JUNGLE(TreeType.SMALL_JUNGLE, TreeType.JUNGLE), SMALL_JUNGLE(TreeType.SMALL_JUNGLE), BIG_JUNGLE(TreeType.JUNGLE), JUNGLE_BUSH(TreeType.JUNGLE_BUSH), SWAMP(TreeType.SWAMP),
 	
-	MUSHROOM(TreeType.RED_MUSHROOM, TreeType.BROWN_MUSHROOM),
-	RED_MUSHROOM(TreeType.RED_MUSHROOM), BROWN_MUSHROOM(TreeType.BROWN_MUSHROOM),
+	MUSHROOM(TreeType.RED_MUSHROOM, TreeType.BROWN_MUSHROOM), RED_MUSHROOM(TreeType.RED_MUSHROOM), BROWN_MUSHROOM(TreeType.BROWN_MUSHROOM),
 	
 	;
 	
 	private Noun name;
 	private final TreeType[] types;
 	
-	private StructureType(final TreeType... types) {
+	StructureType(final TreeType... types) {
 		this.types = types;
 		name = new Noun("tree types." + name() + ".name");
 	}

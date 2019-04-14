@@ -21,13 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.Set;
-
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
@@ -39,27 +32,33 @@ import ch.njol.skript.log.ErrorQuality;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import java.util.Set;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
-* @author Mirreducki, Eugenio GuzmÃ¡n
-* 
-*/
-
+ * @author Mirreducki, Eugenio GuzmÃ¡n
+ */
 public class ExprChatRecipients extends SimpleExpression<Player> {
-
+	
 	static {
 		Skript.registerExpression(ExprChatRecipients.class, Player.class, ExpressionType.SIMPLE, "[chat][( |-)]recipients");
 	}
-
+	
 	@Override
 	public boolean isSingle() {
 		return false;
 	}
-
+	
 	@Override
-	public Class<? extends Player> getReturnType() {
+	public Class<Player> getReturnType() {
 		return Player.class;
 	}
-
+	
 	@SuppressWarnings({"unchecked", "null"})
 	@Override
 	public Class<?>[] acceptChange(final ChangeMode mode) {
@@ -67,7 +66,7 @@ public class ExprChatRecipients extends SimpleExpression<Player> {
 			return CollectionUtils.array(Player.class, Player[].class);
 		return null;
 	}
-
+	
 	@Override
 	public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final ParseResult parseResult) {
 		if (!ScriptLoader.isCurrentEvent(AsyncPlayerChatEvent.class)) {
@@ -76,21 +75,21 @@ public class ExprChatRecipients extends SimpleExpression<Player> {
 		}
 		return true;
 	}
-
+	
 	@Override
 	public String toString(@Nullable final Event e, final boolean debug) {
 		return "chat recipients";
 	}
-
+	
 	@Override
 	@Nullable
 	protected Player[] get(final Event e) {
 		final AsyncPlayerChatEvent ae = (AsyncPlayerChatEvent) e;
 		final Set<Player> playerSet = ae.getRecipients();
-		return playerSet.toArray(new Player[playerSet.size()]);
+		return playerSet.toArray(new Player[0]);
 	}
-
-	@SuppressWarnings({ "incomplete-switch", "null" })
+	
+	@SuppressWarnings({"incomplete-switch", "null"})
 	@Override
 	public void change(final Event e, @Nullable final Object[] delta, final ChangeMode mode) {
 		final Player[] playerArray = (Player[]) delta;

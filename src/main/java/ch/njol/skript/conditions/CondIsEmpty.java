@@ -21,10 +21,6 @@
 
 package ch.njol.skript.conditions;
 
-import org.bukkit.Material;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import ch.njol.skript.conditions.base.PropertyCondition;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -32,14 +28,18 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.util.Slot;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Is Empty")
 @Description("Checks whether an inventory, an inventory slot, or a text is empty.")
 @Examples("player's inventory is empty")
-@Since("")
-public class CondIsEmpty extends PropertyCondition<Object> {
+@Since("1.0")
+public final class CondIsEmpty extends PropertyCondition<Object> {
 	static {
 		register(CondIsEmpty.class, "empty", "inventories/slots/strings");
 	}

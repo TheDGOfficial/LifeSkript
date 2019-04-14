@@ -21,12 +21,13 @@
 
 package ch.njol.skript.entity;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -37,7 +38,7 @@ public final class PlayerData extends EntityData<Player> {
 	}
 	
 	// used by EntityData.getAll to efficiently get all players
-	int op = 0;
+	int op;
 	
 	@Override
 	protected boolean init(final Literal<?>[] exprs, final int matchedPattern, final ParseResult parseResult) {

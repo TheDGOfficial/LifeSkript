@@ -21,6 +21,8 @@
 
 package ch.njol.skript.events.util;
 
+import ch.njol.skript.Skript;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -28,19 +30,19 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.plugin.EventExecutor;
 
-import ch.njol.skript.Skript;
-
 /**
  * @author Peter Güttinger
  */
 @SuppressWarnings("deprecation")
-public abstract class PlayerChatEventHandler {
+public final class PlayerChatEventHandler {
 	
-	private PlayerChatEventHandler() {}
+	private PlayerChatEventHandler() {
+		throw new UnsupportedOperationException();
+	}
 	
 	public final static boolean usesAsyncEvent = Skript.classExists("org.bukkit.event.player.AsyncPlayerChatEvent");
 	
-	public final static void registerChatEvent(final EventPriority priority, final EventExecutor executor, final boolean ignoreCancelled) {
+	public static void registerChatEvent(final EventPriority priority, final EventExecutor executor, final boolean ignoreCancelled) {
 		if (Skript.classExists("org.bukkit.event.player.AsyncPlayerChatEvent"))
 			Bukkit.getPluginManager().registerEvent(AsyncPlayerChatEvent.class, new Listener() {}, priority, executor, Skript.getInstance(), ignoreCancelled);
 		else

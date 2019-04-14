@@ -21,15 +21,16 @@
 
 package ch.njol.skript.lang;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.config.SectionNode;
+
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
  */
-public class While extends TriggerSection {
+public final class While extends TriggerSection {
 	
 	private final Condition c;
 	

@@ -32,15 +32,15 @@ import org.eclipse.jdt.annotation.Nullable;
  * 
  * @author Peter Güttinger
  */
-public class NodeMap {
+public final class NodeMap {
 	
 	private final Map<String, Node> map = new HashMap<String, Node>();
 	
-	public final static boolean inMap(final Node n) {
+	public static boolean inMap(final Node n) {
 		return n instanceof EntryNode || n instanceof SectionNode;
 	}
 	
-	private final static String getKey(final Node n) {
+	private static String getKey(final Node n) {
 		final String key = n.getKey();
 		if (key == null) {
 			assert false : n;
@@ -49,7 +49,7 @@ public class NodeMap {
 		return "" + key.toLowerCase(Locale.ENGLISH);
 	}
 	
-	private final static String getKey(final String key) {
+	private static String getKey(final String key) {
 		return "" + key.toLowerCase(Locale.ENGLISH);
 	}
 	

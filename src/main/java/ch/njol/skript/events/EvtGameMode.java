@@ -21,26 +21,24 @@
 
 package ch.njol.skript.events;
 
-import org.bukkit.GameMode;
-import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Checker;
 
+import org.bukkit.GameMode;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 public final class EvtGameMode extends SkriptEvent {
 	static {
-		Skript.registerEvent("Gamemode Change", EvtGameMode.class, PlayerGameModeChangeEvent.class, "game[ ]mode change [to %gamemode%]")
-				.description("Called when a player's <a href='../classes/#gamemode'>gamemode</a> changes.")
-				.examples("on gamemode change", "on gamemode change to adventure")
-				.since("1.0");
+		Skript.registerEvent("Gamemode Change", EvtGameMode.class, PlayerGameModeChangeEvent.class, "game[ ]mode change [to %gamemode%]").description("Called when a player's <a href='../classes/#gamemode'>gamemode</a> changes.").examples("on gamemode change", "on gamemode change to adventure").since("1.0");
 	}
 	
 	@Nullable
@@ -59,7 +57,7 @@ public final class EvtGameMode extends SkriptEvent {
 			return mode.check(e, new Checker<GameMode>() {
 				@Override
 				public boolean check(final GameMode m) {
-					return ((PlayerGameModeChangeEvent) e).getNewGameMode().equals(m);
+					return ((PlayerGameModeChangeEvent) e).getNewGameMode() == m;
 				}
 			});
 		}

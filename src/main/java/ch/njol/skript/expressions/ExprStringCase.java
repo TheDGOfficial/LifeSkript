@@ -21,9 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -36,6 +33,10 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
@@ -43,13 +44,14 @@ import ch.njol.util.Kleenean;
 @Description("Copy of given text in upper or lower case.")
 @Examples("\"oops!\" in upper case # OOPS!")
 @Since("2.2-Fixes-V9c")
-public class ExprStringCase extends SimpleExpression<String> {
-
+public final class ExprStringCase extends SimpleExpression<String> {
+	
 	private final static int UPPER = 0, LOWER = 1;
 	
 	/**
 	 * Helper function which takes nullable string and
 	 * uses given mode to it.
+	 * 
 	 * @param str Original string.
 	 * @param mode See above, UPPER or LOWER.
 	 * @return Changed string.
@@ -67,8 +69,7 @@ public class ExprStringCase extends SimpleExpression<String> {
 	}
 	
 	static {
-		Skript.registerExpression(ExprStringCase.class, String.class, ExpressionType.SIMPLE,
-				"%string% in (0¦upper|1¦lower) case", "capitalized %string%");
+		Skript.registerExpression(ExprStringCase.class, String.class, ExpressionType.SIMPLE, "%string% in (0¦upper|1¦lower) case", "capitalized %string%");
 	}
 	
 	@Nullable
@@ -110,12 +111,12 @@ public class ExprStringCase extends SimpleExpression<String> {
 	public boolean isSingle() {
 		return true;
 	}
-
+	
 	@Override
-	public Class<? extends String> getReturnType() {
+	public Class<String> getReturnType() {
 		return String.class;
 	}
-
+	
 	@Override
 	public String toString(@Nullable final Event e, final boolean debug) {
 		if (literal != null)

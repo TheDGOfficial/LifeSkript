@@ -21,11 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.classes.Changer.ChangerUtils;
@@ -39,19 +34,22 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.util.EnchantmentType;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Enchant/Disenchant")
 @Description("Enchant or disenchant an existing item")
-@Examples({"enchant the player's tool with sharpness 5",
-		"disenchant the player's tool"})
+@Examples({"enchant the player's tool with sharpness 5", "disenchant the player's tool"})
 @Since("2.0")
 public class EffEnchant extends Effect {
 	static {
-		Skript.registerEffect(EffEnchant.class,
-				"enchant %~itemstack% with %enchantmenttypes%",
-				"disenchant %~itemstack%");
+		Skript.registerEffect(EffEnchant.class, "enchant %~itemstack% with %enchantmenttypes%", "disenchant %~itemstack%");
 	}
 	
 	@SuppressWarnings("null")

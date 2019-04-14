@@ -21,15 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Event;
-import org.bukkit.material.Directional;
-import org.bukkit.material.MaterialData;
-import org.bukkit.util.Vector;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -42,14 +33,22 @@ import ch.njol.skript.util.Direction;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Event;
+import org.bukkit.material.Directional;
+import org.bukkit.material.MaterialData;
+import org.bukkit.util.Vector;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Facing")
 @Description("The facing of an entity or block, i.e. exactly north, south, east, west, up or down (unlike <a href='#ExprDirection'>direction</a> which is the exact direction, e.g. '0.5 south and 0.7 east')")
-@Examples({"# makes a bridge",
-		"loop blocks from the block below the player in the horizontal facing of the player:",
-		"	set block to cobblestone"})
+@Examples({"# makes a bridge", "loop blocks from the block below the player in the horizontal facing of the player:", "	set block to cobblestone"})
 @Since("1.4")
 public class ExprFacing extends SimplePropertyExpression<Object, Direction> {
 	static {
@@ -117,7 +116,7 @@ public class ExprFacing extends SimplePropertyExpression<Object, Direction> {
 		b.setData(d.getData());
 	}
 	
-	private final static BlockFace toBlockFace(final Vector dir) {
+	private static BlockFace toBlockFace(final Vector dir) {
 //		dir.normalize();
 		BlockFace r = null;
 		double d = Double.MAX_VALUE;

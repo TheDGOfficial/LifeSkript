@@ -21,13 +21,14 @@
 
 package ch.njol.skript.entity;
 
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Skeleton.SkeletonType;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
+
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Skeleton.SkeletonType;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -62,16 +63,16 @@ public class SkeletonData extends EntityData<Skeleton> {
 	
 	@Override
 	protected boolean init(final @Nullable Class<? extends Skeleton> c, final @Nullable Skeleton e) {
-		wither = e == null || !hasWither ? false : e.getSkeletonType() == SkeletonType.WITHER;
+		wither = e != null && hasWither && e.getSkeletonType() == SkeletonType.WITHER;
 		return true;
 	}
 	
 //		return wither ? "1" : "0";
 	@Override
 	protected boolean deserialize(final String s) {
-		if (s.equals("1"))
+		if ("1".equals(s))
 			wither = true;
-		else if (s.equals("0"))
+		else if ("0".equals(s))
 			wither = false;
 		else
 			return false;
@@ -86,7 +87,7 @@ public class SkeletonData extends EntityData<Skeleton> {
 	
 	@Override
 	protected boolean match(final Skeleton entity) {
-		return hasWither ? entity.getSkeletonType() == SkeletonType.WITHER == wither : true;
+		return !hasWither || entity.getSkeletonType() == SkeletonType.WITHER == wither;
 	}
 	
 	@Override

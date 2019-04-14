@@ -21,13 +21,13 @@
 
 package ch.njol.skript.hooks;
 
-import java.io.IOException;
+import ch.njol.skript.Skript;
+import ch.njol.skript.localization.ArgsMessage;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
-import ch.njol.skript.Skript;
-import ch.njol.skript.localization.ArgsMessage;
+import java.io.IOException;
 
 /**
  * @author Peter Güttinger
@@ -57,7 +57,6 @@ public abstract class Hook<P extends Plugin> {
 		loadClasses();
 		if (Skript.logHigh())
 			Skript.info(m_hooked.toString(p.getName()));
-		return;
 	}
 	
 	protected void loadClasses() throws IOException {

@@ -21,11 +21,12 @@
 
 package ch.njol.skript.lang;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.SectionNode;
+
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Represents a conditional trigger section.
@@ -36,12 +37,12 @@ import ch.njol.skript.config.SectionNode;
  * @see TriggerSection
  * @see Condition
  */
-public class Conditional extends TriggerSection {
+public final class Conditional extends TriggerSection {
 	
 	private final Condition cond;
 	
 	@Nullable
-	private TriggerSection elseClause = null;
+	private TriggerSection elseClause;
 	
 	public Conditional(final Condition cond, final SectionNode node) {
 		super(node);
@@ -86,9 +87,7 @@ public class Conditional extends TriggerSection {
 			public String toString(final @Nullable Event e, final boolean debug) {
 				return "else";
 			}
-		}
-				.setParent(getParent())
-				.setNext(getNext());
+		}.setParent(getParent()).setNext(getNext());
 	}
 	
 	public void loadElseIf(final Condition cond, final SectionNode n) {
@@ -97,9 +96,7 @@ public class Conditional extends TriggerSection {
 			((Conditional) elseClause).loadElseIf(cond, n);
 			return;
 		}
-		elseClause = new Conditional(cond, n)
-				.setParent(getParent())
-				.setNext(getNext());
+		elseClause = new Conditional(cond, n).setParent(getParent()).setNext(getNext());
 	}
 	
 	public boolean hasElseClause() {

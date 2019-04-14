@@ -21,10 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.OfflinePlayer;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -35,13 +31,17 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.OfflinePlayer;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("op/deop")
 @Description("Grant/revoke a user operator status.")
-@Examples({"op the player",
-		"deop all players"})
+@Examples({"op the player", "deop all players"})
 @Since("1.0")
 public class EffOp extends Effect {
 	
@@ -57,7 +57,7 @@ public class EffOp extends Effect {
 	@Override
 	public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final ParseResult parseResult) {
 		players = (Expression<OfflinePlayer>) exprs[0];
-		op = !parseResult.expr.substring(0, 2).equalsIgnoreCase("de");
+		op = !"de".equalsIgnoreCase(parseResult.expr.substring(0, 2));
 		return true;
 	}
 	

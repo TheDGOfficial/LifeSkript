@@ -21,12 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -40,14 +34,19 @@ import ch.njol.skript.util.Direction;
 import ch.njol.skript.util.VisualEffect;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Play Effect")
-@Description({"Plays a <a href='../classes/#visualeffect'>visual effect</a> at a given location or on a given entity.",
-		"Please note that some effects can only be played on entities, e..g wolf hearts or the hurt effect, and that these are always visible to all players."})
-@Examples({"play wolf hearts on the clicked wolf",
-		"show mob spawner flames at the targeted block to the player"})
+@Description({"Plays a <a href='../classes/#visualeffect'>visual effect</a> at a given location or on a given entity.", "Please note that some effects can only be played on entities, e..g wolf hearts or the hurt effect, and that these are always visible to all players."})
+@Examples({"play wolf hearts on the clicked wolf", "show mob spawner flames at the targeted block to the player"})
 @Since("2.1")
 public class EffVisualEffect extends Effect {
 	static {

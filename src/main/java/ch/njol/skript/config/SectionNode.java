@@ -21,15 +21,6 @@
 
 package ch.njol.skript.config;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAPIException;
 import ch.njol.skript.config.validate.EntryValidator;
@@ -40,10 +31,19 @@ import ch.njol.util.NullableChecker;
 import ch.njol.util.coll.CollectionUtils;
 import ch.njol.util.coll.iterator.CheckedIterator;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
-public class SectionNode extends Node implements Iterable<Node> {
+public final class SectionNode extends Node implements Iterable<Node> {
 	
 	private final ArrayList<Node> nodes = new ArrayList<Node>();
 	
@@ -59,7 +59,7 @@ public class SectionNode extends Node implements Iterable<Node> {
 	 * Note to self: use getNodeMap()
 	 */
 	@Nullable
-	private NodeMap nodeMap = null;
+	private NodeMap nodeMap;
 	
 	private NodeMap getNodeMap() {
 		NodeMap nodeMap = this.nodeMap;
@@ -200,7 +200,7 @@ public class SectionNode extends Node implements Iterable<Node> {
 	 */
 	public String get(final String name, final String def) {
 		final Node n = this.get(name);
-		if (n == null || !(n instanceof EntryNode))
+		if (!(n instanceof EntryNode))
 			return def;
 		return ((EntryNode) n).getValue();
 	}
@@ -251,11 +251,11 @@ public class SectionNode extends Node implements Iterable<Node> {
 		return true;
 	}
 	
-	final static SectionNode load(final Config c, final ConfigReader r) throws IOException {
+	static SectionNode load(final Config c, final ConfigReader r) throws IOException {
 		return new SectionNode(c).load_i(r);
 	}
 	
-	final static SectionNode load(final String name, final String comment, final SectionNode parent, final ConfigReader r) throws IOException {
+	static SectionNode load(final String name, final String comment, final SectionNode parent, final ConfigReader r) throws IOException {
 		parent.config.level++;
 		final SectionNode node = new SectionNode(name, comment, parent, r.getLineNum()).load_i(r);
 		SkriptLogger.setNode(parent);
@@ -263,7 +263,7 @@ public class SectionNode extends Node implements Iterable<Node> {
 		return node;
 	}
 	
-	private final static String readableWhitespace(final String s) {
+	private static String readableWhitespace(final String s) {
 		if (s.matches(" +"))
 			return s.length() + " space" + (s.length() == 1 ? "" : "s");
 		if (s.matches("\t+"))
@@ -272,7 +272,7 @@ public class SectionNode extends Node implements Iterable<Node> {
 	}
 	
 	@SuppressWarnings({"null", "unused"})
-	private final SectionNode load_i(final ConfigReader r) throws IOException {
+	private SectionNode load_i(final ConfigReader r) throws IOException {
 		boolean indentationSet = false;
 		String fullLine;
 		while ((fullLine = r.readLine()) != null) {
@@ -303,8 +303,7 @@ public class SectionNode extends Node implements Iterable<Node> {
 					continue;
 				} else {
 					if (parent != null && !config.allowEmptySections && isEmpty()) {
-						Skript.warning("Empty configuration section! You might want to indent one or more of the subsequent lines to make them belong to this section" +
-								" or remove the colon at the end of the line if you don't want this line to start a section.");
+						Skript.warning("Empty configuration section! You might want to indent one or more of the subsequent lines to make them belong to this section" + " or remove the colon at the end of the line if you don't want this line to start a section.");
 					}
 					r.reset();
 					return this;
@@ -342,10 +341,7 @@ public class SectionNode extends Node implements Iterable<Node> {
 //				continue;
 //			}
 			
-			if (value.endsWith(":") && (config.simple
-					|| value.indexOf(config.separator) == -1
-					|| config.separator.endsWith(":") && value.indexOf(config.separator) == value.length() - config.separator.length()
-					) && !fullLine.matches("([^#]|##)*#-#(\\s.*)?")) {
+			if (value.endsWith(":") && (config.simple || !value.contains(config.separator) || config.separator.endsWith(":") && value.indexOf(config.separator) == value.length() - config.separator.length()) && !fullLine.matches("([^#]|##)*#-#(\\s.*)?")) {
 				nodes.add(SectionNode.load("" + value.substring(0, value.length() - 1), comment, this, r));
 				continue;
 			}

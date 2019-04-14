@@ -21,13 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.nio.charset.Charset;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -39,22 +32,20 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Hash")
-@Description({"Hashes the given text using the MD5 algorithm. This is useful for storing passwords or IP addresses without having to store them literally.",
-		"Please note that an MD5 hash is irreversible, i.e. you won't be able to get the original text back (which is the point of storing passwords like this). Brute-force attacks can still be performed on hashes though which can easily crack short or insecure passwords."})
-@Examples({
-		"command /setpass <text>:",
-		"	trigger:",
-		"		set {password.%player%} to hashed text-argument",
-		"command /login <text>:",
-		"	trigger:",
-		"		{password.%player%} is hashed text-argument:",
-		"			message \"login successful.\"",
-		"		else:",
-		"			message \"wrong password!\""})
+@Description({"Hashes the given text using the MD5 algorithm. This is useful for storing passwords or IP addresses without having to store them literally.", "Please note that an MD5 hash is irreversible, i.e. you won't be able to get the original text back (which is the point of storing passwords like this). Brute-force attacks can still be performed on hashes though which can easily crack short or insecure passwords."})
+@Examples({"command /setpass <text>:", "	trigger:", "		set {password.%player%} to hashed text-argument", "command /login <text>:", "	trigger:", "		{password.%player%} is hashed text-argument:", "			message \"login successful.\"", "		else:", "			message \"wrong password!\""})
 @Since("2.0")
 public class ExprHash extends PropertyExpression<String, String> {
 	static {
@@ -65,7 +56,8 @@ public class ExprHash extends PropertyExpression<String, String> {
 	private final static Charset UTF_8 = Charset.forName("UTF-8");
 	
 	@Nullable
-	static MessageDigest md5 = null;
+	static MessageDigest md5;
+	
 	static {
 		try {
 			md5 = MessageDigest.getInstance("MD5");
@@ -110,7 +102,7 @@ public class ExprHash extends PropertyExpression<String, String> {
 	}
 	
 	@Override
-	public Class<? extends String> getReturnType() {
+	public Class<String> getReturnType() {
 		return String.class;
 	}
 	

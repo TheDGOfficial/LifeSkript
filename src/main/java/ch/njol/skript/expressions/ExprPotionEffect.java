@@ -21,14 +21,15 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.event.Event;
-import org.bukkit.potion.PotionEffect;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+
+import org.bukkit.event.Event;
+import org.bukkit.potion.PotionEffect;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -56,7 +57,7 @@ public class ExprPotionEffect extends SimpleExpression<PotionEffect> {
 	}
 	
 	@Override
-	public Class<? extends PotionEffect> getReturnType() {
+	public Class<PotionEffect> getReturnType() {
 		return PotionEffect.class;
 	}
 	

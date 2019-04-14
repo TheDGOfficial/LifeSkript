@@ -21,11 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.UUID;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -37,6 +32,12 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import java.util.UUID;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author TheDGOfficial
  */
@@ -44,10 +45,9 @@ import ch.njol.util.Kleenean;
 @Description("Gets a random UUID.")
 @Examples("set {id} to random id")
 @Since("2.2-Fixes-V10c")
-public class ExprRandomId extends SimpleExpression<String> {
+public final class ExprRandomId extends SimpleExpression<String> {
 	static {
-		Skript.registerExpression(ExprRandomId.class, String.class, ExpressionType.SIMPLE,
-				"[a] [new] random [uu]id");
+		Skript.registerExpression(ExprRandomId.class, String.class, ExpressionType.SIMPLE, "[a] [new] random [uu]id");
 	}
 	
 	@Override
@@ -57,7 +57,7 @@ public class ExprRandomId extends SimpleExpression<String> {
 	
 	@Override
 	protected String[] get(final Event e) {
-		return new String[] { UUID.randomUUID().toString() };
+		return new String[] {UUID.randomUUID().toString()};
 	}
 	
 	@Override

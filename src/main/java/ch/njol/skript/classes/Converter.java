@@ -21,10 +21,10 @@
 
 package ch.njol.skript.classes;
 
+import ch.njol.skript.registrations.Converters;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.registrations.Converters;
 
 /**
  * used to convert data from one type to another.
@@ -36,10 +36,10 @@ import ch.njol.skript.registrations.Converters;
  */
 public interface Converter<F, T> {
 	
-	public final static int NO_LEFT_CHAINING = 1;
-	public final static int NO_RIGHT_CHAINING = 2;
-	public final static int NO_CHAINING = NO_LEFT_CHAINING | NO_RIGHT_CHAINING;
-	public final static int NO_COMMAND_ARGUMENTS = 4;
+	int NO_LEFT_CHAINING = 1;
+	int NO_RIGHT_CHAINING = 2;
+	int NO_CHAINING = NO_LEFT_CHAINING | NO_RIGHT_CHAINING;
+	int NO_COMMAND_ARGUMENTS = 4;
 	
 	/**
 	 * holds information about a converter
@@ -50,7 +50,7 @@ public interface Converter<F, T> {
 	 */
 	@SuppressWarnings("null")
 	@NonNullByDefault
-	public final static class ConverterInfo<F, T> {
+	final class ConverterInfo<F, T> {
 		
 		public final Class<F> from;
 		public final Class<T> to;
@@ -73,15 +73,15 @@ public interface Converter<F, T> {
 	 * @return the converted object
 	 */
 	@Nullable
-	public T convert(F f);
+	T convert(final F f);
 	
-	public final static class ConverterUtils { //NOSONAR
+	final class ConverterUtils { //NOSONAR
 		
-		public final static <F, T> Converter<?, T> createInstanceofConverter(final ConverterInfo<F, T> conv) {
+		public static <F, T> Converter<?, T> createInstanceofConverter(final ConverterInfo<F, T> conv) {
 			return createInstanceofConverter(conv.from, conv.converter);
 		}
 		
-		public final static <F, T> Converter<?, T> createInstanceofConverter(final Class<F> from, final Converter<F, T> conv) {
+		public static <F, T> Converter<?, T> createInstanceofConverter(final Class<F> from, final Converter<F, T> conv) {
 			return new Converter<Object, T>() {
 				@SuppressWarnings("unchecked")
 				@Override
@@ -94,7 +94,7 @@ public interface Converter<F, T> {
 			};
 		}
 		
-		public final static <F, T> Converter<F, T> createInstanceofConverter(final Converter<F, ?> conv, final Class<T> to) {
+		public static <F, T> Converter<F, T> createInstanceofConverter(final Converter<F, ?> conv, final Class<T> to) {
 			return new Converter<F, T>() {
 				@SuppressWarnings("unchecked")
 				@Override
@@ -108,11 +108,11 @@ public interface Converter<F, T> {
 			};
 		}
 		
-		public final static <F, T> Converter<?, T> createDoubleInstanceofConverter(final ConverterInfo<F, ?> conv, final Class<T> to) {
+		public static <F, T> Converter<?, T> createDoubleInstanceofConverter(final ConverterInfo<F, ?> conv, final Class<T> to) {
 			return createDoubleInstanceofConverter(conv.from, conv.converter, to);
 		}
 		
-		public final static <F, T> Converter<?, T> createDoubleInstanceofConverter(final Class<F> from, final Converter<F, ?> conv, final Class<T> to) {
+		public static <F, T> Converter<?, T> createDoubleInstanceofConverter(final Class<F> from, final Converter<F, ?> conv, final Class<T> to) {
 			return new Converter<Object, T>() {
 				@SuppressWarnings("unchecked")
 				@Override

@@ -21,10 +21,6 @@
 
 package ch.njol.skript.config.validate;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map.Entry;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Parser;
 import ch.njol.skript.config.EntryNode;
@@ -33,10 +29,14 @@ import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.log.SkriptLogger;
 import ch.njol.util.Setter;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map.Entry;
+
 /**
  * @author Peter Güttinger
  */
-public class SectionValidator implements NodeValidator {
+public final class SectionValidator implements NodeValidator {
 	
 	private final static class NodeInfo {
 		public NodeValidator v;
@@ -49,10 +49,13 @@ public class SectionValidator implements NodeValidator {
 	}
 	
 	private final HashMap<String, NodeInfo> nodes = new HashMap<String, NodeInfo>();
-	private boolean allowUndefinedSections = false;
-	private boolean allowUndefinedEntries = false;
 	
-	public SectionValidator() {}
+	private boolean allowUndefinedSections;
+	private boolean allowUndefinedEntries;
+	
+	public SectionValidator() {
+		super();
+	}
 	
 	public SectionValidator addNode(final String name, final NodeValidator v, final boolean optional) {
 		assert name != null;
@@ -115,7 +118,7 @@ public class SectionValidator implements NodeValidator {
 		return ok;
 	}
 	
-	public final static void notASectionError(final Node node) {
+	public static void notASectionError(final Node node) {
 		SkriptLogger.setNode(node);
 		Skript.error("'" + node.getKey() + "' is not a section (like 'name:', followed by one or more indented lines)");
 	}

@@ -21,12 +21,6 @@
 
 package ch.njol.skript.conditions;
 
-import java.util.Map;
-
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.doc.Description;
@@ -40,20 +34,24 @@ import ch.njol.skript.util.EnchantmentType;
 import ch.njol.util.Checker;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.Event;
+
+import java.util.Map;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Is Enchanted")
 @Description("Checks whether an item is enchanted.")
-@Examples({"tool of the player is enchanted with efficiency 2",
-		"helm, chestplate, leggings or boots are enchanted"})
+@Examples({"tool of the player is enchanted with efficiency 2", "helm, chestplate, leggings or boots are enchanted"})
 @Since("1.4.6")
 public class CondIsEnchanted extends Condition {
 	
 	static {
-		Skript.registerCondition(CondIsEnchanted.class,
-				"%itemtypes% (is|are) enchanted [with %-enchantmenttype%]",
-				"%itemtypes% (isn't|is not|aren't|are not) enchanted [with %-enchantmenttype%]");
+		Skript.registerCondition(CondIsEnchanted.class, "%itemtypes% (is|are) enchanted [with %-enchantmenttype%]", "%itemtypes% (isn't|is not|aren't|are not) enchanted [with %-enchantmenttype%]");
 	}
 	
 	@SuppressWarnings("null")

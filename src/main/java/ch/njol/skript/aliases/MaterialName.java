@@ -21,15 +21,15 @@
 
 package ch.njol.skript.aliases;
 
-import java.util.HashMap;
-
 import ch.njol.skript.Skript;
 import ch.njol.util.NonNullPair;
+
+import java.util.HashMap;
 
 final class MaterialName {
 	String singular;
 	String plural;
-	int gender = 0;
+	int gender;
 	private final int id;
 	final HashMap<NonNullPair<Short, Short>, NonNullPair<String, String>> names = new HashMap<NonNullPair<Short, Short>, NonNullPair<String, String>>();
 	
@@ -44,7 +44,7 @@ final class MaterialName {
 //		if (names == null)
 //			return p ? plural : singular;
 		@SuppressWarnings("null")
-		NonNullPair<String, String> s = names.get(new NonNullPair<Short, Short>(Short.valueOf(dataMin), Short.valueOf(dataMax)));
+		NonNullPair<String, String> s = names.get(new NonNullPair<Short, Short>(dataMin, dataMax));
 		if (s != null)
 			return p ? s.getSecond() : s.getFirst();
 		if (dataMin == -1 && dataMax == -1 || dataMin == 0 && dataMax == 0)
@@ -59,7 +59,7 @@ final class MaterialName {
 //		if (names == null)
 //			return p ? plural : singular;
 		@SuppressWarnings("null")
-		final NonNullPair<String, String> s = names.get(new NonNullPair<Short, Short>(Short.valueOf(dataMin), Short.valueOf(dataMax)));
+		final NonNullPair<String, String> s = names.get(new NonNullPair<Short, Short>(dataMin, dataMax));
 		if (s != null)
 			return p ? s.getSecond() : s.getFirst();
 		if (dataMin == -1 && dataMax == -1 || dataMin == 0 && dataMax == 0)

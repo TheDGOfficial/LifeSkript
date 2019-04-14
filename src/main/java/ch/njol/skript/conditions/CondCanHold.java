@@ -21,11 +21,6 @@
 
 package ch.njol.skript.conditions;
 
-import org.bukkit.event.Event;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.doc.Description;
@@ -40,19 +35,22 @@ import ch.njol.skript.log.ErrorQuality;
 import ch.njol.util.Checker;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Can Hold")
 @Description("Tests whether a player or a chest can hold the given item.")
-@Examples({"block can hold 200 cobblestone",
-		"player has enough space for 64 feathers"})
+@Examples({"block can hold 200 cobblestone", "player has enough space for 64 feathers"})
 @Since("1.0")
 public class CondCanHold extends Condition {
 	static {
-		Skript.registerCondition(CondCanHold.class,
-				"%inventories% (can hold|ha(s|ve) [enough] space (for|to hold)) %itemtypes%",
-				"%inventories% (can(no|')t hold|(ha(s|ve) not|ha(s|ve)n't|do[es]n't have) [enough] space (for|to hold)) %itemtypes%");
+		Skript.registerCondition(CondCanHold.class, "%inventories% (can hold|ha(s|ve) [enough] space (for|to hold)) %itemtypes%", "%inventories% (can(no|')t hold|(ha(s|ve) not|ha(s|ve)n't|do[es]n't have) [enough] space (for|to hold)) %itemtypes%");
 	}
 	
 	@SuppressWarnings("null")

@@ -21,10 +21,6 @@
 
 package ch.njol.skript.util;
 
-import java.util.HashMap;
-
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.localization.GeneralWords;
 import ch.njol.skript.localization.Language;
@@ -34,20 +30,25 @@ import ch.njol.util.NonNullPair;
 import ch.njol.util.coll.CollectionUtils;
 import ch.njol.yggdrasil.YggdrasilSerializable;
 
+import java.util.HashMap;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
- * @edited by Mirreducki. Increased maximum timespan.
  */
-public class Timespan implements YggdrasilSerializable, Comparable<Timespan> { // REMIND unit
-
+public class Timespan implements YggdrasilSerializable, Comparable<Timespan> {
+	
 	private final static Noun m_tick = new Noun("time.tick");
 	private final static Noun m_second = new Noun("time.second");
 	private final static Noun m_minute = new Noun("time.minute");
 	private final static Noun m_hour = new Noun("time.hour");
 	private final static Noun m_day = new Noun("time.day");
+	
 	final static Noun[] names = {m_tick, m_second, m_minute, m_hour, m_day};
 	final static long[] times = {50L, 1000L, 1000L * 60L, 1000L * 60L * 60L, 1000L * 60L * 60L * 24L};
 	final static HashMap<String, Long> parseValues = new HashMap<String, Long>();
+	
 	static {
 		Language.addListener(new LanguageChangeListener() {
 			@Override
@@ -61,7 +62,7 @@ public class Timespan implements YggdrasilSerializable, Comparable<Timespan> { /
 	}
 	
 	@Nullable
-	public final static Timespan parse(final String s) {
+	public static Timespan parse(final String s) {
 		if (s.isEmpty())
 			return null;
 		long t = 0;
@@ -95,7 +96,11 @@ public class Timespan implements YggdrasilSerializable, Comparable<Timespan> { /
 				} else if (sub.matches("^\\d+(.\\d+)?$")) {
 					if (i == subs.length - 1)
 						return null;
-					amount = Double.parseDouble(sub);
+					try {
+						amount = Double.parseDouble(sub);
+					} catch (final NumberFormatException e) {
+						throw new IllegalArgumentException("invalid timespan: " + s);
+					}
 					sub = subs[++i];
 				}
 				
@@ -143,7 +148,7 @@ public class Timespan implements YggdrasilSerializable, Comparable<Timespan> { /
 	
 	/**
 	 * @deprecated Use fromTicks_i(long ticks) instead. Since this method limits timespan to 50 * Integer.MAX_VALUE.
-	 * @addon I only keep this to allow for older addons to still work. / Mirre
+	 *             I only keep this to allow for older addons to still work. / Mirre
 	 */
 	@Deprecated
 	public static Timespan fromTicks(final int ticks) {
@@ -182,11 +187,7 @@ public class Timespan implements YggdrasilSerializable, Comparable<Timespan> { /
 	}
 	
 	@SuppressWarnings("unchecked")
-	final static NonNullPair<Noun, Long>[] simpleValues = new NonNullPair[] {
-			new NonNullPair<Noun, Long>(m_day,  1000L * 60 * 60 * 24),
-			new NonNullPair<Noun, Long>(m_hour, 1000L * 60 * 60),
-			new NonNullPair<Noun, Long>(m_minute, 1000L * 60),
-			new NonNullPair<Noun, Long>(m_second, 1000L)
+	final static NonNullPair<Noun, Long>[] simpleValues = new NonNullPair[] {new NonNullPair<Noun, Long>(m_day, 1000L * 60 * 60 * 24), new NonNullPair<Noun, Long>(m_hour, 1000L * 60 * 60), new NonNullPair<Noun, Long>(m_minute, 1000L * 60), new NonNullPair<Noun, Long>(m_second, 1000L)
 	};
 	
 	public static String toString(final long millis) {
@@ -222,7 +223,7 @@ public class Timespan implements YggdrasilSerializable, Comparable<Timespan> { /
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (millis/Integer.MAX_VALUE);
+		result = prime * result + (int) (millis / Integer.MAX_VALUE);
 		return result;
 	}
 	

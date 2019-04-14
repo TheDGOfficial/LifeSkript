@@ -21,13 +21,13 @@
 
 package ch.njol.skript.log;
 
+import ch.njol.skript.Skript;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.Skript;
 
 /**
  * @author Peter Güttinger
@@ -35,7 +35,7 @@ import ch.njol.skript.Skript;
 public class ParseLogHandler extends LogHandler {
 	
 	@Nullable
-	private LogEntry error = null;
+	private LogEntry error;
 	
 	private final List<LogEntry> log = new ArrayList<LogEntry>();
 	
@@ -54,7 +54,7 @@ public class ParseLogHandler extends LogHandler {
 		return LogResult.CACHED;
 	}
 	
-	boolean printedErrorOrLog = false;
+	boolean printedErrorOrLog;
 	
 	@Override
 	public void onStop() {

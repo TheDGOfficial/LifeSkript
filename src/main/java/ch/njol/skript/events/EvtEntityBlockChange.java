@@ -21,44 +21,40 @@
 
 package ch.njol.skript.events;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Sheep;
-import org.bukkit.event.Event;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Checker;
 
+import org.bukkit.Material;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Sheep;
+import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
-public class EvtEntityBlockChange extends SkriptEvent {
+public final class EvtEntityBlockChange extends SkriptEvent {
 	static {
-		Skript.registerEvent("Enderman/Sheep", EvtEntityBlockChange.class, EntityChangeBlockEvent.class, ChangeEvent.patterns)
-				.description("Called when an enderman places or picks up a block, or a sheep eats grass respectively.")
-				.examples("")
-				.since("");
+		Skript.registerEvent("Enderman/Sheep", EvtEntityBlockChange.class, EntityChangeBlockEvent.class, ChangeEvent.patterns).description("Called when an enderman places or picks up a block, or a sheep eats grass respectively.").examples("").since("");
 	}
 	
-	private static enum ChangeEvent {
+	private enum ChangeEvent {
 		ENDERMAN_PLACE("enderman place", new Checker<EntityChangeBlockEvent>() {
 			@Override
 			public boolean check(final EntityChangeBlockEvent e) {
 				return e.getEntity() instanceof Enderman && e.getTo() != Material.AIR;
 			}
-		}),
-		ENDERMAN_PICKUP("enderman pickup", new Checker<EntityChangeBlockEvent>() {
+		}), ENDERMAN_PICKUP("enderman pickup", new Checker<EntityChangeBlockEvent>() {
 			@Override
 			public boolean check(final EntityChangeBlockEvent e) {
 				return e.getEntity() instanceof Enderman && e.getTo() == Material.AIR;
 			}
-		}),
-		SHEEP_EAT("sheep eat", new Checker<EntityChangeBlockEvent>() {
+		}), SHEEP_EAT("sheep eat", new Checker<EntityChangeBlockEvent>() {
 			@Override
 			public boolean check(final EntityChangeBlockEvent e) {
 				return e.getEntity() instanceof Sheep;
@@ -69,7 +65,7 @@ public class EvtEntityBlockChange extends SkriptEvent {
 		private final String pattern;
 		final Checker<EntityChangeBlockEvent> checker;
 		
-		private ChangeEvent(final String pattern, final Checker<EntityChangeBlockEvent> c) {
+		ChangeEvent(final String pattern, final Checker<EntityChangeBlockEvent> c) {
 			this.pattern = pattern;
 			checker = c;
 		}

@@ -21,9 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.Config;
@@ -38,15 +35,16 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Script Name")
 @Description("Holds the current script's name (the file name without '.sk').")
-@Examples({"on script load:",
-		"	set {running.%script%} to true",
-		"on script unload:",
-		"	set {running.%script%} to false"})
+@Examples({"on script load:", "	set {running.%script%} to true", "on script unload:", "	set {running.%script%} to false"})
 @Since("2.0")
 @Events("Script Load/Unload")
 public class ExprScript extends SimpleExpression<String> {
@@ -83,7 +81,7 @@ public class ExprScript extends SimpleExpression<String> {
 	}
 	
 	@Override
-	public Class<? extends String> getReturnType() {
+	public Class<String> getReturnType() {
 		return String.class;
 	}
 	

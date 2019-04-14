@@ -21,11 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.Arrays;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -37,6 +32,12 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import java.util.Arrays;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
@@ -44,9 +45,9 @@ import ch.njol.util.Kleenean;
 @Description("Sorts given strings in alphabetical order.")
 @Examples({"set {list::*} to alphabetically sorted {list::*}"})
 @Since("2.2-Fixes-V9c")
-public class ExprAlphabetList extends SimpleExpression<String>{
+public class ExprAlphabetList extends SimpleExpression<String> {
 	
-	static{
+	static {
 		Skript.registerExpression(ExprAlphabetList.class, String.class, ExpressionType.COMBINED, "alphabetically sorted %strings%");
 	}
 	
@@ -69,7 +70,7 @@ public class ExprAlphabetList extends SimpleExpression<String>{
 	}
 	
 	@Override
-	public Class<? extends String> getReturnType() {
+	public Class<String> getReturnType() {
 		return String.class;
 	}
 	
@@ -77,7 +78,7 @@ public class ExprAlphabetList extends SimpleExpression<String>{
 	public boolean isSingle() {
 		return false;
 	}
-
+	
 	@Override
 	public String toString(@Nullable final Event e, final boolean debug) {
 		return "alphabetically sorted strings: " + texts.toString(e, debug);

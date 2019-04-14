@@ -21,12 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.lang.reflect.Array;
-import java.util.Iterator;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -40,12 +34,18 @@ import ch.njol.skript.util.LiteralUtils;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.event.Event;
+
+import java.lang.reflect.Array;
+import java.util.Iterator;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Element of")
-@Description({"The first, last or a random element of a set, e.g. a list variable.",
-		"See also: <a href='#ExprRandom'>random</a>"})
+@Description({"The first, last or a random element of a set, e.g. a list variable.", "See also: <a href='#ExprRandom'>random</a>"})
 @Examples("give a random element out of {free items::*} to the player")
 @Since("2.0")
 public class ExprElement extends SimpleExpression<Object> {
@@ -58,7 +58,7 @@ public class ExprElement extends SimpleExpression<Object> {
 	
 	@SuppressWarnings("null")
 	private Expression<?> expr;
-
+	
 	@Nullable
 	private Expression<Number> number;
 	
@@ -109,7 +109,7 @@ public class ExprElement extends SimpleExpression<Object> {
 	}
 	
 	@Override
-	public Class<? extends Object> getReturnType() {
+	public Class<?> getReturnType() {
 		return expr.getReturnType();
 	}
 	

@@ -21,9 +21,6 @@
 
 package ch.njol.skript.conditions;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -37,24 +34,20 @@ import ch.njol.skript.util.Timespan;
 import ch.njol.util.Checker;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Time")
 @Description("Tests whether a given <a href='../classes/#date'>real time</a> was more or less than some <a href='../classes/#timespan'>time span</a> ago.")
-@Examples({"command /command_with_cooldown:",
-		"	trigger:",
-		"		{command.%player%.lastused} was less than a minute ago:",
-		"			message \"Please wait a minute between uses of this command.\"",
-		"			stop",
-		"		set {command.%player%.lastused} to now",
-		"		# ... actual command trigger here ..."})
+@Examples({"command /command_with_cooldown:", "	trigger:", "		{command.%player%.lastused} was less than a minute ago:", "			message \"Please wait a minute between uses of this command.\"", "			stop", "		set {command.%player%.lastused} to now", "		# ... actual command trigger here ..."})
 @Since("2.0")
-public class CondDate extends Condition {
+public final class CondDate extends Condition {
 	static {
-		Skript.registerCondition(CondDate.class,
-				"%date% (was|were)( more|(n't| not) less) than %timespan% [ago]",
-				"%date% (was|were)((n't| not) more| less) than %timespan% [ago]");
+		Skript.registerCondition(CondDate.class, "%date% (was|were)( more|(n't| not) less) than %timespan% [ago]", "%date% (was|were)((n't| not) more| less) than %timespan% [ago]");
 	}
 	
 	@SuppressWarnings("null")

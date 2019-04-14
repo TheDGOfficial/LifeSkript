@@ -21,10 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -36,17 +32,21 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Version")
 @Description("The version of Bukkit, Minecraft or Skript respectively.")
-@Examples({"message \"This server is running Minecraft %minecraft version% on Bukkit %bukkit version%\"",
-		"message \"This server is powered by Skript %skript version%\""})
+@Examples({"message \"This server is running Minecraft %minecraft version% on Bukkit %bukkit version%\"", "message \"This server is powered by Skript %skript version%\""})
 @Since("2.0")
 public class ExprVersion extends SimpleExpression<String> {
 	
-	private static enum VersionType {
+	private enum VersionType {
 		BUKKIT("Bukkit") {
 			@Override
 			public String get() {
@@ -68,7 +68,7 @@ public class ExprVersion extends SimpleExpression<String> {
 		
 		private final String name;
 		
-		private VersionType(final String name) {
+		VersionType(final String name) {
 			this.name = name;
 		}
 		
@@ -110,7 +110,7 @@ public class ExprVersion extends SimpleExpression<String> {
 	}
 	
 	@Override
-	public Class<? extends String> getReturnType() {
+	public Class<String> getReturnType() {
 		return String.class;
 	}
 	

@@ -21,14 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import org.bukkit.event.Event;
-import org.bukkit.inventory.Inventory;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -43,21 +35,25 @@ import ch.njol.skript.util.InventorySlot;
 import ch.njol.skript.util.Slot;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+import org.bukkit.inventory.Inventory;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Items In")
-@Description({"All items in an inventory. Useful for looping or storing in a list variable.",
-		"Please note that the positions of the items in the inventory are not saved, only their order is preserved."})
-@Examples({"loop all items in the player's inventory:",
-		"	loop-item is enchanted",
-		"	remove loop-item from the player",
-		"set {inventory.%player%} to items in the player's inventory"})
+@Description({"All items in an inventory. Useful for looping or storing in a list variable.", "Please note that the positions of the items in the inventory are not saved, only their order is preserved."})
+@Examples({"loop all items in the player's inventory:", "	loop-item is enchanted", "	remove loop-item from the player", "set {inventory.%player%} to items in the player's inventory"})
 @Since("2.0")
 public class ExprItemsIn extends SimpleExpression<Slot> {
 	static {
-		Skript.registerExpression(ExprItemsIn.class, Slot.class, ExpressionType.PROPERTY,
-				"[all] items (in|of|contained in|out of) (|1¦inventor(y|ies)) %inventories%");
+		Skript.registerExpression(ExprItemsIn.class, Slot.class, ExpressionType.PROPERTY, "[all] items (in|of|contained in|out of) (|1¦inventor(y|ies)) %inventories%");
 	}
 	
 	@SuppressWarnings("null")
@@ -82,7 +78,7 @@ public class ExprItemsIn extends SimpleExpression<Slot> {
 					r.add(new InventorySlot(invi, i));
 			}
 		}
-		return r.toArray(new Slot[r.size()]);
+		return r.toArray(new Slot[0]);
 	}
 	
 	@Override
@@ -95,7 +91,7 @@ public class ExprItemsIn extends SimpleExpression<Slot> {
 			@SuppressWarnings("null")
 			Inventory current = is.next();
 			
-			int next = 0;
+			int next;
 			
 			@SuppressWarnings("null")
 			@Override
@@ -127,7 +123,7 @@ public class ExprItemsIn extends SimpleExpression<Slot> {
 	
 	@Override
 	public boolean isLoopOf(final String s) {
-		return s.equalsIgnoreCase("item");
+		return "item".equalsIgnoreCase(s);
 	}
 	
 	@Override

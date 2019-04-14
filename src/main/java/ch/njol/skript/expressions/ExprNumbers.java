@@ -21,12 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.Node;
 import ch.njol.skript.doc.Description;
@@ -42,22 +36,23 @@ import ch.njol.skript.lang.util.SimpleLiteral;
 import ch.njol.skript.log.SkriptLogger;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Numbers")
-@Description({"All numbers between two given numbers, useful for looping.",
-		"Use 'numbers' if your start is not an integer and you want to keep the fractional part of the start number constant, or use 'integers' if you only want to loop integers.",
-		"An integer loop from 1 to a number x can also be written as 'loop x times'."})
-@Examples({"loop 5 times: # loops 1, 2, 3, 4, 5",
-		"loop numbers from 2.5 to 5.5: # loops 2.5, 3.5, 4.5, 5.5",
-		"loop integers from 2.9 to 5.1: # same as '3 to 5', i.e. loops 3, 4, 5"})
+@Description({"All numbers between two given numbers, useful for looping.", "Use 'numbers' if your start is not an integer and you want to keep the fractional part of the start number constant, or use 'integers' if you only want to loop integers.", "An integer loop from 1 to a number x can also be written as 'loop x times'."})
+@Examples({"loop 5 times: # loops 1, 2, 3, 4, 5", "loop numbers from 2.5 to 5.5: # loops 2.5, 3.5, 4.5, 5.5", "loop integers from 2.9 to 5.1: # same as '3 to 5', i.e. loops 3, 4, 5"})
 @Since("1.4.6")
 public class ExprNumbers extends SimpleExpression<Number> {
 	static {
-		Skript.registerExpression(ExprNumbers.class, Number.class, ExpressionType.COMBINED,
-				"[(all|the)] (numbers|1¦integers) (between|from) %number% (and|to) %number%",
-				"%number% times");
+		Skript.registerExpression(ExprNumbers.class, Number.class, ExpressionType.COMBINED, "[(all|the)] (numbers|1¦integers) (between|from) %number% (and|to) %number%", "%number% times");
 	}
 	
 	@SuppressWarnings("null")
@@ -75,11 +70,9 @@ public class ExprNumbers extends SimpleExpression<Number> {
 				Skript.warning("Looping zero times makes the code inside of the loop useless");
 			} else if (amount == 1 && isInLoop()) {
 				Skript.warning("Since you're looping exactly one time, you could simply remove the loop instead");
-			} else if (amount < 0) {
-				if (isInLoop()) {
-					Skript.error("Looping a negative amount of times is impossible");
-					return false;
-				}
+			} else if (amount < 0 && isInLoop()) {
+				Skript.error("Looping a negative amount of times is impossible");
+				return false;
 			}
 		}
 		integer = parseResult.mark == 1 || matchedPattern == 1;
@@ -108,9 +101,9 @@ public class ExprNumbers extends SimpleExpression<Number> {
 		final double low = integer ? Math.ceil(s.doubleValue()) : s.doubleValue();
 		for (int i = 0; i < array.length; i++) {
 			if (integer)
-				array[i] = Long.valueOf((long) low + i);
+				array[i] = (long) low + i;
 			else
-				array[i] = Double.valueOf(low + i);
+				array[i] = low + i;
 		}
 		return array;
 	}
@@ -135,9 +128,9 @@ public class ExprNumbers extends SimpleExpression<Number> {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				if (integer)
-					return Long.valueOf((long) i++);
+					return (long) i++;
 				else
-					return Double.valueOf(i++);
+					return i++;
 			}
 			
 			@Override
@@ -154,7 +147,7 @@ public class ExprNumbers extends SimpleExpression<Number> {
 	
 	@Override
 	public boolean isLoopOf(final String s) {
-		return integer && (s.equalsIgnoreCase("integer") || s.equalsIgnoreCase("int"));
+		return integer && ("integer".equalsIgnoreCase(s) || "int".equalsIgnoreCase(s));
 	}
 	
 	@Override

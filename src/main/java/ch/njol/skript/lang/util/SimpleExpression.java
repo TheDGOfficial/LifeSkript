@@ -21,12 +21,6 @@
 
 package ch.njol.skript.lang.util;
 
-import java.lang.reflect.Array;
-import java.util.Iterator;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAPIException;
@@ -43,6 +37,13 @@ import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 import ch.njol.util.coll.iterator.ArrayIterator;
 
+import org.bukkit.event.Event;
+
+import java.lang.reflect.Array;
+import java.util.Iterator;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * An implementation of the {@link Expression} interface. You should usually extend this class to make a new expression.
  * 
@@ -51,7 +52,7 @@ import ch.njol.util.coll.iterator.ArrayIterator;
  */
 public abstract class SimpleExpression<T> implements Expression<T> {
 	
-	private int time = 0;
+	private int time;
 	
 	@SuppressWarnings("null")
 	protected SimpleExpression() {}
@@ -114,7 +115,7 @@ public abstract class SimpleExpression<T> implements Expression<T> {
 		for (final T t : all)
 			if (t != null)
 				numNonNull++;
-		
+			
 		if (!getAnd()) {
 			if (all.length == 1 && all[0] != null)
 				return all;
@@ -174,9 +175,9 @@ public abstract class SimpleExpression<T> implements Expression<T> {
 			hasElement = true;
 			final boolean b = c.check(t);
 			if (and && !b)
-				return invert ^ false;
+				return invert;
 			if (!and && b)
-				return invert ^ true;
+				return !invert;
 		}
 		if (!hasElement)
 			return invert;
@@ -199,7 +200,7 @@ public abstract class SimpleExpression<T> implements Expression<T> {
 		assert !CollectionUtils.containsSuperclass(to, getReturnType());
 		return ConvertedExpression.newInstance(this, to);
 	}
-
+	
 	/**
 	 * Usually, you want to override {@link SimpleExpression#getConvertedExpr(Class[])}.
 	 * However, it may be useful to override this method if you have an expression with a return

@@ -21,16 +21,16 @@
 
 package ch.njol.skript.localization;
 
+import ch.njol.skript.Skript;
+
 import java.util.HashMap;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.skript.Skript;
-
 /**
  * @author Peter Güttinger
  */
-public class Adjective extends Message {
+public final class Adjective extends Message {
 	
 	// at least in German adjectives behave differently with a definite article. Cases are still not supported though and will likely never be.
 	private final static int DEFINITE_ARTICLE = -100;
@@ -51,9 +51,10 @@ public class Adjective extends Message {
 		def = v;
 		if (v == null)
 			return;
-		final int s = v.indexOf('@'), e = v.lastIndexOf('@');
+		final int s = v.indexOf('@');
 		if (s == -1)
 			return;
+		final int e = v.lastIndexOf('@');
 		if (s == e) {
 			Skript.error("Invalid use of '@' in the adjective '" + key + "' in the " + Language.getName() + " language file: " + v);
 			return;
@@ -95,7 +96,7 @@ public class Adjective extends Message {
 		return "" + def;
 	}
 	
-	public final static String toString(final Adjective[] adjectives, final int gender, final int flags, final boolean and) {
+	public static String toString(final Adjective[] adjectives, final int gender, final int flags, final boolean and) {
 		final StringBuilder b = new StringBuilder();
 		for (int i = 0; i < adjectives.length; i++) {
 			if (i != 0) {

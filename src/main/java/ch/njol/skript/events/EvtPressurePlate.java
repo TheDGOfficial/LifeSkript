@@ -21,30 +21,26 @@
 
 package ch.njol.skript.events;
 
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.event.Event;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.event.Event;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
-public class EvtPressurePlate extends SkriptEvent {
+public final class EvtPressurePlate extends SkriptEvent {
 	static {
 		// TODO is EntityInteractEvent similar for entities?
-		Skript.registerEvent("Pressure Plate / Trip", EvtPressurePlate.class, PlayerInteractEvent.class,
-				"[step[ping] on] [a] [pressure] plate",
-				"(trip|[step[ping] on] [a] tripwire)")
-				.description("Called when a <i>player</i> steps on a pressure plate or tripwire respectively.")
-				.examples("")
-				.since("1.0 (pressure plate), 1.4.4 (tripwire)");
+		Skript.registerEvent("Pressure Plate / Trip", EvtPressurePlate.class, PlayerInteractEvent.class, "[step[ping] on] [a] [pressure] plate", "(trip|[step[ping] on] [a] tripwire)").description("Called when a <i>player</i> steps on a pressure plate or tripwire respectively.").examples("").since("1.0 (pressure plate), 1.4.4 (tripwire)");
 	}
 	
 	private boolean tripwire;
@@ -62,9 +58,7 @@ public class EvtPressurePlate extends SkriptEvent {
 		// 'type.getData() == PressurePlate.class' doesn't work for gold and iron pressure plates
 		final Block b = ((PlayerInteractEvent) e).getClickedBlock();
 		final Material type = b == null ? null : b.getType();
-		return type != null && ((PlayerInteractEvent) e).getAction() == Action.PHYSICAL &&
-				(tripwire ? type == Material.TRIPWIRE || type == Material.TRIPWIRE_HOOK
-						: type == Material.WOOD_PLATE || type == Material.STONE_PLATE || type.getId() == 147 || type.getId() == 148); // gold and iron pressure plates
+		return type != null && ((PlayerInteractEvent) e).getAction() == Action.PHYSICAL && (tripwire ? type == Material.TRIPWIRE || type == Material.TRIPWIRE_HOOK : type == Material.WOOD_PLATE || type == Material.STONE_PLATE || type.getId() == 147 || type.getId() == 148); // gold and iron pressure plates
 	}
 	
 	@Override

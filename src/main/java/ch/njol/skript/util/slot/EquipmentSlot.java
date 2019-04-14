@@ -21,22 +21,23 @@
 
 package ch.njol.skript.util.slot;
 
-import java.util.Locale;
+import ch.njol.skript.bukkitutil.PlayerUtils;
+import ch.njol.skript.registrations.Classes;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.skript.bukkitutil.PlayerUtils;
-import ch.njol.skript.registrations.Classes;
+import java.util.Locale;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
  */
 public class EquipmentSlot extends Slot {
 	
-	public static enum EquipSlot {
+	public enum EquipSlot {
 		TOOL {
 			@Override
 			@Nullable

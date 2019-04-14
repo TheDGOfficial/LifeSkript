@@ -21,12 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.event.Event;
-import org.bukkit.event.world.SpawnChangeEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.classes.Converter;
@@ -42,13 +36,19 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.event.Event;
+import org.bukkit.event.world.SpawnChangeEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Spawn")
 @Description("The spawnpoint of a world.")
-@Examples({"teleport all players to spawn",
-		"set the spawn point of \"world\" to the player's location"})
+@Examples({"teleport all players to spawn", "set the spawn point of \"world\" to the player's location"})
 @Since("1.4.2")
 public class ExprSpawn extends PropertyExpression<World, Location> {
 	static {
@@ -77,7 +77,7 @@ public class ExprSpawn extends PropertyExpression<World, Location> {
 	}
 	
 	@Override
-	public Class<? extends Location> getReturnType() {
+	public Class<Location> getReturnType() {
 		return Location.class;
 	}
 	

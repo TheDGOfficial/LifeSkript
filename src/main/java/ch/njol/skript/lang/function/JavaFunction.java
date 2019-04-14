@@ -21,9 +21,9 @@
 
 package ch.njol.skript.lang.function;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.classes.ClassInfo;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -39,11 +39,13 @@ public abstract class JavaFunction<T> extends Function<T> {
 	public abstract T[] execute(FunctionEvent e, Object[][] params);
 	
 	@Nullable
-	private String[] description = null;
+	private String[] description;
+	
 	@Nullable
-	private String[] examples = null;
+	private String[] examples;
+	
 	@Nullable
-	private String since = null;
+	private String since;
 	
 	/**
 	 * Only used for Skript's documentation.

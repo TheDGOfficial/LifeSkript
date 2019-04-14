@@ -21,6 +21,15 @@
 
 package ch.njol.skript.localization;
 
+import ch.njol.skript.Skript;
+import ch.njol.skript.SkriptAddon;
+import ch.njol.skript.config.Config;
+import ch.njol.skript.util.ExceptionUtils;
+import ch.njol.skript.util.Version;
+import ch.njol.util.StringUtils;
+
+import org.bukkit.plugin.Plugin;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,18 +41,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.bukkit.plugin.Plugin;
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.Skript;
-import ch.njol.skript.SkriptAddon;
-import ch.njol.skript.config.Config;
-import ch.njol.skript.util.ExceptionUtils;
-import ch.njol.skript.util.Version;
-import ch.njol.util.StringUtils;
 
 /**
  * @author Peter Güttinger
@@ -66,12 +68,14 @@ public class Language {
 	private static String name = "english";
 	
 	final static HashMap<String, String> english = new HashMap<String, String>();
+	
 	/**
 	 * May be null.
 	 */
 	@Nullable
-	static HashMap<String, String> localized = null;
-	static boolean useLocal = false;
+	static HashMap<String, String> localized;
+	
+	static boolean useLocal;
 	
 	private static HashMap<Plugin, Version> langVersion = new HashMap<Plugin, Version>();
 	
@@ -80,7 +84,7 @@ public class Language {
 	}
 	
 	@Nullable
-	private final static String get_i(final String key) {
+	private static String get_i(final String key) {
 		if (useLocal && localized != null) {
 			final String s = localized.get(key);
 			if (s != null)
@@ -115,8 +119,8 @@ public class Language {
 		return get_i("" + key.toLowerCase(Locale.ENGLISH));
 	}
 	
-	public final static void missingEntryError(final String key) {
-		if(!Skript.debug() || !Skript.testing())
+	public static void missingEntryError(final String key) {
+		if (!Skript.debug() || !Skript.testing())
 			return;
 		Skript.warning("Missing entry '" + key.toLowerCase(Locale.ENGLISH) + "' in the default english language file");
 	}
@@ -186,7 +190,7 @@ public class Language {
 		final InputStream din = addon.plugin.getResource(addon.getLanguageFileDirectory() + "/english.lang");
 		if (din == null)
 			throw new IllegalStateException(addon + " is missing the required english.lang file!");
-		HashMap<String, String> en;
+		Map<String, String> en;
 		try {
 			en = new Config(din, "english.lang", false, false, ":").toMap(".");
 		} catch (final Exception e) {
@@ -194,7 +198,7 @@ public class Language {
 		} finally {
 			try {
 				din.close();
-			} catch (final IOException e) {}
+			} catch (final IOException ignored) {}
 		}
 		final String v = en.get("version");
 		if (v == null)
@@ -208,7 +212,7 @@ public class Language {
 	
 	public static boolean load(String name) {
 		name = "" + name.toLowerCase();
-		if (name.equals("english"))
+		if ("english".equals(name))
 			return true;
 		localized = new HashMap<String, String>();
 		boolean exists = load(Skript.getAddonInstance(), name);
@@ -234,7 +238,7 @@ public class Language {
 	private static boolean load(final SkriptAddon addon, final String name) {
 		if (addon.getLanguageFileDirectory() == null)
 			return false;
-		final HashMap<String, String> l = load(addon.plugin.getResource(addon.getLanguageFileDirectory() + "/" + name + ".lang"), name);
+		final Map<String, String> l = load(addon.plugin.getResource(addon.getLanguageFileDirectory() + "/" + name + ".lang"), name);
 		final File f = new File(addon.plugin.getDataFolder(), addon.getLanguageFileDirectory() + File.separator + name + ".lang");
 		try {
 			if (f.exists())
@@ -266,7 +270,7 @@ public class Language {
 		return true;
 	}
 	
-	private static HashMap<String, String> load(final @Nullable InputStream in, final String name) {
+	private static Map<String, String> load(final @Nullable InputStream in, final String name) {
 		if (in == null)
 			return new HashMap<String, String>();
 		try {
@@ -277,7 +281,7 @@ public class Language {
 		} finally {
 			try {
 				in.close();
-			} catch (final IOException e) {}
+			} catch (final IOException ignored) {}
 		}
 	}
 	
@@ -299,7 +303,7 @@ public class Language {
 			Skript.warning("The localized language file(s) has/ve superfluous entries: " + StringUtils.join(s, ", "));
 	}
 	
-	private final static void removeIgnored(final Set<String> keys) {
+	private static void removeIgnored(final Set<String> keys) {
 		final Iterator<String> i = keys.iterator();
 		while (i.hasNext()) {
 			if (i.next().startsWith(Noun.GENDERS_SECTION))
@@ -309,8 +313,8 @@ public class Language {
 	
 	private final static List<LanguageChangeListener> listeners = new ArrayList<LanguageChangeListener>();
 	
-	public static enum LanguageListenerPriority {
-		EARLIEST, NORMAL, LATEST;
+	public enum LanguageListenerPriority {
+		EARLIEST, NORMAL, LATEST
 	}
 	
 	private final static int[] priorityStartIndices = new int[LanguageListenerPriority.values().length];

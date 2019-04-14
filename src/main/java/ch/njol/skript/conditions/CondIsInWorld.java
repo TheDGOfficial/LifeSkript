@@ -21,11 +21,6 @@
 
 package ch.njol.skript.conditions;
 
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -37,16 +32,20 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Checker;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Is in World")
 @Description("Checks whether an entity is in a specific world")
-@Examples({"player is in \"world\"",
-		"argument isn't in world \"world_nether\"",
-		"the player is in the world of the victim"})
+@Examples({"player is in \"world\"", "argument isn't in world \"world_nether\"", "the player is in the world of the victim"})
 @Since("1.4")
-public class CondIsInWorld extends Condition {
+public final class CondIsInWorld extends Condition {
 	static {
 		Skript.registerCondition(CondIsInWorld.class, "%entities% (is|are) in [[the] world[s]] %worlds%", "%entities% (is not|isn't|are not|aren't) in [[the] world[s]] %worlds%");
 	}

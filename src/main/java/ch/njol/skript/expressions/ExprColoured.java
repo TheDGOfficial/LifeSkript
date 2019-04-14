@@ -21,10 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.ChatColor;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Converter;
 import ch.njol.skript.doc.Description;
@@ -38,21 +34,21 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.ChatColor;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Coloured / Uncoloured")
 @Description("Parses &lt;colour&gt;s (including chat styles) in a message or removes any colours & chat styles from the message.")
-@Examples({"on chat:",
-		"	set message to coloured message",
-		"command /fade <player>:",
-		"	trigger:",
-		"		set display name of the player-argument to uncoloured display name of the player-argument"})
+@Examples({"on chat:", "	set message to coloured message", "command /fade <player>:", "	trigger:", "		set display name of the player-argument to uncoloured display name of the player-argument"})
 @Since("2.0")
 public class ExprColoured extends PropertyExpression<String, String> {
 	static {
-		Skript.registerExpression(ExprColoured.class, String.class, ExpressionType.COMBINED,
-				"(colo[u]r-|colo[u]red )%strings%", "(un|non)[-](colo[u]r-|colo[u]red )%strings%");
+		Skript.registerExpression(ExprColoured.class, String.class, ExpressionType.COMBINED, "(colo[u]r-|colo[u]red )%strings%", "(un|non)[-](colo[u]r-|colo[u]red )%strings%");
 	}
 	
 	boolean color;
@@ -76,7 +72,7 @@ public class ExprColoured extends PropertyExpression<String, String> {
 	}
 	
 	@Override
-	public Class<? extends String> getReturnType() {
+	public Class<String> getReturnType() {
 		return String.class;
 	}
 	

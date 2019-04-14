@@ -21,11 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.server.ServerCommandEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -39,23 +34,23 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.server.ServerCommandEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Command")
 @Description("The command that caused an 'on command' event (excluding the leading slash and all arguments)")
-@Examples({"# prevent any commands except for the /exit command during some game",
-		"on command:",
-		"{game.%player%.is playing} is true",
-		"command is not \"exit\"",
-		"message \"You're not allowed to use commands during the game\"",
-		"cancel the event"})
+@Examples({"# prevent any commands except for the /exit command during some game", "on command:", "{game.%player%.is playing} is true", "command is not \"exit\"", "message \"You're not allowed to use commands during the game\"", "cancel the event"})
 @Since("2.0")
 @Events("command")
 public class ExprCommand extends SimpleExpression<String> {
 	static {
-		Skript.registerExpression(ExprCommand.class, String.class, ExpressionType.SIMPLE,
-				"[the] (full|complete|whole) command", "[the] command [label]", "[the] arguments");
+		Skript.registerExpression(ExprCommand.class, String.class, ExpressionType.SIMPLE, "[the] (full|complete|whole) command", "[the] command [label]", "[the] arguments");
 	}
 	
 	private final static int FULL = 0, LABEL = 1, ARGS = 2;
@@ -102,7 +97,7 @@ public class ExprCommand extends SimpleExpression<String> {
 	}
 	
 	@Override
-	public Class<? extends String> getReturnType() {
+	public Class<String> getReturnType() {
 		return String.class;
 	}
 	

@@ -21,11 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.lang.reflect.Array;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -40,26 +35,29 @@ import ch.njol.skript.lang.util.SimpleLiteral;
 import ch.njol.skript.util.Patterns;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import java.lang.reflect.Array;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Arithmetic")
 @Description("Arithmetic expressions, e.g. 1+2, (2 - health of player)/3, etc.")
-@Examples({"set the player's health to 10 - the player's health",
-		"loop (argument + 2)/5 times:",
-		"	message \"Two useless numbers: %loop-num*2 - 5%, %2^loop-num - 1%\"",
-		"message \"You have %health of player * 2% half hearts of HP!\""})
+@Examples({"set the player's health to 10 - the player's health", "loop (argument + 2)/5 times:", "	message \"Two useless numbers: %loop-num*2 - 5%, %2^loop-num - 1%\"", "message \"You have %health of player * 2% half hearts of HP!\""})
 @Since("1.4.2")
 public class ExprArithmetic extends SimpleExpression<Number> {
 	
-	private static enum Operator {
+	private enum Operator {
 		PLUS('+') {
 			@SuppressWarnings("null")
 			@Override
 			public Number calculate(final Number n1, final Number n2, final boolean integer) {
 				if (integer)
-					return Long.valueOf(n1.longValue() + n2.longValue());
-				return Double.valueOf(n1.doubleValue() + n2.doubleValue());
+					return n1.longValue() + n2.longValue();
+				return n1.doubleValue() + n2.doubleValue();
 			}
 		},
 		MINUS('-') {
@@ -67,8 +65,8 @@ public class ExprArithmetic extends SimpleExpression<Number> {
 			@Override
 			public Number calculate(final Number n1, final Number n2, final boolean integer) {
 				if (integer)
-					return Long.valueOf(n1.longValue() - n2.longValue());
-				return Double.valueOf(n1.doubleValue() - n2.doubleValue());
+					return n1.longValue() - n2.longValue();
+				return n1.doubleValue() - n2.doubleValue();
 			}
 		},
 		MULT('*') {
@@ -76,8 +74,8 @@ public class ExprArithmetic extends SimpleExpression<Number> {
 			@Override
 			public Number calculate(final Number n1, final Number n2, final boolean integer) {
 				if (integer)
-					return Long.valueOf(n1.longValue() * n2.longValue());
-				return Double.valueOf(n1.doubleValue() * n2.doubleValue());
+					return n1.longValue() * n2.longValue();
+				return n1.doubleValue() * n2.doubleValue();
 			}
 		},
 		DIV('/') {
@@ -88,9 +86,9 @@ public class ExprArithmetic extends SimpleExpression<Number> {
 					final long div = n2.longValue();
 					if (div == 0)
 						return Long.MAX_VALUE;
-					return Long.valueOf(n1.longValue() / div);
+					return n1.longValue() / div;
 				}
-				return Double.valueOf(n1.doubleValue() / n2.doubleValue());
+				return n1.doubleValue() / n2.doubleValue();
 			}
 		},
 		EXP('^') {
@@ -98,14 +96,14 @@ public class ExprArithmetic extends SimpleExpression<Number> {
 			@Override
 			public Number calculate(final Number n1, final Number n2, final boolean integer) {
 				if (integer)
-					return Long.valueOf((long) Math.pow(n1.longValue(), n2.longValue()));
-				return Double.valueOf(Math.pow(n1.doubleValue(), n2.doubleValue()));
+					return (long) Math.pow(n1.longValue(), n2.longValue());
+				return Math.pow(n1.doubleValue(), n2.doubleValue());
 			}
 		};
 		
 		public final char sign;
 		
-		private Operator(final char sign) {
+		Operator(final char sign) {
 			this.sign = sign;
 		}
 		
@@ -119,11 +117,9 @@ public class ExprArithmetic extends SimpleExpression<Number> {
 	
 	private final static Patterns<Operator> patterns = new Patterns<Operator>(new Object[][] {
 			
-			{"%number%[ ]+[ ]%number%", Operator.PLUS},
-			{"%number%[ ]-[ ]%number%", Operator.MINUS},
+			{"%number%[ ]+[ ]%number%", Operator.PLUS}, {"%number%[ ]-[ ]%number%", Operator.MINUS},
 			
-			{"%number%[ ]*[ ]%number%", Operator.MULT},
-			{"%number%[ ]/[ ]%number%", Operator.DIV},
+			{"%number%[ ]*[ ]%number%", Operator.MULT}, {"%number%[ ]/[ ]%number%", Operator.DIV},
 			
 			{"%number%[ ]^[ ]%number%", Operator.EXP},
 	
@@ -173,9 +169,9 @@ public class ExprArithmetic extends SimpleExpression<Number> {
 		final Number[] one = (Number[]) Array.newInstance(returnType, 1);
 		Number n1 = first.getSingle(e), n2 = second.getSingle(e);
 		if (n1 == null)
-			n1 = Integer.valueOf(0);
+			n1 = 0;
 		if (n2 == null)
-			n2 = Integer.valueOf(0);
+			n2 = 0;
 		one[0] = op.calculate(n1, n2, integer);
 		return one;
 	}

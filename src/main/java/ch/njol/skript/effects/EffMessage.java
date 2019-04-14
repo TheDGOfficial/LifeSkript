@@ -21,10 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -35,18 +31,19 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.command.CommandSender;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Message")
 @Description("Sends a message to the given player.")
-@Examples({"message \"A wild %player% appeared!\"",
-		"message \"This message is a distraction. Mwahaha!\"",
-		"send \"Your kill streak is %{kill streak.%player%}%.\" to player",
-		"if the targeted entity exists:",
-		"	message \"You're currently looking at a %type of the targeted entity%!\""})
+@Examples({"message \"A wild %player% appeared!\"", "message \"This message is a distraction. Mwahaha!\"", "send \"Your kill streak is %{kill streak.%player%}%.\" to player", "if the targeted entity exists:", "	message \"You're currently looking at a %type of the targeted entity%!\""})
 @Since("1.0")
-public class EffMessage extends Effect {
+public final class EffMessage extends Effect {
 	static {
 		Skript.registerEffect(EffMessage.class, "(message|msg|tell|send [message]) %strings% [to %commandsenders%]");
 	}

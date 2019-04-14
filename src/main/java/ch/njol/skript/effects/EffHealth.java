@@ -21,11 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.bukkitutil.HealthUtils;
 import ch.njol.skript.classes.Changer.ChangeMode;
@@ -40,29 +35,30 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.util.Slot;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Damage/Heal/Repair")
 @Description("Damage/Heal/Repair an entity, or item stack.")
-@Examples({"damage player by 5 hearts",
-		"heal the player",
-		"repair tool of player"})
+@Examples({"damage player by 5 hearts", "heal the player", "repair tool of player"})
 @Since("1.0")
 public class EffHealth extends Effect {
 	
 	static {
-		Skript.registerEffect(EffHealth.class,
-				"damage %slots/livingentities/itemstack% by %number% [heart[s]]",
-				"heal %livingentities% [by %-number% [heart[s]]]",
-				"repair %slots/itemstack% [by %-number%]");
+		Skript.registerEffect(EffHealth.class, "damage %slots/livingentities/itemstack% by %number% [heart[s]]", "heal %livingentities% [by %-number% [heart[s]]]", "repair %slots/itemstack% [by %-number%]");
 	}
 	
 	@SuppressWarnings("null")
 	private Expression<?> damageables;
 	@Nullable
 	private Expression<Number> damage;
-	private boolean heal = false;
+	private boolean heal;
 	
 	@SuppressWarnings({"unchecked", "null"})
 	@Override

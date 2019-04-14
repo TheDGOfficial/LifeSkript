@@ -21,11 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.lang.reflect.Array;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -41,18 +36,23 @@ import ch.njol.skript.util.LiteralUtils;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import java.lang.reflect.Array;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 @Name("Ternary")
 @Description("A shorthand expression for returning something based on a condition.")
 @Examples({"set {points} to 500 if {admin::%player's uuid%} is set else 100"})
 @Since("2.2-dev36")
 @SuppressWarnings({"null", "unchecked"})
 public class ExprTernary<T> extends SimpleExpression<T> {
-
+	
 	static {
-		Skript.registerExpression(ExprTernary.class, Object.class, ExpressionType.COMBINED,
-				"%objects% if <.+>[,] (otherwise|?[?]|[or ]else) %objects%");
+		Skript.registerExpression(ExprTernary.class, Object.class, ExpressionType.COMBINED, "%objects% if <.+>[,] (otherwise|?[?]|[or ]else) %objects%");
 	}
-
+	
 	private final ExprTernary<?> source;
 	private final Class<T> superType;
 	@Nullable
@@ -61,12 +61,12 @@ public class ExprTernary<T> extends SimpleExpression<T> {
 	private Condition condition;
 	@Nullable
 	private Expression<Object> ifFalse;
-
+	
 	@SuppressWarnings("unchecked")
 	public ExprTernary() {
 		this(null, (Class<? extends T>) Object.class);
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	private ExprTernary(final ExprTernary<?> source, final Class<? extends T>... types) {
 		this.source = source;
@@ -77,7 +77,7 @@ public class ExprTernary<T> extends SimpleExpression<T> {
 		}
 		this.superType = (Class<T>) Utils.getSuperType(types);
 	}
-
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final SkriptParser.ParseResult parseResult) {
@@ -91,7 +91,7 @@ public class ExprTernary<T> extends SimpleExpression<T> {
 		condition = Condition.parse(cond, "Can't understand this condition: " + cond);
 		return condition != null && LiteralUtils.canInitSafely(ifTrue, ifFalse);
 	}
-
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	protected T[] get(final Event e) {
@@ -102,30 +102,30 @@ public class ExprTernary<T> extends SimpleExpression<T> {
 			return (T[]) Array.newInstance(superType, 0);
 		}
 	}
-
+	
 	@Override
 	public <R> Expression<? extends R> getConvertedExpression(final Class<R>... to) {
 		return new ExprTernary<R>(this, to);
 	}
-
+	
 	@Override
 	public Expression<?> getSource() {
 		return source == null ? this : source;
 	}
-
+	
 	@Override
-	public Class<? extends T> getReturnType() {
+	public Class<T> getReturnType() {
 		return superType;
 	}
-
+	
 	@Override
 	public boolean isSingle() {
 		return ifTrue.isSingle() && ifFalse.isSingle();
 	}
-
+	
 	@Override
 	public String toString(final Event e, final boolean debug) {
 		return ifTrue.toString(e, debug) + " if " + condition + " otherwise " + ifFalse.toString(e, debug);
 	}
-
+	
 }

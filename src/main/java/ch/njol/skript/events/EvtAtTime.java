@@ -21,17 +21,6 @@
 
 package ch.njol.skript.events;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
-
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptEventHandler;
 import ch.njol.skript.events.bukkit.ScheduledEvent;
@@ -42,24 +31,36 @@ import ch.njol.skript.lang.Trigger;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.Time;
 import ch.njol.util.Math2;
+
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.event.Event;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Peter Güttinger
  */
 @SuppressFBWarnings("EQ_COMPARETO_USE_OBJECT_EQUALS")
-public class EvtAtTime extends SelfRegisteringSkriptEvent implements Comparable<EvtAtTime> {
+public final class EvtAtTime extends SelfRegisteringSkriptEvent implements Comparable<EvtAtTime> {
 	static {
-		Skript.registerEvent("*At Time", EvtAtTime.class, ScheduledEvent.class, "at %time% [in %worlds%]")
-				.description("An event that occurs at a given <a href='../classes/#time'>minecraft time</a> in every world or only in specific worlds.")
-				.examples("at 18:00", "at 7am in \"world\"")
-				.since("1.3.4");
+		Skript.registerEvent("*At Time", EvtAtTime.class, ScheduledEvent.class, "at %time% [in %worlds%]").description("An event that occurs at a given <a href='../classes/#time'>minecraft time</a> in every world or only in specific worlds.").examples("at 18:00", "at 7am in \"world\"").since("1.3.4");
 	}
 	
 	private final static int CHECKPERIOD = 10;
 	
 	private final static class EvtAtInfo {
-		public EvtAtInfo() {}
+		public EvtAtInfo() {
+			super();
+		}
 		
 		int lastTick; // as Bukkit's scheduler is inconsistent this saves the exact tick when the events were last checked
 		int currentIndex;
@@ -74,11 +75,6 @@ public class EvtAtTime extends SelfRegisteringSkriptEvent implements Comparable<
 	
 	@SuppressWarnings("null")
 	private transient World[] worlds;
-	/**
-	 * null if all worlds
-	 */
-	@Nullable
-	private String[] worldNames = null;
 	
 	public final static World[] EMPTY_WORLD_ARRAY = new World[0];
 	
@@ -87,11 +83,6 @@ public class EvtAtTime extends SelfRegisteringSkriptEvent implements Comparable<
 	public boolean init(final Literal<?>[] args, final int matchedPattern, final ParseResult parser) {
 		tick = ((Literal<Time>) args[0]).getSingle().getTicks();
 		worlds = args[1] == null ? Bukkit.getWorlds().toArray(EMPTY_WORLD_ARRAY) : ((Literal<World>) args[1]).getAll();
-		if (args[1] != null) {
-			worldNames = new String[worlds.length];
-			for (int i = 0; i < worlds.length; i++)
-				worldNames[i] = worlds[i].getName();
-		}
 		return true;
 	}
 	
@@ -200,7 +191,7 @@ public class EvtAtTime extends SelfRegisteringSkriptEvent implements Comparable<
 	public int compareTo(final @Nullable EvtAtTime e) {
 		return e == null ? tick : tick - e.tick;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -208,7 +199,7 @@ public class EvtAtTime extends SelfRegisteringSkriptEvent implements Comparable<
 		result = prime * result + tick;
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(@Nullable final Object obj) {
 		if (this == obj)

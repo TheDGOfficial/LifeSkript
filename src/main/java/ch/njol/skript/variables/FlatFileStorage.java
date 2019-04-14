@@ -21,6 +21,18 @@
 
 package ch.njol.skript.variables;
 
+import ch.njol.skript.Skript;
+import ch.njol.skript.config.SectionNode;
+import ch.njol.skript.lang.Variable;
+import ch.njol.skript.log.SkriptLogger;
+import ch.njol.skript.registrations.Classes;
+import ch.njol.skript.util.ExceptionUtils;
+import ch.njol.skript.util.FileUtils;
+import ch.njol.skript.util.Task;
+import ch.njol.skript.util.Utils;
+import ch.njol.skript.util.Version;
+import ch.njol.util.NotifyingReference;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,18 +52,6 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.skript.Skript;
-import ch.njol.skript.config.SectionNode;
-import ch.njol.skript.lang.Variable;
-import ch.njol.skript.log.SkriptLogger;
-import ch.njol.skript.registrations.Classes;
-import ch.njol.skript.util.ExceptionUtils;
-import ch.njol.skript.util.FileUtils;
-import ch.njol.skript.util.Task;
-import ch.njol.skript.util.Utils;
-import ch.njol.skript.util.Version;
-import ch.njol.util.NotifyingReference;
-
 /**
  * TODO use a database (SQLite) instead and only load a limited amount of variables into RAM - e.g. 2 GB (configurable). If more variables are available they will be loaded when
  * accessed. (rem: print a warning when Skript starts)
@@ -59,7 +59,7 @@ import ch.njol.util.NotifyingReference;
  * 
  * @author Peter Güttinger
  */
-public class FlatFileStorage extends VariablesStorage {
+public final class FlatFileStorage extends VariablesStorage {
 	
 	@SuppressWarnings("null")
 	public final static Charset UTF_8 = Charset.forName("UTF-8");
@@ -69,7 +69,7 @@ public class FlatFileStorage extends VariablesStorage {
 	 */
 	private final NotifyingReference<PrintWriter> changesWriter = new NotifyingReference<PrintWriter>();
 	
-	private volatile boolean loaded = false;
+	private volatile boolean loaded;
 	
 	final AtomicInteger changes = new AtomicInteger(0);
 	private final int REQUIRED_CHANGES_FOR_RESAVE = 1000;
@@ -77,7 +77,7 @@ public class FlatFileStorage extends VariablesStorage {
 	@Nullable
 	private Task saveTask;
 	
-	private boolean loadError = false;
+	private boolean loadError;
 	
 	protected FlatFileStorage(final String name) {
 		super(name);
@@ -116,7 +116,7 @@ public class FlatFileStorage extends VariablesStorage {
 							varVersion = new Version("" + line.substring("# version:".length()).trim());
 							update2_0_beta3 = varVersion.isSmallerThan(v2_0_beta3);
 							update2_1 = varVersion.isSmallerThan(v2_1);
-						} catch (final IllegalArgumentException e) {}
+						} catch (final IllegalArgumentException ignored) {}
 					}
 					continue;
 				}
@@ -129,7 +129,7 @@ public class FlatFileStorage extends VariablesStorage {
 					unsuccessful++;
 					continue;
 				}
-				if (split[1].equals("null")) {
+				if ("null".equals(split[1])) {
 					Variables.variableLoaded("" + split[0], null, this);
 				} else {
 					Object d;
@@ -157,7 +157,7 @@ public class FlatFileStorage extends VariablesStorage {
 			if (r != null) {
 				try {
 					r.close();
-				} catch (final IOException e) {}
+				} catch (final IOException ignored) {}
 			}
 		}
 		
@@ -228,7 +228,7 @@ public class FlatFileStorage extends VariablesStorage {
 		return new File(file);
 	}
 	
-	final static String encode(final byte[] data) {
+	static String encode(final byte[] data) {
 		final char[] r = new char[data.length * 2];
 		for (int i = 0; i < data.length; i++) {
 			r[2 * i] = Character.toUpperCase(Character.forDigit((data[i] & 0xF0) >>> 4, 16));
@@ -237,7 +237,7 @@ public class FlatFileStorage extends VariablesStorage {
 		return new String(r);
 	}
 	
-	final static byte[] decode(final String hex) {
+	static byte[] decode(final String hex) {
 		final byte[] r = new byte[hex.length() / 2];
 		for (int i = 0; i < r.length; i++) {
 			r[i] = (byte) ((Character.digit(hex.charAt(2 * i), 16) << 4) + Character.digit(hex.charAt(2 * i + 1), 16));
@@ -249,7 +249,7 @@ public class FlatFileStorage extends VariablesStorage {
 	private final static Pattern csv = Pattern.compile("(?<=^|,)\\s*([^\",]*|\"([^\"]|\"\")*\")\\s*(,|$)");
 	
 	@Nullable
-	final static String[] splitCSV(final String line) {
+	static String[] splitCSV(final String line) {
 		final Matcher m = csv.matcher(line);
 		int lastEnd = 0;
 		final ArrayList<String> r = new ArrayList<String>();
@@ -265,7 +265,7 @@ public class FlatFileStorage extends VariablesStorage {
 		}
 		if (lastEnd != line.length())
 			return null;
-		return r.toArray(new String[r.size()]);
+		return r.toArray(new String[0]);
 	}
 	
 	@SuppressWarnings({"resource", "unused", "null"})
@@ -297,7 +297,7 @@ public class FlatFileStorage extends VariablesStorage {
 	@SuppressWarnings("null")
 	private final static Pattern containsWhitespace = Pattern.compile("\\s");
 	
-	private final static void writeCSV(final PrintWriter pw, final String... values) {
+	private static void writeCSV(final PrintWriter pw, final String... values) {
 		assert values.length == 3; // name, type, value
 		for (int i = 0; i < values.length; i++) {
 			if (i != 0)
@@ -312,7 +312,7 @@ public class FlatFileStorage extends VariablesStorage {
 	
 	@SuppressWarnings("null")
 	@Override
-	protected final void disconnect() {
+	protected void disconnect() {
 		synchronized (connectionLock) {
 			clearChangesQueue();
 			synchronized (changesWriter) {
@@ -327,7 +327,7 @@ public class FlatFileStorage extends VariablesStorage {
 	
 	@SuppressWarnings({"unused", "null", "resource"})
 	@Override
-	protected final boolean connect() {
+	protected boolean connect() {
 		synchronized (connectionLock) {
 			synchronized (changesWriter) {
 				if (changesWriter.get() != null)
@@ -357,7 +357,7 @@ public class FlatFileStorage extends VariablesStorage {
 	 * @param finalSave whether this is the last save in this session or not.
 	 */
 	@SuppressWarnings({"null", "unused"})
-	public final void saveVariables(final boolean finalSave) {
+	public void saveVariables(final boolean finalSave) {
 		if (finalSave) {
 			final Task st = saveTask;
 			if (st != null)
@@ -427,8 +427,8 @@ public class FlatFileStorage extends VariablesStorage {
 	 * @param parent The parent's name with {@link Variable#SEPARATOR} at the end
 	 * @param map
 	 */
-	@SuppressWarnings("unchecked")
-	private final void save(final PrintWriter pw, final String parent, final TreeMap<String, Object> map) {
+	@SuppressWarnings({"unchecked", "null"})
+	private void save(final PrintWriter pw, final String parent, final TreeMap<String, Object> map) {
 		outer: for (final Entry<String, Object> e : map.entrySet()) {
 			final Object val = e.getValue();
 			if (val == null)
@@ -443,7 +443,7 @@ public class FlatFileStorage extends VariablesStorage {
 							final SerializedVariable.Value value = Classes.serialize(val);
 							if (value != null)
 								writeCSV(pw, name, value.type, encode(value.data));
- 						}
+						}
 						continue outer;
 					}
 				}

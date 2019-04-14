@@ -21,11 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -37,15 +32,20 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleLiteral;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Console")
 @Description("Represents the server's console which can receive messages and execute commands")
-@Examples({"execute console command \"/stop\"",
-		"send \"message to console\" to the console"})
+@Examples({"execute console command \"/stop\"", "send \"message to console\" to the console"})
 @Since("1.3.1")
-public class LitConsole extends SimpleLiteral<ConsoleCommandSender> {
+public final class LitConsole extends SimpleLiteral<ConsoleCommandSender> {
 	static {
 		Skript.registerExpression(LitConsole.class, ConsoleCommandSender.class, ExpressionType.SIMPLE, "[the] (console|server)");
 	}

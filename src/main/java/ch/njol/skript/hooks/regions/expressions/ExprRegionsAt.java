@@ -21,12 +21,6 @@
 
 package ch.njol.skript.hooks.regions.expressions;
 
-import java.util.ArrayList;
-
-import org.bukkit.Location;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -41,24 +35,23 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.util.Direction;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Location;
+import org.bukkit.event.Event;
+
+import java.util.ArrayList;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Regions At")
-@Description({"All <a href='../classes/#region'>regions</a> at a particular <a href='../classes/#location'>location</a>.",
-		"This expression requires a supported regions plugin to be installed."})
-@Examples({"On click on a sign:",
-		"	line 1 of the clicked block is \"[region info]\"",
-		"	set {_regions::*} to regions at the clicked block",
-		"	if {_regions::*} is empty:",
-		"		message \"No regions exist at this sign.\"",
-		"	else:",
-		"		message \"Regions containing this sign: <gold>%{_regions::*}%<r>.\""})
+@Description({"All <a href='../classes/#region'>regions</a> at a particular <a href='../classes/#location'>location</a>.", "This expression requires a supported regions plugin to be installed."})
+@Examples({"On click on a sign:", "	line 1 of the clicked block is \"[region info]\"", "	set {_regions::*} to regions at the clicked block", "	if {_regions::*} is empty:", "		message \"No regions exist at this sign.\"", "	else:", "		message \"Regions containing this sign: <gold>%{_regions::*}%<r>.\""})
 @Since("2.1")
-public class ExprRegionsAt extends SimpleExpression<Region> {
+public final class ExprRegionsAt extends SimpleExpression<Region> {
 	static {
-		Skript.registerExpression(ExprRegionsAt.class, Region.class, ExpressionType.PROPERTY,
-				"[the] region(1¦s|) %direction% %locations%");
+		Skript.registerExpression(ExprRegionsAt.class, Region.class, ExpressionType.PROPERTY, "[the] region(1¦s|) %direction% %locations%");
 	}
 	
 	@SuppressWarnings("null")
@@ -83,7 +76,7 @@ public class ExprRegionsAt extends SimpleExpression<Region> {
 		final ArrayList<Region> r = new ArrayList<Region>();
 		for (final Location l : ls)
 			r.addAll(RegionsPlugin.getRegionsAt(l));
-		return r.toArray(new Region[r.size()]);
+		return r.toArray(new Region[0]);
 	}
 	
 	@Override

@@ -30,43 +30,40 @@ import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+
 import org.eclipse.jdt.annotation.Nullable;
 
-@Name("Event Cancelled")
-@Description("Checks whether or not the event is cancelled")
-@Examples({"on click:",
-		"\tif event is cancelled:",
-		"\t\tbroadcast \"no clicks allowed!\""
-})
-@Since("2.2-Fixes-V9c")
 /**
  * @author Peter Güttinger
  */
-public class CondCancelled extends Condition {
-
+@Name("Event Cancelled")
+@Description("Checks whether or not the event is cancelled")
+@Examples({"on click:", "\tif event is cancelled:", "\t\tbroadcast \"no clicks allowed!\""
+})
+@Since("2.2-Fixes-V9c")
+public final class CondCancelled extends Condition {
+	
 	static {
-		Skript.registerCondition(CondCancelled.class,
-				"[the] event is cancel[l]ed",
- 				"[the] event (is not|isn't) cancel[l]ed"
-		);
+		Skript.registerCondition(CondCancelled.class, "[the] event is cancel[l]ed", "[the] event (is not|isn't) cancel[l]ed");
 	}
-
+	
 	@Override
 	public boolean check(final Event e) {
 		return (e instanceof Cancellable && ((Cancellable) e).isCancelled()) ^ isNegated();
 	}
-
+	
 	@Override
 	public String toString(@Nullable final Event e, final boolean debug) {
 		return isNegated() ? "event is not cancelled" : "event is cancelled";
 	}
-
+	
 	@Override
 	public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final SkriptParser.ParseResult parseResult) {
 		setNegated(matchedPattern == 1);
 		return true;
 	}
-
+	
 }

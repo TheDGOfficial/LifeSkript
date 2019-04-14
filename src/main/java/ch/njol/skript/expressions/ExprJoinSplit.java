@@ -21,11 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.regex.Pattern;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -38,19 +33,22 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.StringUtils;
 
+import org.bukkit.event.Event;
+
+import java.util.regex.Pattern;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Join & Split")
 @Description("Joins several texts with a common delimiter (e.g. \", \"), or splits a text into multiple texts at a given delimiter.")
-@Examples({"message \"Online players: %join all players with \" | \"%\" # %all players% would use the default \"x, y, and z\"",
-		"set {_s::} to the string argument split at \",\""})
+@Examples({"message \"Online players: %join all players with \" | \"%\" # %all players% would use the default \"x, y, and z\"", "set {_s::} to the string argument split at \",\""})
 @Since("2.1")
 public class ExprJoinSplit extends SimpleExpression<String> {
 	static {
-		Skript.registerExpression(ExprJoinSplit.class, String.class, ExpressionType.COMBINED,
-				"(concat[enate]|join) %strings% [(with|using|by) [[the] delimiter] %-string%]",
-				"split %string% (at|using|by) [[the] delimiter] %string%", "%string% split (at|using|by) [[the] delimiter] %string%");
+		Skript.registerExpression(ExprJoinSplit.class, String.class, ExpressionType.COMBINED, "(concat[enate]|join) %strings% [(with|using|by) [[the] delimiter] %-string%]", "split %string% (at|using|by) [[the] delimiter] %string%", "%string% split (at|using|by) [[the] delimiter] %string%");
 	}
 	
 	private boolean join;
@@ -88,7 +86,7 @@ public class ExprJoinSplit extends SimpleExpression<String> {
 	}
 	
 	@Override
-	public Class<? extends String> getReturnType() {
+	public Class<String> getReturnType() {
 		return String.class;
 	}
 	

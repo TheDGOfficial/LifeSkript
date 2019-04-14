@@ -21,7 +21,10 @@
 
 package ch.njol.yggdrasil;
 
-import static ch.njol.yggdrasil.Tag.*;
+import static ch.njol.yggdrasil.Tag.T_ARRAY;
+import static ch.njol.yggdrasil.Tag.T_REFERENCE;
+import static ch.njol.yggdrasil.Tag.getPrimitiveFromWrapper;
+import static ch.njol.yggdrasil.Tag.getType;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -57,7 +60,7 @@ public final class DefaultYggdrasilOutputStream extends YggdrasilOutputStream {
 	}
 	
 	private final HashMap<String, Integer> writtenShortStrings = new HashMap<String, Integer>();
-	int nextShortStringID = 0;
+	int nextShortStringID;
 	
 	/**
 	 * Writes a class ID or Field name

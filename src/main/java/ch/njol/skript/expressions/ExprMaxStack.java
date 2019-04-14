@@ -21,13 +21,13 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.inventory.ItemStack;
-
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
+
+import org.bukkit.inventory.ItemStack;
 
 /**
  * @author joeuguce99
@@ -42,7 +42,7 @@ public class ExprMaxStack extends SimplePropertyExpression<ItemStack, Integer> {
 	}
 	
 	@Override
-	public Class<? extends Integer> getReturnType() {
+	public Class<Integer> getReturnType() {
 		return Integer.class;
 	}
 	
@@ -54,6 +54,6 @@ public class ExprMaxStack extends SimplePropertyExpression<ItemStack, Integer> {
 	@SuppressWarnings("null")
 	@Override
 	public Integer convert(final ItemStack i) {
-		return Integer.valueOf(i.getMaxStackSize());
+		return i.getMaxStackSize();
 	}
 }

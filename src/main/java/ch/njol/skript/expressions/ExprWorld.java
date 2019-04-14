@@ -21,13 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Converter;
 import ch.njol.skript.doc.Description;
@@ -42,16 +35,22 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerTeleportEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("World")
 @Description("The world the event occurred in.")
-@Examples({"world is \"world_nether\"",
-		"teleport the player to the world's spawn",
-		"set the weather in the player's world to rain"})
+@Examples({"world is \"world_nether\"", "teleport the player to the world's spawn", "set the weather in the player's world to rain"})
 @Since("1.0")
-public class ExprWorld extends PropertyExpression<Object, World> {
+public final class ExprWorld extends PropertyExpression<Object, World> {
 	static {
 		Skript.registerExpression(ExprWorld.class, World.class, ExpressionType.PROPERTY, "[the] world [of %location/entity%]", "%location/entity%['s] world");
 	}

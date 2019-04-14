@@ -21,9 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.inventory.ItemStack;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -33,13 +30,16 @@ import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.lang.util.ConvertedExpression;
 import ch.njol.skript.registrations.Converters;
 
+import org.bukkit.inventory.ItemStack;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Type of")
 @Description("The type of a block/item or entity. The type of an item is only it's id and data value, i.e. it ignores the amount, enchantments etc., and the type of an entity is e.g. 'wolf' or 'player'.")
-@Examples({"on rightclick on an entity:",
-		"	message \"This is a %type of clicked entity%!\""})
+@Examples({"on rightclick on an entity:", "	message \"This is a %type of clicked entity%!\""})
 @Since("1.4")
 public class ExprTypeOf extends SimplePropertyExpression<Object, Object> {
 	static {
@@ -64,9 +64,8 @@ public class ExprTypeOf extends SimplePropertyExpression<Object, Object> {
 	}
 	
 	@Override
-	public Class<? extends Object> getReturnType() {
-		return EntityData.class.isAssignableFrom(getExpr().getReturnType()) ? EntityData.class
-				: ItemStack.class.isAssignableFrom(getExpr().getReturnType()) ? ItemStack.class : Object.class;
+	public Class<?> getReturnType() {
+		return EntityData.class.isAssignableFrom(getExpr().getReturnType()) ? EntityData.class : ItemStack.class.isAssignableFrom(getExpr().getReturnType()) ? ItemStack.class : Object.class;
 	}
 	
 	@Override

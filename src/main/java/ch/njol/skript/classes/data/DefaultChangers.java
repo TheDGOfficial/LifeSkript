@@ -21,6 +21,12 @@
 
 package ch.njol.skript.classes.data;
 
+import ch.njol.skript.aliases.ItemType;
+import ch.njol.skript.bukkitutil.PlayerUtils;
+import ch.njol.skript.classes.Changer;
+import ch.njol.skript.util.Experience;
+import ch.njol.util.coll.CollectionUtils;
+
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
@@ -33,13 +39,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
-import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.skript.aliases.ItemType;
-import ch.njol.skript.bukkitutil.PlayerUtils;
-import ch.njol.skript.classes.Changer;
-import ch.njol.skript.util.Experience;
-import ch.njol.util.coll.CollectionUtils;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -50,7 +51,7 @@ public final class DefaultChangers { //NOSONAR
 		@SuppressWarnings("unchecked")
 		@Override
 		@Nullable
-		public Class<? extends Object>[] acceptChange(final ChangeMode mode) {
+		public Class<?>[] acceptChange(final ChangeMode mode) {
 			switch (mode) {
 				case ADD:
 					return CollectionUtils.array(ItemType[].class, Inventory.class, Experience[].class);
@@ -122,7 +123,7 @@ public final class DefaultChangers { //NOSONAR
 	public final static Changer<Player> playerChanger = new Changer<Player>() {
 		@Override
 		@Nullable
-		public Class<? extends Object>[] acceptChange(final ChangeMode mode) {
+		public Class<?>[] acceptChange(final ChangeMode mode) {
 			if (mode == ChangeMode.DELETE)
 				return null;
 			return entityChanger.acceptChange(mode);
@@ -181,7 +182,7 @@ public final class DefaultChangers { //NOSONAR
 		@SuppressWarnings("unchecked")
 		@Override
 		@Nullable
-		public Class<? extends Object>[] acceptChange(final ChangeMode mode) {
+		public Class<?>[] acceptChange(final ChangeMode mode) {
 			if (mode == ChangeMode.RESET)
 				return null;
 			if (mode == ChangeMode.REMOVE_ALL)

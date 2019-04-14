@@ -22,18 +22,22 @@
 package ch.njol.skript.util;
 
 import org.bukkit.block.Biome;
+
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
  */
-public abstract class BiomeUtils {
-	private BiomeUtils() {}
+public final class BiomeUtils {
+	
+	private BiomeUtils() {
+		throw new UnsupportedOperationException();
+	}
 	
 	private final static EnumUtils<Biome> util = new EnumUtils<Biome>(Biome.class, "biomes");
 	
 	@Nullable
-	public final static Biome parse(final String s) {
+	public static Biome parse(final String s) {
 		return util.parse(s);
 	}
 	
@@ -41,7 +45,7 @@ public abstract class BiomeUtils {
 		return util.toString(b, flags);
 	}
 	
-	public final static String getAllNames() {
+	public static String getAllNames() {
 		return util.getAllNames();
 	}
 	

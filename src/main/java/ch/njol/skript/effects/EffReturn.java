@@ -21,9 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.doc.Description;
@@ -41,15 +38,18 @@ import ch.njol.skript.log.RetainingLogHandler;
 import ch.njol.skript.log.SkriptLogger;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Return")
 @Description("Makes a function return a value")
-@Examples({"function double(i: number) :: number:",
-		"	return 2 * {_i}"})
+@Examples({"function double(i: number) :: number:", "	return 2 * {_i}"})
 @Since("2.2")
-public class EffReturn extends Effect {
+public final class EffReturn extends Effect {
 	static {
 		Skript.registerEffect(EffReturn.class, "return %objects%");
 	}

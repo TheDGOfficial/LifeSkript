@@ -21,23 +21,6 @@
 
 package ch.njol.skript.events;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventException;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.plugin.EventExecutor;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptConfig;
 import ch.njol.skript.SkriptEventHandler;
@@ -49,11 +32,29 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.Trigger;
 import ch.njol.skript.registrations.Classes;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventException;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.plugin.EventExecutor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @SuppressWarnings("deprecation")
-public class EvtMoveOn extends SelfRegisteringSkriptEvent { // TODO on jump
+public final class EvtMoveOn extends SelfRegisteringSkriptEvent { // TODO on jump
 
 //	private final static class BlockLocation {
 //		final World world;
@@ -84,20 +85,17 @@ public class EvtMoveOn extends SelfRegisteringSkriptEvent { // TODO on jump
 	
 	static {
 //		Skript.registerEvent(EvtMoveOn.class, PlayerMoveEvent.class, "(step|walk) on <.+>");
-		Skript.registerEvent("Move On", EvtMoveOn.class, PlayerMoveEvent.class, "(step|walk)[ing] (on|over) %*itemtypes%")
-				.description("Called when a player moves onto a certain type of block. Please note that using this event can cause lag if there are many players online.")
-				.examples("on walking on dirt or grass", "on stepping on stone")
-				.since("2.0");
+		Skript.registerEvent("Move On", EvtMoveOn.class, PlayerMoveEvent.class, "(step|walk)[ing] (on|over) %*itemtypes%").description("Called when a player moves onto a certain type of block. Please note that using this event can cause lag if there are many players online.").examples("on walking on dirt or grass", "on stepping on stone").since("2.0");
 	}
 	
 //	private final static HashMap<BlockLocation, List<Trigger>> blockTriggers = new HashMap<BlockLocation, List<Trigger>>();
 	final static HashMap<Integer, List<Trigger>> itemTypeTriggers = new HashMap<Integer, List<Trigger>>();
 	@SuppressWarnings("null")
-	ItemType[] types = null;
+	ItemType[] types;
 //	private World world;
 //	private int x, y, z;
 	
-	private static boolean registeredExecutor = false;
+	private static boolean registeredExecutor;
 	private final static EventExecutor executor = new EventExecutor() {
 		@SuppressWarnings("null")
 		@Override
@@ -144,7 +142,7 @@ public class EvtMoveOn extends SelfRegisteringSkriptEvent { // TODO on jump
 		}
 	};
 	
-	final static int getOnBlock(final Location l) {
+	static int getOnBlock(final Location l) {
 		int id = l.getWorld().getBlockTypeIdAt(l.getBlockX(), (int) Math.ceil(l.getY()) - 1, l.getBlockZ());
 		if (id == 0 && Math.abs(l.getY() - l.getBlockY() - 0.5) < Skript.EPSILON) { // fences
 			id = l.getWorld().getBlockTypeIdAt(l.getBlockX(), l.getBlockY() - 1, l.getBlockZ());
@@ -154,14 +152,14 @@ public class EvtMoveOn extends SelfRegisteringSkriptEvent { // TODO on jump
 		return id;
 	}
 	
-	final static int getBlockY(final double y, final int id) {
+	static int getBlockY(final double y, final int id) {
 		if ((id == Material.FENCE.getId() || id == 107 || id == 113) && Math.abs(y - Math.floor(y) - 0.5) < Skript.EPSILON) // fence gate // nether fence
 			return (int) Math.floor(y) - 1;
 		return (int) Math.ceil(y) - 1;
 	}
 	
 	@SuppressWarnings("null")
-	public final static Block getBlock(final PlayerMoveEvent e) {
+	public static Block getBlock(final PlayerMoveEvent e) {
 		return e.getTo().subtract(0, 0.5, 0).getBlock();
 	}
 	

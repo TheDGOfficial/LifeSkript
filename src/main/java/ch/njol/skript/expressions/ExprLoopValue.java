@@ -21,14 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.lang.reflect.Array;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Converter;
@@ -50,6 +42,15 @@ import ch.njol.skript.util.ScriptOptions;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import java.lang.reflect.Array;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Used to access a loop's current value.
  * <p>
@@ -59,14 +60,7 @@ import ch.njol.util.Kleenean;
  */
 @Name("Loop value")
 @Description("The currently looped value.")
-@Examples({"# countdown:",
-		"loop 10 times:",
-		"	message \"%11 - loop-number%\"",
-		"	wait a second",
-		"# generate a 10x10 floor made of randomly coloured wool below the player:",
-		"loop blocks from the block below the player to the block 10 east of the block below the player:",
-		"	loop blocks from the loop-block to the block 10 north of the loop-block:",
-		"		set loop-block-2 to any wool"})
+@Examples({"# countdown:", "loop 10 times:", "	message \"%11 - loop-number%\"", "	wait a second", "# generate a 10x10 floor made of randomly coloured wool below the player:", "loop blocks from the block below the player to the block 10 east of the block below the player:", "	loop blocks from the loop-block to the block 10 north of the loop-block:", "		set loop-block-2 to any wool"})
 @Since("1.0")
 public class ExprLoopValue extends SimpleExpression<Object> {
 	static {
@@ -80,16 +74,19 @@ public class ExprLoopValue extends SimpleExpression<Object> {
 	private Loop loop;
 	
 	// whether this loops a variable
-	boolean isVariableLoop = false;
+	boolean isVariableLoop;
 	// if this loops a variable and isIndex is true, return the index of the variable instead of the value
-	boolean isIndex = false;
+	boolean isIndex;
+	
+	@SuppressWarnings("null")
+	private static final Pattern pattern = Pattern.compile("^(.+)-(\\d+)$");
 	
 	@Override
 	public boolean init(final Expression<?>[] vars, final int matchedPattern, final Kleenean isDelayed, final ParseResult parser) {
 		name = parser.expr;
 		String s = "" + parser.regexes.get(0).group();
 		int i = -1;
-		final Matcher m = Pattern.compile("^(.+)-(\\d+)$").matcher(s);
+		final Matcher m = pattern.matcher(s);
 		if (m.matches()) {
 			s = "" + m.group(1);
 			i = Utils.parseInt("" + m.group(2));
@@ -99,10 +96,9 @@ public class ExprLoopValue extends SimpleExpression<Object> {
 		Loop loop = null;
 		
 		@SuppressWarnings("null")
-		final
-		boolean b = ScriptOptions.getInstance().usesNewLoops(ScriptLoader.currentScript.getFile());
+		final boolean b = ScriptOptions.getInstance().usesNewLoops(ScriptLoader.currentScript.getFile());
 		for (final Loop l : ScriptLoader.currentLoops) {
-			if (c != null && c.isAssignableFrom(l.getLoopedExpression().getReturnType()) || (b ? "value".equals(s) : false) || l.getLoopedExpression().isLoopOf(s)) {
+			if (c != null && c.isAssignableFrom(l.getLoopedExpression().getReturnType()) || b && "value".equals(s) || l.getLoopedExpression().isLoopOf(s)) {
 				if (j < i) {
 					j++;
 					continue;
@@ -122,7 +118,7 @@ public class ExprLoopValue extends SimpleExpression<Object> {
 		}
 		if (loop.getLoopedExpression() instanceof Variable) {
 			isVariableLoop = true;
-			if (((Variable<?>) loop.getLoopedExpression()).isIndexLoop(s))
+			if (Variable.isIndexLoop(s))
 				isIndex = true;
 		}
 		this.loop = loop;
@@ -152,7 +148,7 @@ public class ExprLoopValue extends SimpleExpression<Object> {
 	}
 	
 	@Override
-	public Class<? extends Object> getReturnType() {
+	public Class<?> getReturnType() {
 		if (isIndex)
 			return String.class;
 		return loop.getLoopedExpression().getReturnType();

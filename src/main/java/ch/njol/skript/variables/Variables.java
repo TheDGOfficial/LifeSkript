@@ -21,28 +21,6 @@
 
 package ch.njol.skript.variables;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.WeakHashMap;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.regex.Pattern;
-
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAPIException;
 import ch.njol.skript.SkriptConfig;
@@ -62,12 +40,37 @@ import ch.njol.util.NonNullPair;
 import ch.njol.util.SynchronizedReference;
 import ch.njol.yggdrasil.Yggdrasil;
 
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.event.Event;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.WeakHashMap;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.Pattern;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
-public abstract class Variables {
+public final class Variables {
 	
-	private Variables() {}
+	private Variables() {
+		throw new UnsupportedOperationException();
+	}
 	
 	public final static short YGGDRASIL_VERSION = 1;
 	
@@ -80,11 +83,13 @@ public abstract class Variables {
 			{
 				init(); // separate method for the annotation
 			}
- 			@SuppressWarnings({"unchecked", "null", "cast"})
-			private final void init() {
+			
+			@SuppressWarnings({"unchecked", "null", "cast"})
+			private void init() {
 				// used by asserts
- 				info = (ClassInfo<? extends ConfigurationSerializable>) (ClassInfo<?>) Classes.getExactClassInfo(Object.class);
- 			}
+				info = (ClassInfo<? extends ConfigurationSerializable>) (ClassInfo<?>) Classes.getExactClassInfo(Object.class);
+			}
+			
 			@SuppressWarnings({"unchecked"})
 			@Override
 			@Nullable
@@ -115,7 +120,7 @@ public abstract class Variables {
 		if (c == null)
 			throw new SkriptAPIException("Cannot load variables before the config");
 		final Node databases = c.getMainNode().get("databases");
-		if (databases == null || !(databases instanceof SectionNode)) {
+		if (!(databases instanceof SectionNode)) {
 			Skript.error("The config is missing the required 'databases' section that defines where the variables are saved");
 			return false;
 		}
@@ -135,7 +140,7 @@ public abstract class Variables {
 				while (true) {
 					try {
 						Thread.sleep(Skript.logNormal() ? 1000 : 5000); // low verbosity won't disable these messages, but makes them more rare
-					} catch (final InterruptedException e) {}
+					} catch (final InterruptedException ignored) {}
 					synchronized (tempVars) {
 						final Map<String, NonNullPair<Object, VariablesStorage>> tvs = tempVars.get();
 						if (tvs != null)
@@ -163,14 +168,14 @@ public abstract class Variables {
 					final String name = n.getKey();
 					assert name != null;
 					final VariablesStorage s;
-					if (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("file") || type.equalsIgnoreCase("flatfile")) {
+					if ("csv".equalsIgnoreCase(type) || "file".equalsIgnoreCase(type) || "flatfile".equalsIgnoreCase(type)) {
 						s = new FlatFileStorage(name);
-					} else if (type.equalsIgnoreCase("mysql")) {
+					} else if ("mysql".equalsIgnoreCase(type)) {
 						s = new DatabaseStorage(name, Type.MYSQL);
-					} else if (type.equalsIgnoreCase("sqlite")) {
+					} else if ("sqlite".equalsIgnoreCase(type)) {
 						s = new DatabaseStorage(name, Type.SQLITE);
 					} else {
-						if (!type.equalsIgnoreCase("disabled") && !type.equalsIgnoreCase("none")) {
+						if (!"disabled".equalsIgnoreCase(type) && !"none".equalsIgnoreCase(type)) {
 							Skript.error("Invalid database type '" + type + "'");
 							successful = false;
 						}
@@ -230,7 +235,7 @@ public abstract class Variables {
 	private final static Pattern variableNameSplitPattern = Pattern.compile(Pattern.quote(Variable.SEPARATOR));
 	
 	@SuppressWarnings("null")
-	public final static String[] splitVariableName(final String name) {
+	public static String[] splitVariableName(final String name) {
 		return variableNameSplitPattern.split(name);
 	}
 	
@@ -273,7 +278,7 @@ public abstract class Variables {
 	 * @return an Object for a normal Variable or a Map<String, Object> for a list variable, or null if the variable is not set.
 	 */
 	@Nullable
-	public final static Object getVariable(final String name, final @Nullable Event e, final boolean local) {
+	public static Object getVariable(final String name, final @Nullable Event e, final boolean local) {
 		if (local) {
 			final VariablesMap map = localVariables.get(e);
 			if (map == null)
@@ -295,7 +300,7 @@ public abstract class Variables {
 	 * @param name The variable's name. Can be a "list variable::*" (<tt>value</tt> must be <tt>null</tt> in this case)
 	 * @param value The variable's value. Use <tt>null</tt> to delete the variable.
 	 */
-	public final static void setVariable(final String name, @Nullable Object value, final @Nullable Event e, final boolean local) {
+	public static void setVariable(final String name, @Nullable Object value, final @Nullable Event e, final boolean local) {
 		if (value != null) {
 			assert !name.endsWith("::*");
 			final ClassInfo<?> ci = Classes.getSuperClassInfo(value.getClass());
@@ -316,7 +321,7 @@ public abstract class Variables {
 		}
 	}
 	
-	final static void setVariable(final String name, @Nullable final Object value) {
+	static void setVariable(final String name, @Nullable final Object value) {
 		try {
 			variablesLock.writeLock().lock();
 			variables.setVariable(name, value);
@@ -334,7 +339,7 @@ public abstract class Variables {
 	final static SynchronizedReference<Map<String, NonNullPair<Object, VariablesStorage>>> tempVars = new SynchronizedReference<Map<String, NonNullPair<Object, VariablesStorage>>>(new HashMap<String, NonNullPair<Object, VariablesStorage>>());
 	
 	private static final int MAX_CONFLICT_WARNINGS = 50;
-	private static int loadConflicts = 0;
+	private static int loadConflicts;
 	
 	/**
 	 * Sets a variable and moves it to the appropriate database if the config was changed. Must only be used while variables are loaded when Skript is starting.
@@ -349,7 +354,7 @@ public abstract class Variables {
 	 * @return Whether the variable was stored somewhere. Not valid while storages are loading.
 	 */
 	@SuppressWarnings({"unused", "null"})
-	final static boolean variableLoaded(final String name, final @Nullable Object value, final VariablesStorage source) {
+	static boolean variableLoaded(final String name, final @Nullable Object value, final VariablesStorage source) {
 		assert Bukkit.isPrimaryThread(); // required by serialisation
 		
 		synchronized (tempVars) {
@@ -427,25 +432,23 @@ public abstract class Variables {
 		}
 	}
 	
-	public final static SerializedVariable serialize(final String name, final @Nullable Object value) {
-		//FIXME assert Bukkit.isPrimaryThread();
+	public static SerializedVariable serialize(final String name, final @Nullable Object value) {
 		final SerializedVariable.Value var = serialize(value);
 		return new SerializedVariable(name, var);
 	}
 	
 	@Nullable
-	public final static SerializedVariable.Value serialize(final @Nullable Object value) {
-		//FIXME assert Bukkit.isPrimaryThread();
+	public static SerializedVariable.Value serialize(final @Nullable Object value) {
 		return Classes.serialize(value);
 	}
 	
-	private final static void saveVariableChange(final String name, final @Nullable Object value) {
+	private static void saveVariableChange(final String name, final @Nullable Object value) {
 		queue.add(serialize(name, value));
 	}
 	
 	final static BlockingQueue<SerializedVariable> queue = new LinkedBlockingQueue<SerializedVariable>();
 	
-	static volatile boolean closed = false;
+	static volatile boolean closed;
 	
 	private final static Thread saveThread = Skript.newThread(new Runnable() {
 		@Override
@@ -459,16 +462,16 @@ public abstract class Variables {
 							break;
 						}
 					}
-				} catch (final InterruptedException e) {}
+				} catch (final InterruptedException ignored) {}
 			}
 		}
 	}, "Skript variable save thread");
 	
 	public static void close() {
-		while (queue.size() > 0) {
+		while (!queue.isEmpty()) {
 			try {
 				Thread.sleep(10);
-			} catch (final InterruptedException e) {}
+			} catch (final InterruptedException ignored) {}
 		}
 		closed = true;
 		saveThread.interrupt();

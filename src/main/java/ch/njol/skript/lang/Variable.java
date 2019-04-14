@@ -21,24 +21,6 @@
 
 package ch.njol.skript.lang;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.NoSuchElementException;
-import java.util.TreeMap;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAPIException;
 import ch.njol.skript.SkriptConfig;
@@ -63,10 +45,29 @@ import ch.njol.util.StringUtils;
 import ch.njol.util.coll.CollectionUtils;
 import ch.njol.util.coll.iterator.EmptyIterator;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NoSuchElementException;
+import java.util.TreeMap;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
-public class Variable<T> implements Expression<T> {
+public final class Variable<T> implements Expression<T> {
 	
 	private final static String SINGLE_SEPARATOR_CHAR = ":";
 	public final static String SEPARATOR = SINGLE_SEPARATOR_CHAR + SINGLE_SEPARATOR_CHAR;
@@ -112,7 +113,7 @@ public class Variable<T> implements Expression<T> {
 	 * @param printErrors Whether to print errors when they are encountered
 	 * @return true if the name is valid, false otherwise.
 	 */
-	public final static boolean isValidVariableName(String name, final boolean allowListVariable, final boolean printErrors) {
+	public static boolean isValidVariableName(String name, final boolean allowListVariable, final boolean printErrors) {
 		name = name.startsWith(LOCAL_VARIABLE_TOKEN) ? "" + name.substring(LOCAL_VARIABLE_TOKEN.length()).trim() : "" + name.trim();
 		if (!allowListVariable && name.contains(SEPARATOR)) {
 			if (printErrors)
@@ -122,9 +123,9 @@ public class Variable<T> implements Expression<T> {
 			if (printErrors)
 				Skript.error("A variable's name must neither start nor end with the separator '" + SEPARATOR + "' (error in variable {" + name + "})");
 			return false;
-		} else if (name.contains("*") && (!allowListVariable || name.indexOf("*") != name.length() - 1 || !name.endsWith(SEPARATOR + "*"))) {
+		} else if (name.contains("*") && (!allowListVariable || name.indexOf('*') != name.length() - 1 || !name.endsWith(SEPARATOR + "*"))) {
 			if (printErrors) {
-				if (name.indexOf("*") == 0)
+				if (name.indexOf('*') == 0)
 					Skript.error("[2.0] Local variables now start with an underscore, e.g. {_local variable}. The asterisk is reserved for list variables. (error in variable {" + name + "})");
 				else
 					Skript.error("A variable's name must not contain any asterisks except at the end after '" + SEPARATOR + "' to denote a list variable, e.g. {variable" + SEPARATOR + "*} (error in variable {" + name + "})");
@@ -136,8 +137,7 @@ public class Variable<T> implements Expression<T> {
 			return false;
 		} else if (name.replace(SEPARATOR, "").contains(SINGLE_SEPARATOR_CHAR)) {
 			if (printErrors)
-				Skript.warning("If you meant to make the variable {" + name + "} a list, its name should contain '"
-						+ SEPARATOR + "'. Having a single '" + SINGLE_SEPARATOR_CHAR + "' does nothing!");
+				Skript.warning("If you meant to make the variable {" + name + "} a list, its name should contain '" + SEPARATOR + "'. Having a single '" + SINGLE_SEPARATOR_CHAR + "' does nothing!");
 		}
 		return true;
 	}
@@ -245,10 +245,11 @@ public class Variable<T> implements Expression<T> {
 	 * as a new player object has been created by the server.
 	 */
 	@SuppressWarnings({"deprecation"})
-	@Nullable Object convertIfOldPlayer(final String key, final Event event, @Nullable final Object t){
-		if(SkriptConfig.enablePlayerVariableFix.value() && t != null && t instanceof Player){
+	@Nullable
+	Object convertIfOldPlayer(final String key, final Event event, @Nullable final Object t) {
+		if (SkriptConfig.enablePlayerVariableFix.value() && t instanceof Player) {
 			final Player p = (Player) t;
-			if(!p.isValid() && p.isOnline()){
+			if (!p.isValid() && p.isOnline()) {
 				final Player player = uuidSupported ? Bukkit.getPlayer(p.getUniqueId()) : Bukkit.getPlayerExact(p.getName());
 				Variables.setVariable(key, player, event, local);
 				return player;
@@ -272,7 +273,7 @@ public class Variable<T> implements Expression<T> {
 			@Nullable
 			private String key;
 			@Nullable
-			private Object next = null;
+			private Object next;
 			
 			@Override
 			public boolean hasNext() {
@@ -322,7 +323,7 @@ public class Variable<T> implements Expression<T> {
 			@Nullable
 			private String key;
 			@Nullable
-			private T next = null;
+			private T next;
 			
 			@SuppressWarnings({"unchecked"})
 			@Override
@@ -370,11 +371,11 @@ public class Variable<T> implements Expression<T> {
 		return Converters.convertArray((Object[]) get(e), types, superType);
 	}
 	
-	private final void set(final Event e, final @Nullable Object value) {
+	private void set(final Event e, final @Nullable Object value) {
 		Variables.setVariable("" + name.toString(e).toLowerCase(Locale.ENGLISH), value, e, local);
 	}
 	
-	private final void setIndex(final Event e, final String index, final @Nullable Object value) {
+	private void setIndex(final Event e, final String index, final @Nullable Object value) {
 		assert list;
 		final String s = name.toString(e).toLowerCase(Locale.ENGLISH);
 		assert s.endsWith("::*") : s + "; " + name;
@@ -412,9 +413,9 @@ public class Variable<T> implements Expression<T> {
 					}
 				} else {
 					//Mirre Start, Location bug quickfix.
-					if(delta[0] instanceof Location){
-						set(e, ((Location)delta[0]).clone());
-					}else
+					if (delta[0] instanceof Location) {
+						set(e, ((Location) delta[0]).clone());
+					} else
 						set(e, delta[0]);
 					//Mirre End
 					
@@ -425,7 +426,7 @@ public class Variable<T> implements Expression<T> {
 				final Object x = getRaw(e);
 				if (x == null)
 					return;
-				for (final Object o : x instanceof Map ? ((Map<?, ?>) x).values() : Arrays.asList(x)) {
+				for (final Object o : x instanceof Map ? ((Map<?, ?>) x).values() : Collections.singletonList(x)) {
 					final Class<?> c = o.getClass();
 					assert c != null;
 					final ClassInfo<?> ci = Classes.getSuperClassInfo(c);
@@ -563,7 +564,7 @@ public class Variable<T> implements Expression<T> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public T[] getAll(final Event e) {
-		if(list)
+		if (list)
 			return getConvertedArray(e);
 		final T o = getConverted(e);
 		if (o == null) {
@@ -578,11 +579,11 @@ public class Variable<T> implements Expression<T> {
 	
 	@Override
 	public boolean isLoopOf(final String s) {
-		return s.equalsIgnoreCase("var") || s.equalsIgnoreCase("variable") || s.equalsIgnoreCase("value") || s.equalsIgnoreCase("index");
+		return "var".equalsIgnoreCase(s) || "variable".equalsIgnoreCase(s) || "value".equalsIgnoreCase(s) || "index".equalsIgnoreCase(s);
 	}
 	
-	public boolean isIndexLoop(final String s) {
-		return s.equalsIgnoreCase("index");
+	public static boolean isIndexLoop(final String s) {
+		return "index".equalsIgnoreCase(s);
 	}
 	
 	@Override

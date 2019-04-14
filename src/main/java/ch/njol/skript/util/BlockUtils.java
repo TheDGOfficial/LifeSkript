@@ -21,17 +21,18 @@
 
 package ch.njol.skript.util;
 
-import java.util.Arrays;
+import ch.njol.skript.Skript;
+import ch.njol.util.coll.CollectionUtils;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.material.Directional;
-import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.skript.Skript;
-import ch.njol.util.coll.CollectionUtils;
+import java.util.Arrays;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * TODO !Update with every version [blocks] - also update aliases-*.sk
@@ -39,37 +40,27 @@ import ch.njol.util.coll.CollectionUtils;
  * @author Peter Güttinger
  */
 @SuppressWarnings("deprecation")
-public abstract class BlockUtils { //NOSONAR
+public final class BlockUtils { //NOSONAR
 	
-	private final static BlockFace[] torch = new BlockFace[] {
-			null, BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.DOWN
+	private final static BlockFace[] torch = new BlockFace[] {null, BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.DOWN
 	};
 	
-	private final static BlockFace[] button = new BlockFace[] {
-			null, BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH, null, null, null,
-			null, BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH
+	private final static BlockFace[] button = new BlockFace[] {null, BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH, null, null, null, null, BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH
 	};
 	
-	private final static BlockFace[] ladder = new BlockFace[] {
-			null, null, BlockFace.SOUTH, BlockFace.NORTH, BlockFace.EAST, BlockFace.WEST
+	private final static BlockFace[] ladder = new BlockFace[] {null, null, BlockFace.SOUTH, BlockFace.NORTH, BlockFace.EAST, BlockFace.WEST
 	}, wallSign = ladder;
 	
-	private final static BlockFace[] trapdoor = new BlockFace[] {
-			BlockFace.SOUTH, BlockFace.NORTH, BlockFace.EAST, BlockFace.WEST
+	private final static BlockFace[] trapdoor = new BlockFace[] {BlockFace.SOUTH, BlockFace.NORTH, BlockFace.EAST, BlockFace.WEST
 	};
 	
-	private final static BlockFace[] lever = new BlockFace[] {
-			BlockFace.UP, BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.DOWN, BlockFace.DOWN, BlockFace.UP,
-			BlockFace.UP, BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.DOWN, BlockFace.DOWN, BlockFace.UP
+	private final static BlockFace[] lever = new BlockFace[] {BlockFace.UP, BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.DOWN, BlockFace.DOWN, BlockFace.UP, BlockFace.UP, BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.DOWN, BlockFace.DOWN, BlockFace.UP
 	};
 	
-	private final static BlockFace[] cocoa = new BlockFace[] {
-			BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST
+	private final static BlockFace[] cocoa = new BlockFace[] {BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST
 	};
 	
-	private final static BlockFace[] tripwireHook = new BlockFace[] {
-			BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST,
-			BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
+	private final static BlockFace[] tripwireHook = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
 	};
 	
 	private final static BlockFace[][] attached = new BlockFace[Skript.MAXBLOCKID + 1][];
@@ -88,13 +79,11 @@ public abstract class BlockUtils { //NOSONAR
 			attached[Material.WOOD_BUTTON.getId()] = button;
 	}
 	
-	private final static BlockFace[] bed = new BlockFace[] {
-			BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST
+	private final static BlockFace[] bed = new BlockFace[] {BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST
 	};
 	
 	// not the actual facing, but a direction where fence posts should exist
-	private final static BlockFace[] gate = new BlockFace[] {
-			BlockFace.WEST, BlockFace.NORTH
+	private final static BlockFace[] gate = new BlockFace[] {BlockFace.WEST, BlockFace.NORTH
 	};
 	
 	/**
@@ -106,7 +95,6 @@ public abstract class BlockUtils { //NOSONAR
 	 * @return Whether the block could be set successfully
 	 */
 	public static boolean set(final Block b, final int type, byte dataMin, byte dataMax, final boolean applyPhysics) {
-		final boolean any = dataMin == -1 && dataMax == -1;
 		if (dataMin == -1)
 			dataMin = 0;
 		if (dataMax == -1)
@@ -233,8 +221,7 @@ public abstract class BlockUtils { //NOSONAR
 				final Block b1 = b.getRelative(f), b2 = b.getRelative(f, -1);
 				final int m1 = b1.getTypeId(), m2 = b2.getTypeId();
 				// 113 == nether fence
-				if ((m1 == Material.FENCE.getId() || m1 == 113 || m1 == Material.FENCE_GATE.getId() && (b1.getData() & 0x1) == (data & 0x1))
-						&& (m2 == Material.FENCE.getId() || m2 == 113 || m2 == Material.FENCE_GATE.getId() && (b2.getData() & 0x1) == (data & 0x1))) {
+				if ((m1 == Material.FENCE.getId() || m1 == 113 || m1 == Material.FENCE_GATE.getId() && (b1.getData() & 0x1) == (data & 0x1)) && (m2 == Material.FENCE.getId() || m2 == 113 || m2 == Material.FENCE_GATE.getId() && (b2.getData() & 0x1) == (data & 0x1))) {
 					b.setTypeIdAndData(type, data, applyPhysics);
 					return true;
 				} else {
@@ -258,17 +245,13 @@ public abstract class BlockUtils { //NOSONAR
 		// REMIND rails?
 		
 		// DEFAULT
-		b.setTypeIdAndData(type, any ? 0 : (byte) Utils.random(dataMin, dataMax + 1), applyPhysics);
+		b.setTypeIdAndData(type, dataMin == -1 && dataMax == -1 ? 0 : (byte) Utils.random(dataMin, dataMax + 1), applyPhysics);
 		return true;
 	}
 	
 	// Material.isSolid() treats e.g. steps as solid...
 	// TODO !Update with every version [blocks]
-	private final static int[] solid = {
-			1, 2, 3, 4, 5, 7, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 29, 33, 35, 41, 42, 43, 45, 46, 47, 48, 49,
-			52, 54, 56, 57, 58, 60, 61, 62, 73, 74, 79, 80, 82, 84, 86, 87, 88, 89, 91, 95, 97, 98, 99,
-			100, 103, 110, 112, 120, 121, 123, 124, 125, 129, 130, 133, 137, 138, 146,
-			152, 153, 155, 158, 159, 161, 162, 170, 172, 173, 174
+	private final static int[] solid = {1, 2, 3, 4, 5, 7, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 29, 33, 35, 41, 42, 43, 45, 46, 47, 48, 49, 52, 54, 56, 57, 58, 60, 61, 62, 73, 74, 79, 80, 82, 84, 86, 87, 88, 89, 91, 95, 97, 98, 99, 100, 103, 110, 112, 120, 121, 123, 124, 125, 129, 130, 133, 137, 138, 146, 152, 153, 155, 158, 159, 161, 162, 170, 172, 173, 174
 	};
 	private final static boolean[] isSolid = new boolean[Skript.MAXBLOCKID + 1];
 	static {
@@ -276,7 +259,7 @@ public abstract class BlockUtils { //NOSONAR
 			isSolid[i] = true;
 	}
 	
-	public final static boolean isSolid(final int type) {
+	public static boolean isSolid(final int type) {
 		if (type < 0 || type >= isSolid.length)
 			throw new IllegalArgumentException(type + " is not a block id");
 		return isSolid[type];

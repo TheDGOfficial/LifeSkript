@@ -21,9 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -35,14 +32,16 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Index Of")
 @Description("The first or last index of a character (or text) in a text, or -1 if it doesn't occur in the text. Indices range from 1 to the <a href='#ExprIndexOf'>length</a> of the text.")
-@Examples({"set {_@} to the first index of \"@\" in the text argument",
-		"if {_s} contains \"abc\":",
-		"	set {_s} to the first (index of \"abc\" in {_s} + 3) characters of {_s} # removes everything after the first \"abc\" from {_s}"})
+@Examples({"set {_@} to the first index of \"@\" in the text argument", "if {_s} contains \"abc\":", "	set {_s} to the first (index of \"abc\" in {_s} + 3) characters of {_s} # removes everything after the first \"abc\" from {_s}"})
 @Since("2.1")
 public class ExprIndexOf extends SimpleExpression<Integer> {
 	static {
@@ -70,7 +69,7 @@ public class ExprIndexOf extends SimpleExpression<Integer> {
 		if (h == null || n == null)
 			return new Integer[0];
 		final int i = first ? h.indexOf(n) : h.lastIndexOf(n);
-		return new Integer[] {Integer.valueOf(i == -1 ? -1 : i + 1)};
+		return new Integer[] {i == -1 ? -1 : i + 1};
 	}
 	
 	@Override
@@ -79,7 +78,7 @@ public class ExprIndexOf extends SimpleExpression<Integer> {
 	}
 	
 	@Override
-	public Class<? extends Integer> getReturnType() {
+	public Class<Integer> getReturnType() {
 		return Integer.class;
 	}
 	

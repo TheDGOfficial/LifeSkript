@@ -21,6 +21,10 @@
 
 package ch.njol.skript.variables;
 
+import ch.njol.skript.lang.Variable;
+import ch.njol.skript.util.Utils;
+import ch.njol.util.StringUtils;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,10 +32,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.lang.Variable;
-import ch.njol.skript.util.Utils;
-import ch.njol.util.StringUtils;
 
 final class VariablesMap {
 	
@@ -54,7 +54,6 @@ final class VariablesMap {
 						return -1;
 					i = i2;
 					j = j2;
-					continue;
 				} else {
 					if (c1 > c2)
 						return 1;
@@ -85,7 +84,7 @@ final class VariablesMap {
 	 */
 	@SuppressWarnings("unchecked")
 	@Nullable
-	final Object getVariable(final String name) {
+	Object getVariable(final String name) {
 		if (!name.endsWith("*")) {
 			return hashMap.get(name);
 		} else {
@@ -93,7 +92,7 @@ final class VariablesMap {
 			Map<String, Object> current = treeMap;
 			for (int i = 0; i < split.length; i++) {
 				final String n = split[i];
-				if (n.equals("*")) {
+				if ("*".equals(n)) {
 					assert i == split.length - 1;
 					return current;
 				}
@@ -103,7 +102,6 @@ final class VariablesMap {
 				if (o instanceof Map) {
 					current = (Map<String, Object>) o;
 					assert i != split.length - 1;
-					continue;
 				} else {
 					return null;
 				}
@@ -119,7 +117,7 @@ final class VariablesMap {
 	 * @param value The variable's value. Use <tt>null</tt> to delete the variable.
 	 */
 	@SuppressWarnings("unchecked")
-	final void setVariable(final String name, final @Nullable Object value) {
+	void setVariable(final String name, final @Nullable Object value) {
 		if (!name.endsWith("*")) {
 			if (value == null)
 				hashMap.remove(name);
@@ -139,7 +137,6 @@ final class VariablesMap {
 				} else if (value != null) {
 					parent.put(n, current = new TreeMap<String, Object>(variableNameComparator));
 					parent = (TreeMap<String, Object>) current;
-					continue;
 				} else {
 					break;
 				}
@@ -150,7 +147,7 @@ final class VariablesMap {
 					else
 						((TreeMap<String, Object>) current).put(null, value);
 					break;
-				} else if (i == split.length - 2 && split[i + 1].equals("*")) {
+				} else if (i == split.length - 2 && "*".equals(split[i + 1])) {
 					assert value == null;
 					deleteFromHashMap(StringUtils.join(split, Variable.SEPARATOR, 0, i + 1), (TreeMap<String, Object>) current);
 					final Object v = ((TreeMap<String, Object>) current).get(null);
@@ -161,7 +158,6 @@ final class VariablesMap {
 					break;
 				} else {
 					parent = (TreeMap<String, Object>) current;
-					continue;
 				}
 			} else {
 				if (i == split.length - 1) {
@@ -175,7 +171,6 @@ final class VariablesMap {
 					c.put(null, current);
 					parent.put(n, c);
 					parent = c;
-					continue;
 				} else {
 					break;
 				}

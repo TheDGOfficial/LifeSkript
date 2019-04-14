@@ -21,7 +21,8 @@
 
 package ch.njol.yggdrasil;
 
-import static ch.njol.yggdrasil.Tag.*;
+import static ch.njol.yggdrasil.Tag.T_ARRAY;
+import static ch.njol.yggdrasil.Tag.T_REFERENCE;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -132,10 +133,7 @@ public final class DefaultYggdrasilInputStream extends YggdrasilInputStream {
 	}
 	
 	private int readInt() throws IOException {
-		return read() << 24
-				| read() << 16
-				| read() << 8
-				| read();
+		return read() << 24 | read() << 16 | read() << 8 | read();
 	}
 	
 	private int readUnsignedInt() throws IOException {
@@ -146,14 +144,7 @@ public final class DefaultYggdrasilInputStream extends YggdrasilInputStream {
 	}
 	
 	private long readLong() throws IOException {
-		return (long) read() << 56
-				| (long) read() << 48
-				| (long) read() << 40
-				| (long) read() << 32
-				| (long) read() << 24
-				| read() << 16
-				| read() << 8
-				| read();
+		return (long) read() << 56 | (long) read() << 48 | (long) read() << 40 | (long) read() << 32 | (long) read() << 24 | read() << 16 | read() << 8 | read();
 	}
 	
 	private float readFloat() throws IOException {
@@ -196,7 +187,7 @@ public final class DefaultYggdrasilInputStream extends YggdrasilInputStream {
 				return readChar();
 			case T_BOOLEAN:
 				return readBoolean();
-				//$CASES-OMITTED$
+			//$CASES-OMITTED$
 			default:
 				throw new YggdrasilException("Internal error; " + type);
 		}
@@ -321,7 +312,7 @@ public final class DefaultYggdrasilInputStream extends YggdrasilInputStream {
 		try {
 			read();
 			throw new StreamCorruptedException("Stream still has data, at least " + (1 + in.available()) + " bytes remain");
-		} catch (final EOFException e) {} finally {
+		} catch (final EOFException ignored) {} finally {
 			in.close();
 		}
 	}

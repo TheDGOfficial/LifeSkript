@@ -21,11 +21,6 @@
 
 package ch.njol.skript.lang.util;
 
-import java.util.Iterator;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.SkriptAPIException;
 import ch.njol.skript.classes.Converter;
 import ch.njol.skript.lang.Literal;
@@ -35,13 +30,19 @@ import ch.njol.util.Checker;
 import ch.njol.util.coll.CollectionUtils;
 import ch.njol.util.coll.iterator.ArrayIterator;
 
+import org.bukkit.event.Event;
+
+import java.util.Iterator;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  * @see SimpleLiteral
  */
-public class ConvertedLiteral<F, T> extends ConvertedExpression<F, T> implements Literal<T> {
+public final class ConvertedLiteral<F, T> extends ConvertedExpression<F, T> implements Literal<T> {
 	
-	protected transient T[] data;
+	transient T[] data;
 	
 	public ConvertedLiteral(final Literal<F> source, final T[] data, final Class<T> to) {
 		super(source, to, new Converter<F, T>() {

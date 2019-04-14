@@ -21,15 +21,15 @@
 
 package ch.njol.skript.util;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.SkriptConfig;
 import ch.njol.yggdrasil.YggdrasilSerializable;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
  */
-public class Date implements Comparable<Date>, YggdrasilSerializable {
+public final class Date implements Comparable<Date>, YggdrasilSerializable {
 	
 	private long timestamp;
 	

@@ -21,13 +21,13 @@
 
 package ch.njol.skript.localization;
 
+import ch.njol.skript.Skript;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.Skript;
 
 /**
  * @author Peter Güttinger
@@ -39,7 +39,7 @@ public class RegexMessage extends Message {
 	private final int flags;
 	
 	@Nullable
-	private Pattern pattern = null;
+	private Pattern pattern;
 	
 	/**
 	 * A pattern that doesn't match anything
@@ -80,12 +80,12 @@ public class RegexMessage extends Message {
 	
 	public boolean matches(final String s) {
 		final Pattern p = getPattern();
-		return p == null ? false : p.matcher(s).matches();
+		return p != null && p.matcher(s).matches();
 	}
 	
 	public boolean find(final String s) {
 		final Pattern p = getPattern();
-		return p == null ? false : p.matcher(s).find();
+		return p != null && p.matcher(s).find();
 	}
 	
 	@Override

@@ -19,12 +19,12 @@
 
 package ch.njol.util.coll.iterator;
 
+import ch.njol.util.NullableChecker;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.util.NullableChecker;
 
 /**
  * @author Peter Güttinger
@@ -38,8 +38,8 @@ public class StoppableIterator<T> implements Iterator<T> {
 	@Nullable
 	private T current;
 	
-	private boolean stopped = false;
-	private boolean calledNext = false;
+	private boolean stopped;
+	private boolean calledNext;
 	
 	/**
 	 * @param iter
@@ -58,10 +58,10 @@ public class StoppableIterator<T> implements Iterator<T> {
 	
 	@Override
 	public boolean hasNext() {
-		final boolean cn = calledNext;
-		calledNext = false;
 		if (stopped || !iter.hasNext())
 			return false;
+		final boolean cn = calledNext;
+		calledNext = false;
 		if (cn && !returnLast) {
 			current = iter.next();
 			if (stopper.check(current)) {

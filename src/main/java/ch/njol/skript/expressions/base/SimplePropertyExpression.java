@@ -21,13 +21,14 @@
 
 package ch.njol.skript.expressions.base;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.classes.Converter;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
+
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * A base class for property expressions that requires only few overridden methods
@@ -46,10 +47,6 @@ public abstract class SimplePropertyExpression<F, T> extends PropertyExpression<
 	}
 	
 	protected abstract String getPropertyName();
-	
-	@Override
-	@Nullable
-	public abstract T convert(F f);
 	
 	@Override
 	protected T[] get(final Event e, final F[] source) {

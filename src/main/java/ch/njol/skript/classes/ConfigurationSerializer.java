@@ -21,15 +21,16 @@
 
 package ch.njol.skript.classes;
 
-import java.io.NotSerializableException;
-import java.io.StreamCorruptedException;
+import ch.njol.yggdrasil.Fields;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.yggdrasil.Fields;
+import java.io.NotSerializableException;
+import java.io.StreamCorruptedException;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Uses strings for serialisation because the whole ConfigurationSerializable interface is badly documented, and especially DelegateDeserialization doesn't work well with
@@ -69,7 +70,7 @@ public class ConfigurationSerializer<T extends ConfigurationSerializable> extend
 		return t;
 	}
 	
-	public final static String serializeCS(final ConfigurationSerializable o) {
+	public static String serializeCS(final ConfigurationSerializable o) {
 		final YamlConfiguration y = new YamlConfiguration();
 		y.set("value", o);
 		return "" + y.saveToString();
@@ -77,7 +78,7 @@ public class ConfigurationSerializer<T extends ConfigurationSerializable> extend
 	
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public final static <T extends ConfigurationSerializable> T deserializeCS(final String s, final Class<T> c) {
+	public static <T extends ConfigurationSerializable> T deserializeCS(final String s, final Class<T> c) {
 		final YamlConfiguration y = new YamlConfiguration();
 		try {
 			y.loadFromString(s);
@@ -114,7 +115,7 @@ public class ConfigurationSerializer<T extends ConfigurationSerializable> extend
 	@SuppressWarnings("unchecked")
 	@Deprecated
 	@Nullable
-	public final static <T extends ConfigurationSerializable> T deserializeCSOld(final String s, final Class<T> c) {
+	public static <T extends ConfigurationSerializable> T deserializeCSOld(final String s, final Class<T> c) {
 		final YamlConfiguration y = new YamlConfiguration();
 		try {
 			y.loadFromString(s.replace("\uFEFF", "\n"));

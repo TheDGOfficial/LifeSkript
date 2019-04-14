@@ -21,13 +21,7 @@
 
 package ch.njol.skript.effects;
 
-import java.util.List;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
-import ch.njol.skript.doc.Default;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -39,27 +33,27 @@ import ch.njol.skript.log.LogEntry;
 import ch.njol.skript.log.SkriptLogger;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import java.util.List;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Execute")
 @Description("Execute a effect dynamically in runtime")
-@Examples({"command /eval <text>:",
-		"\tdescription: Evaluates the given effect.",
-		"\tusage: /eval <effect>",
-		"\texecutable by: players",
-		"\ttrigger:",
-		"\t\texecute arg-1 if the player has permission \"skript.eval\""})
+@Examples({"command /eval <text>:", "\tdescription: Evaluates the given effect.", "\tusage: /eval <effect>", "\texecutable by: players", "\ttrigger:", "\t\texecute arg-1 if the player has permission \"skript.eval\""})
 @Since("2.2-Fixes-V10c")
-public class EffExec extends Effect {
+public final class EffExec extends Effect {
 	static {
 		Skript.registerEffect(EffExec.class, "(exec[ute]|eval[uate]) %string%");
 	}
 	
-	@Default(bool = false)
 	public static volatile boolean lastExecuteState;
 	
-	@Nullable @Default(str = "null")
+	@Nullable
 	public static volatile String lastExecuteErrors;
 	
 	@SuppressWarnings("null")
@@ -85,17 +79,20 @@ public class EffExec extends Effect {
 			return;
 		}
 		final List<LogEntry> entryList = SkriptLogger.stopSuppressing();
-		if(eff != null) {
+		if (eff != null) {
 			eff.run(e);
 		} else {
 			final StringBuilder errorBuilder = new StringBuilder();
-			for(final LogEntry entry : entryList) {
+			for (final LogEntry entry : entryList) {
 				errorBuilder.append(entry.getLevel().getLocalizedName()).append(" ").append(SkriptLogger.format(entry)).append("\n");
 			}
 			assert errorBuilder != null;
 			lastExecuteErrors = errorBuilder.toString();
 		}
-		lastExecuteState = entryList.isEmpty(); entryList.clear();
+		
+		lastExecuteState = entryList.isEmpty();
+		entryList.clear();
+		
 		SkriptLogger.cleanSuppressState();
 	}
 	

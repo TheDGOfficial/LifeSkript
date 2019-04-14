@@ -21,12 +21,6 @@
 
 package ch.njol.skript.hooks.regions.expressions;
 
-import java.util.ArrayList;
-
-import org.bukkit.OfflinePlayer;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -40,19 +34,23 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.OfflinePlayer;
+import org.bukkit.event.Event;
+
+import java.util.ArrayList;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Region Members & Owners")
-@Description({"A list of members or owners of a <a href='../classes/#region'>region</a>.",
-		"This expression requires a supported regions plugin to be installed."})
-@Examples({"on entering of a region:",
-		"	message \"You're entering %region% whose owners are %owners of region%\"."})
+@Description({"A list of members or owners of a <a href='../classes/#region'>region</a>.", "This expression requires a supported regions plugin to be installed."})
+@Examples({"on entering of a region:", "	message \"You're entering %region% whose owners are %owners of region%\"."})
 @Since("2.1")
-public class ExprMembersOfRegion extends SimpleExpression<OfflinePlayer> {
+public final class ExprMembersOfRegion extends SimpleExpression<OfflinePlayer> {
 	static {
-		Skript.registerExpression(ExprMembersOfRegion.class, OfflinePlayer.class, ExpressionType.PROPERTY,
-				"(all|the|) (0¦members|1¦owner[s]) of [[the] region[s]] %regions%", "[[the] region[s]] %regions%'[s] (0¦members|1¦owner[s])");
+		Skript.registerExpression(ExprMembersOfRegion.class, OfflinePlayer.class, ExpressionType.PROPERTY, "(all|the|) (0¦members|1¦owner[s]) of [[the] region[s]] %regions%", "[[the] region[s]] %regions%'[s] (0¦members|1¦owner[s])");
 	}
 	
 	private boolean owners;
@@ -74,7 +72,7 @@ public class ExprMembersOfRegion extends SimpleExpression<OfflinePlayer> {
 		for (final Region region : regions.getArray(e)) {
 			r.addAll(owners ? region.getOwners() : region.getMembers());
 		}
-		return r.toArray(new OfflinePlayer[r.size()]);
+		return r.toArray(new OfflinePlayer[0]);
 	}
 	
 	@Override

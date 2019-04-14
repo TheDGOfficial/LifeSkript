@@ -21,18 +21,20 @@
 
 package ch.njol.skript.command;
 
-import static org.bukkit.ChatColor.*;
-
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
-
-import org.bukkit.command.CommandSender;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.localization.ArgsMessage;
 import ch.njol.skript.localization.Message;
 import ch.njol.skript.util.Color;
+
+import org.bukkit.command.CommandSender;
+
+import static org.bukkit.ChatColor.GRAY;
+import static org.bukkit.ChatColor.RESET;
+
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -45,17 +47,19 @@ public class CommandHelp {
 	private final static Message m_usage = new Message("commands.usage");
 	
 	private String command;
+	
 	@Nullable
-	private Message description = null;
+	private Message description;
+	
 	private final String argsColor;
 	
 	@Nullable
-	private String langNode = null;
+	private String langNode;
 	
 	private final LinkedHashMap<String, Object> arguments = new LinkedHashMap<String, Object>();
 	
 	@Nullable
-	private Message wildcardArg = null;
+	private Message wildcardArg;
 	
 	public CommandHelp(final String command, final Color argsColor, final String langNode) {
 		this.command = command;
@@ -132,6 +136,7 @@ public class CommandHelp {
 		return true;
 	}
 	
+	@SuppressWarnings("null")
 	public void showHelp(final CommandSender sender) {
 		showHelp(sender, m_usage.toString());
 	}

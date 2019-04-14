@@ -26,7 +26,6 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.NoDoc;
-import ch.njol.skript.doc.Notes;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
@@ -35,27 +34,17 @@ import ch.njol.skript.log.SkriptLogger;
 import ch.njol.util.Kleenean;
 
 import org.bukkit.event.Event;
+
 import org.eclipse.jdt.annotation.Nullable;
 
-// FIXME Doesn't work well when scripts loaded at startup.
-// (works only when reloading scripts in runtime)
-// and doesn't work well with throw effect.
-
 @Name("Suppress Warnings / Errors")
-@Description("Suppress warnings or errors.")
-@Examples({"on load:",
-		"\tstart suppressing warnings",
-		"\tthrow new warning \"never™\"",
-		"\tstop suppressing warnings"})
-@Notes({"Don't forgot the stop suppressing!",
-		"If you forgot, all warnings after effect are suppressed!"})
+@Description({"Suppress warnings or errors.", "Note: Don't forgot the stop suppressing!", "If you forgot, all warnings after effect are suppressed!"})
+@Examples({"on load:", "\tstart suppressing warnings", "\tthrow new warning \"never™\"", "\tstop suppressing warnings"})
 @Since("2.2-Fixes-V11")
-public class EffSuppress extends Effect  {
+public class EffSuppress extends Effect {
 	static {
-		Skript.registerEffect(EffSuppress.class,
-				"start [the] (suppressing|hiding|disabling|blocking) [of] [the] (0¦warnings|1¦errors) [because] [of] [due to] [%-strings%]");
-		Skript.registerEffect(EffStopSuppress.class,
-				"stop [the] (suppressing|hiding|disabling|blocking) [of] [the] (0¦warnings|1¦errors) [because] [of] [due to] [%-strings%]");
+		Skript.registerEffect(EffSuppress.class, "start [the] (suppressing|hiding|disabling|blocking) [of] [the] (0¦warnings|1¦errors) [because] [of] [due to] [%-strings%]");
+		Skript.registerEffect(EffStopSuppress.class, "stop [the] (suppressing|hiding|disabling|blocking) [of] [the] (0¦warnings|1¦errors) [because] [of] [due to] [%-strings%]");
 		// the latest optional string part is for the justification, e.g:
 		// start suppressing warnings because "It is false positive"
 	}
@@ -66,7 +55,7 @@ public class EffSuppress extends Effect  {
 	@SuppressWarnings("null")
 	public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final SkriptParser.ParseResult parseResult) {
 		mark = parseResult.mark;
-		if(mark > 0) {
+		if (mark > 0) {
 			SkriptLogger.suppressErrors(true);
 		} else {
 			SkriptLogger.suppressWarnings(true);
@@ -81,7 +70,7 @@ public class EffSuppress extends Effect  {
 	@Override
 	@SuppressWarnings("null")
 	protected void execute(final Event e) {
-		if(mark > 0) {
+		if (mark > 0) {
 			SkriptLogger.suppressErrors(true);
 		} else {
 			SkriptLogger.suppressWarnings(true);
@@ -112,7 +101,7 @@ public class EffSuppress extends Effect  {
 		@Override
 		@SuppressWarnings("null")
 		protected void execute(final Event e) {
-			if(mark > 0) {
+			if (mark > 0) {
 				SkriptLogger.suppressErrors(false);
 			} else {
 				SkriptLogger.suppressWarnings(false);

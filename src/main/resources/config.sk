@@ -146,6 +146,9 @@ case sensitive: false
 # This e.g. applies to the effect 'replace' and the conditions 'contains' and 'is/is not'.
 # Variable names are case-insensitive irrespective of this setting.
 
+disable documentation generation: false
+# Change to true for disabling documentation generation at startup.
+# I don't recommend you to touch this settings but you're free to change.
 
 disable variable will not be saved warnings: true
 #Disables the "... i.e contents cannot be saved ..." warning when reloading and something in your scripts sets a variable(non local) to a value that is not serializable.
@@ -156,6 +159,12 @@ disable expression is already a text warnings: false
 
 disable start stop event warnings: false
 # Disables the "Server start/stop events are actually called when Skript is started or stopped." warnings.
+
+disable too long delay warnings: false
+# Disables the "Delays greater than one day are not persistent ..." warnings.
+
+disable delays in functions causes function to return instantly warnings: false
+# Disables the "Delays in functions causes function to return instantly, this may cause bugs ..." warnings.
 
 disable variable conflict warnings: false
 # Disables warnings of potential variable name conflicts if set to true.
@@ -178,7 +187,7 @@ databases:
 	#
 	# You can define as many databases as you want, just make sure to choose a distinct name for each one, and don't forget to set all options correctly.
 	#
-	# To be able to use a database you'll need to download the plugin 'SQLibrary' from http://dev.bukkit.org/server-mods/sqlibrary/files/
+	# To be able to use a database you'll need to download the plugin 'SQLibrary' from http://dev.bukkit.org/projects/sqlibrary/files
 	# and install it in your server's plugin directory like other plugins.
 	#
 	# Please note that '/skript reload' will not reload this section, i.e. you'll have to restart Skript for changes to take effect.

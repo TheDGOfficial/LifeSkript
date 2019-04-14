@@ -21,7 +21,11 @@
 
 package ch.njol.yggdrasil;
 
-import static ch.njol.yggdrasil.Tag.*;
+import ch.njol.yggdrasil.YggdrasilSerializable.YggdrasilExtendedSerializable;
+
+import static ch.njol.yggdrasil.Tag.T_NULL;
+import static ch.njol.yggdrasil.Tag.T_REFERENCE;
+import static ch.njol.yggdrasil.Tag.getType;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -31,8 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.yggdrasil.YggdrasilSerializable.YggdrasilExtendedSerializable;
 
 public abstract class YggdrasilInputStream implements Closeable {
 	
@@ -62,7 +64,7 @@ public abstract class YggdrasilInputStream implements Closeable {
 	
 	protected abstract int readArrayLength() throws IOException;
 	
-	private final void readArrayContents(final Object array) throws IOException {
+	private void readArrayContents(final Object array) throws IOException {
 		if (array.getClass().getComponentType().isPrimitive()) {
 			final int length = Array.getLength(array);
 			final Tag type = getType(array.getClass().getComponentType());
@@ -83,7 +85,7 @@ public abstract class YggdrasilInputStream implements Closeable {
 	protected abstract String readEnumID() throws IOException;
 	
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	private final Object readEnum() throws IOException {
+	private Object readEnum() throws IOException {
 		final Class<?> c = readEnumType();
 		final String id = readEnumID();
 		if (Enum.class.isAssignableFrom(c)) {
@@ -117,7 +119,7 @@ public abstract class YggdrasilInputStream implements Closeable {
 	
 	protected abstract String readFieldID() throws IOException;
 	
-	private final Fields readFields() throws IOException {
+	private Fields readFields() throws IOException {
 		final Fields fields = new Fields(yggdrasil);
 		final short numFields = readNumFields();
 		for (int i = 0; i < numFields; i++) {
@@ -153,7 +155,7 @@ public abstract class YggdrasilInputStream implements Closeable {
 	
 	@SuppressWarnings({"rawtypes", "unchecked", "null", "unused"})
 	@Nullable
-	private final Object readObject(final Tag t) throws IOException {
+	private Object readObject(final Tag t) throws IOException {
 		if (t == T_NULL)
 			return null;
 		if (t == T_REFERENCE) {
@@ -188,12 +190,12 @@ public abstract class YggdrasilInputStream implements Closeable {
 				final Class<?> c = readObjectType();
 				final YggdrasilSerializer s = yggdrasil.getSerializer(c);
 				if (s != null && !s.canBeInstantiated(c)) {
-					final int ref = readObjects.size();
-					readObjects.add(null);
 					final Fields fields = readFields();
 					o = s.deserialize(c, fields);
 					if (o == null)
 						throw new YggdrasilException("YggdrasilSerializer " + s + " returned null from deserialize(" + c + "," + fields + ")");
+					final int ref = readObjects.size();
+					readObjects.add(null);
 					readObjects.set(ref, o);
 				} else {
 					o = yggdrasil.newInstance(c);

@@ -21,17 +21,18 @@
 
 package ch.njol.skript.util;
 
-import java.util.HashMap;
-import java.util.Map;
+import ch.njol.skript.localization.Language;
+import ch.njol.skript.localization.LanguageChangeListener;
 
 import org.bukkit.World;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.weather.WeatherEvent;
-import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.skript.localization.Language;
-import ch.njol.skript.localization.LanguageChangeListener;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -47,7 +48,7 @@ public enum WeatherType {
 	
 	final static Map<String, WeatherType> byName = new HashMap<String, WeatherType>();
 	
-	private WeatherType(final String... names) {
+	WeatherType(final String... names) {
 		this.names = names;
 	}
 	
@@ -68,7 +69,7 @@ public enum WeatherType {
 	}
 	
 	@Nullable
-	public final static WeatherType parse(final String s) {
+	public static WeatherType parse(final String s) {
 		return byName.get(s);
 	}
 	
@@ -145,7 +146,7 @@ public enum WeatherType {
 	public void setWeather(final World w) {
 		if (w.isThundering() != (this == THUNDER))
 			w.setThundering(this == THUNDER);
-		if (w.hasStorm() != (this != CLEAR))
+		if (w.hasStorm() == (this == CLEAR))
 			w.setStorm(this != CLEAR);
 	}
 	

@@ -21,15 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.lang.reflect.Array;
-
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemType;
@@ -47,14 +38,22 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.log.ErrorQuality;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+
+import java.lang.reflect.Array;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Clicked Block/Entity")
 @Description("The clicked block or entity - only useful in click events")
-@Examples({"message \"You clicked on a %type of clicked entity%!\"",
-		"clicked block is a chest:",
-		"	show the inventory of the clicked block to the player"})
+@Examples({"message \"You clicked on a %type of clicked entity%!\"", "clicked block is a chest:", "	show the inventory of the clicked block to the player"})
 @Since("1.0")
 @Events("click")
 public class ExprClicked extends SimpleExpression<Object> {
@@ -63,12 +62,12 @@ public class ExprClicked extends SimpleExpression<Object> {
 	}
 	
 	@Nullable
-	private EntityData<?> entityType = null;
+	private EntityData<?> entityType;
 	/**
 	 * null for any block
 	 */
 	@Nullable
-	private ItemType itemType = null;
+	private ItemType itemType;
 	
 	@Override
 	public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final ParseResult parseResult) {
@@ -95,7 +94,7 @@ public class ExprClicked extends SimpleExpression<Object> {
 	}
 	
 	@Override
-	public Class<? extends Object> getReturnType() {
+	public Class<?> getReturnType() {
 		return entityType != null ? entityType.getType() : Block.class;
 	}
 	

@@ -21,12 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.event.Event;
-import org.bukkit.event.vehicle.VehicleEnterEvent;
-import org.bukkit.event.vehicle.VehicleExitEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.classes.Converter;
 import ch.njol.skript.doc.Description;
@@ -38,14 +32,19 @@ import ch.njol.skript.entity.EntityData;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Event;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Passenger")
-@Description({"The passenger of a vehicle, or the rider of a mob.",
-		"See also: <a href='#ExprVehicle'>vehicle</a>"})
-@Examples({"passenger of the minecart is a creeper or a cow",
-		"the saddled pig's passenger is a player"})
+@Description({"The passenger of a vehicle, or the rider of a mob.", "See also: <a href='#ExprVehicle'>vehicle</a>"})
+@Examples({"passenger of the minecart is a creeper or a cow", "the saddled pig's passenger is a player"})
 @Since("2.0")
 public class ExprPassenger extends SimplePropertyExpression<Entity, Entity> { // REMIND create 'vehicle' and 'passenger' expressions for vehicle enter/exit events?
 	static {

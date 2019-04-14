@@ -21,10 +21,6 @@
 
 package ch.njol.skript.events;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.world.StructureGrowEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
@@ -32,15 +28,17 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.util.StructureType;
 import ch.njol.util.Checker;
 
+import org.bukkit.event.Event;
+import org.bukkit.event.world.StructureGrowEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
-public class EvtGrow extends SkriptEvent {
+public final class EvtGrow extends SkriptEvent {
 	static {
-		Skript.registerEvent("Grow", EvtGrow.class, StructureGrowEvent.class, "grow [of %-structuretype%]")
-				.description("Called when a tree or giant mushroom grows to full size.")
-				.examples("on grow", "on grow of a tree", "on grow of a huge jungle tree")
-				.since("1.0");
+		Skript.registerEvent("Grow", EvtGrow.class, StructureGrowEvent.class, "grow [of %-structuretype%]").description("Called when a tree or giant mushroom grows to full size.").examples("on grow", "on grow of a tree", "on grow of a huge jungle tree").since("1.0");
 	}
 	
 	@Nullable

@@ -21,11 +21,6 @@
 
 package ch.njol.skript.entity;
 
-import java.util.Arrays;
-
-import org.bukkit.entity.Sheep;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
@@ -36,6 +31,12 @@ import ch.njol.skript.util.Color;
 import ch.njol.util.Checker;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.entity.Sheep;
+
+import java.util.Arrays;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
@@ -45,8 +46,9 @@ public class SheepData extends EntityData<Sheep> {
 	}
 	
 	@Nullable
-	private Color[] colors = null;
-	private int sheared = 0;
+	private Color[] colors;
+	
+	private int sheared;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -76,13 +78,12 @@ public class SheepData extends EntityData<Sheep> {
 	
 	@Override
 	public boolean match(final Sheep entity) {
-		return (sheared == 0 || entity.isSheared() == (sheared == 1))
-				&& (colors == null || SimpleExpression.check(colors, new Checker<Color>() {
-					@Override
-					public boolean check(final @Nullable Color c) {
-						return c != null && entity.getColor() == c.getWoolColor();
-					}
-				}, false, false));
+		return (sheared == 0 || entity.isSheared() == (sheared == 1)) && (colors == null || SimpleExpression.check(colors, new Checker<Color>() {
+			@Override
+			public boolean check(final @Nullable Color c) {
+				return c != null && entity.getColor() == c.getWoolColor();
+			}
+		}, false, false));
 	}
 	
 	@Override
@@ -91,7 +92,7 @@ public class SheepData extends EntityData<Sheep> {
 	}
 	
 	@Nullable
-	private Adjective[] adjectives = null;
+	private Adjective[] adjectives;
 	
 	@Override
 	public String toString(final int flags) {
@@ -106,8 +107,7 @@ public class SheepData extends EntityData<Sheep> {
 		}
 		final Noun name = getName();
 		final Adjective age = getAgeAdjective();
-		return name.getArticleWithSpace(flags) + (age == null ? "" : age.toString(name.getGender(), flags) + " ")
-				+ Adjective.toString(adjectives, name.getGender(), flags, false) + " " + name.toString(flags & Language.NO_ARTICLE_MASK);
+		return name.getArticleWithSpace(flags) + (age == null ? "" : age.toString(name.getGender(), flags) + " ") + Adjective.toString(adjectives, name.getGender(), flags, false) + " " + name.toString(flags & Language.NO_ARTICLE_MASK);
 	}
 	
 	@Override

@@ -21,16 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
@@ -48,33 +38,30 @@ import ch.njol.skript.log.ErrorQuality;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @SuppressWarnings("deprecation")
 @Name("Message")
 @Description("The (chat) message of a chat event, the join message of a join event, the quit message of a quit event, or the death message on a death event. This expression is mostly useful for being changed.")
-@Examples({"on chat:",
-		"	player has permission \"admin\"",
-		"	set message to \"<red>%message%\"",
-		"",
-		"on first join:",
-		"	set join message to \"Welcome %player% to our awesome server!\"",
-		"on join:",
-		"	player has played before",
-		"	set join message to \"Welcome back, %player%!\"",
-		"",
-		"on quit:",
-		"	set quit message to \"%player% left this awesome server!\"",
-		"",
-		"on death:",
-		"	set the death message to \"%player% died!\""})
+@Examples({"on chat:", "	player has permission \"admin\"", "	set message to \"<red>%message%\"", "", "on first join:", "	set join message to \"Welcome %player% to our awesome server!\"", "on join:", "	player has played before", "	set join message to \"Welcome back, %player%!\"", "", "on quit:", "	set quit message to \"%player% left this awesome server!\"", "", "on death:", "	set the death message to \"%player% died!\""})
 @Since("1.4.6 (chat message), 1.4.9 (join & quit messages), 2.0 (death message)")
 @Events({"chat", "join", "quit", "death"})
-public class ExprMessage extends SimpleExpression<String> {
+public final class ExprMessage extends SimpleExpression<String> {
 	
 	@SuppressWarnings("unchecked")
-	private static enum MessageType {
+	private enum MessageType {
 		CHAT("chat", "[chat( |-)]message", PlayerChatEventHandler.usesAsyncEvent ? AsyncPlayerChatEvent.class : PlayerChatEvent.class) {
 			@Override
 			@Nullable
@@ -215,7 +202,7 @@ public class ExprMessage extends SimpleExpression<String> {
 	}
 	
 	@Override
-	public Class<? extends String> getReturnType() {
+	public Class<String> getReturnType() {
 		return String.class;
 	}
 	

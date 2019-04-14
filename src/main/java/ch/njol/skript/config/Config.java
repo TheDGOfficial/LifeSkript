@@ -21,6 +21,9 @@
 
 package ch.njol.skript.config;
 
+import ch.njol.skript.Skript;
+import ch.njol.skript.config.validate.SectionValidator;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,22 +32,19 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.Skript;
-import ch.njol.skript.config.validate.SectionValidator;
 
 /**
  * Represents a config file.
  * 
  * @author Peter Güttinger
  */
-public class Config {
+public final class Config {
 	
-	boolean simple = false;
+	boolean simple;
 	
 	/**
 	 * One level of the indentation, e.g. a tab or 4 spaces.
@@ -60,17 +60,18 @@ public class Config {
 	
 	String line = "";
 	
-	int level = 0;
+	int level;
 	
 	private final SectionNode main;
 	
-	int errors = 0;
+	int errors;
 	
 	final boolean allowEmptySections;
 	
 	String fileName;
+	
 	@Nullable
-	File file = null;
+	File file;
 	
 	public Config(final InputStream source, final String fileName, final boolean simple, final boolean allowEmptySections, final String defaultSeparator) throws IOException {
 		try {
@@ -87,7 +88,7 @@ public class Config {
 			}
 			
 			if (Skript.logVeryHigh())
-				Skript.info("loading '" + fileName + "'");
+				Skript.info("Loading '" + fileName + "'");
 			
 			final ConfigReader r = new ConfigReader(source);
 			try {
@@ -191,9 +192,9 @@ public class Config {
 	 * @return A separator string useful for saving, e.g. ": " or " = ".
 	 */
 	public String getSaveSeparator() {
-		if (separator.equals(":"))
+		if (":".equals(separator))
 			return ": ";
-		if (separator.equals("="))
+		if ("=".equals(separator))
 			return " = ";
 		return " " + separator + " ";
 	}
@@ -241,7 +242,7 @@ public class Config {
 		return main.isEmpty();
 	}
 	
-	public HashMap<String, String> toMap(final String separator) {
+	public Map<String, String> toMap(final String separator) {
 		return main.toMap("", separator);
 	}
 	

@@ -21,6 +21,8 @@
 
 package ch.njol.skript.util;
 
+import ch.njol.skript.classes.Converter;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -30,12 +32,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import ch.njol.skript.classes.Converter;
-
 /**
  * @author Peter Güttinger
  */
-public abstract class FileUtils {
+public final class FileUtils {
 	
 	public static boolean RUNNINGJAVA6 = true;// = System.getProperty("java.version").startsWith("1.6"); // doesn't work reliably?
 	static {
@@ -56,13 +56,13 @@ public abstract class FileUtils {
 	/**
 	 * @return The current date and time
 	 */
-	public final static String getBackupSuffix() {
+	public static String getBackupSuffix() {
 		synchronized (backupFormat) {
 			return "" + backupFormat.format(System.currentTimeMillis());
 		}
 	}
 	
-	public final static File backup(final File f) throws IOException {
+	public static File backup(final File f) throws IOException {
 		String name = f.getName();
 		final int c = name.lastIndexOf('.');
 		final String ext = c == -1 ? null : name.substring(c + 1);
@@ -78,7 +78,7 @@ public abstract class FileUtils {
 		return backup;
 	}
 	
-	public final static File move(final File from, final File to, final boolean replace) throws IOException {
+	public static File move(final File from, final File to, final boolean replace) throws IOException {
 		if (!replace && to.exists())
 			throw new IOException("Can't rename " + from.getName() + " to " + to.getName() + ": The target file already exists");
 		if (!RUNNINGJAVA6) {
@@ -107,7 +107,7 @@ public abstract class FileUtils {
 		return to;
 	}
 	
-	public final static void copy(final File from, final File to) throws IOException {
+	public static void copy(final File from, final File to) throws IOException {
 		if (!RUNNINGJAVA6) {
 			java.nio.file.Files.copy(from.toPath(), to.toPath(), java.nio.file.StandardCopyOption.COPY_ATTRIBUTES);
 		} else {
@@ -126,12 +126,12 @@ public abstract class FileUtils {
 				if (in != null) {
 					try {
 						in.close();
-					} catch (final IOException e) {}
+					} catch (final IOException ignored) {}
 				}
 				if (out != null) {
 					try {
 						out.close();
-					} catch (final IOException e) {}
+					} catch (final IOException ignored) {}
 				}
 			}
 		}
@@ -143,7 +143,7 @@ public abstract class FileUtils {
 	 * @return A collection of all changed files (with their new names)
 	 * @throws IOException If renaming one of the files caused an IOException. Some files might have been renamed already.
 	 */
-	public final static Collection<File> renameAll(final File directory, final Converter<String, String> renamer) throws IOException {
+	public static Collection<File> renameAll(final File directory, final Converter<String, String> renamer) throws IOException {
 		final Collection<File> changed = new ArrayList<File>();
 		for (final File f : directory.listFiles()) {
 			if (f.isDirectory()) {
@@ -170,7 +170,7 @@ public abstract class FileUtils {
 	 * @param file The file to save to. Will be replaced if it exists, or created if it doesn't.
 	 * @throws IOException
 	 */
-	public final static void save(final InputStream in, final File file) throws IOException {
+	public static void save(final InputStream in, final File file) throws IOException {
 		file.getParentFile().mkdirs();
 		FileOutputStream out = null;
 		try {

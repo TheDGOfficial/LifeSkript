@@ -21,15 +21,6 @@
 
 package ch.njol.skript.hooks.regions.expressions;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import org.bukkit.block.Block;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -44,19 +35,26 @@ import ch.njol.util.Kleenean;
 import ch.njol.util.coll.iterator.ArrayIterator;
 import ch.njol.util.coll.iterator.EmptyIterator;
 
+import org.bukkit.block.Block;
+import org.bukkit.event.Event;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Blocks in Region")
-@Description({"All blocks in a <a href='../classes/#region'>region</a>.",
-		"This expression requires a supported regions plugin to be installed."})
-@Examples({"loop all blocks in the region {arena.%{faction.%player%}%}:",
-		"	clear the loop-block"})
+@Description({"All blocks in a <a href='../classes/#region'>region</a>.", "This expression requires a supported regions plugin to be installed."})
+@Examples({"loop all blocks in the region {arena.%{faction.%player%}%}:", "	clear the loop-block"})
 @Since("2.1")
-public class ExprBlocksInRegion extends SimpleExpression<Block> {
+public final class ExprBlocksInRegion extends SimpleExpression<Block> {
 	static {
-		Skript.registerExpression(ExprBlocksInRegion.class, Block.class, ExpressionType.COMBINED,
-				"[(all|the)] blocks (in|of) [[the] region[s]] %regions%");
+		Skript.registerExpression(ExprBlocksInRegion.class, Block.class, ExpressionType.COMBINED, "[(all|the)] blocks (in|of) [[the] region[s]] %regions%");
 	}
 	
 	@SuppressWarnings("null")
@@ -76,7 +74,7 @@ public class ExprBlocksInRegion extends SimpleExpression<Block> {
 		final ArrayList<Block> r = new ArrayList<Block>();
 		while (iter.hasNext())
 			r.add(iter.next());
-		return r.toArray(new Block[r.size()]);
+		return r.toArray(new Block[0]);
 	}
 	
 	@Override

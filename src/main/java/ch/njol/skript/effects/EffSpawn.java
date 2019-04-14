@@ -21,11 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -37,6 +32,13 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.util.Direction;
 import ch.njol.util.Kleenean;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -44,14 +46,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 @Name("Spawn")
 @Description("Spawn a creature.")
-@Examples({"spawn 3 creepers at the targeted block",
-		"spawn a ghast 5 meters above the player"})
+@Examples({"spawn 3 creepers at the targeted block", "spawn a ghast 5 meters above the player"})
 @Since("1.0")
-public class EffSpawn extends Effect {
+public final class EffSpawn extends Effect {
 	static {
-		Skript.registerEffect(EffSpawn.class,
-				"spawn %entitytypes% [%directions% %locations%]",
-				"spawn %number% of %entitytypes% [%directions% %locations%]");
+		Skript.registerEffect(EffSpawn.class, "spawn %entitytypes% [%directions% %locations%]", "spawn %number% of %entitytypes% [%directions% %locations%]");
 	}
 	
 	@SuppressWarnings("null")
@@ -62,7 +61,7 @@ public class EffSpawn extends Effect {
 	private Expression<Number> amount;
 	
 	@Nullable
-	public static Entity lastSpawned = null;
+	public static Entity lastSpawned;
 	
 	@SuppressWarnings({"unchecked", "null"})
 	@Override

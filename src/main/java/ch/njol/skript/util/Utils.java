@@ -21,21 +21,6 @@
 
 package ch.njol.skript.util;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.effects.EffTeleport;
 import ch.njol.skript.entity.EntityData;
@@ -47,14 +32,32 @@ import ch.njol.util.NonNullPair;
 import ch.njol.util.Pair;
 import ch.njol.util.StringUtils;
 
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Utility class.
  * 
  * @author Peter Güttinger
  */
-public abstract class Utils {
+public final class Utils {
 	
-	private Utils() {}
+	private Utils() {
+		throw new UnsupportedOperationException();
+	}
 	
 	public final static Random random = new Random();
 	
@@ -93,8 +96,7 @@ public abstract class Utils {
 	public static boolean itemStacksEqual(final @Nullable ItemStack is1, final @Nullable ItemStack is2) {
 		if (is1 == null || is2 == null)
 			return is1 == is2;
-		return is1.getType() == is2.getType() && is1.getDurability() == is2.getDurability()
-				&& (ItemType.itemMetaSupported ? is1.getItemMeta().equals(is2.getItemMeta()) : is1.getEnchantments().equals(is2.getEnchantments()));
+		return is1.getType() == is2.getType() && is1.getDurability() == is2.getDurability() && (ItemType.itemMetaSupported ? is1.getItemMeta().equals(is2.getItemMeta()) : is1.getEnchantments().equals(is2.getEnchantments()));
 	}
 	
 	/**
@@ -129,7 +131,7 @@ public abstract class Utils {
 		return target;
 	}
 	
-	public final static Pair<String, Integer> getAmount(final String s) {
+	public static Pair<String, Integer> getAmount(final String s) {
 		if (s.matches("\\d+ of .+")) {
 			return new Pair<String, Integer>(s.split(" ", 3)[2], Utils.parseInt("" + s.split(" ", 2)[0]));
 		} else if (s.matches("\\d+ .+")) {
@@ -137,7 +139,7 @@ public abstract class Utils {
 		} else if (s.matches("an? .+")) {
 			return new Pair<String, Integer>(s.split(" ", 2)[1], 1);
 		}
-		return new Pair<String, Integer>(s, Integer.valueOf(-1));
+		return new Pair<String, Integer>(s, -1);
 	}
 	
 //	public final static class AmountResponse {
@@ -189,17 +191,9 @@ public abstract class Utils {
 			
 			{"fe", "ves"},// most -f words' plurals can end in -fs as well as -ves
 			
-			{"axe", "axes"},
-			{"x", "xes"},
+			{"axe", "axes"}, {"x", "xes"},
 			
-			{"ay", "ays"},
-			{"ey", "eys"},
-			{"iy", "iys"},
-			{"oy", "oys"},
-			{"uy", "uys"},
-			{"kie", "kies"},
-			{"zombie", "zombies"},
-			{"y", "ies"},
+			{"ay", "ays"}, {"ey", "eys"}, {"iy", "iys"}, {"oy", "oys"}, {"uy", "uys"}, {"kie", "kies"}, {"zombie", "zombies"}, {"y", "ies"},
 			
 			{"h", "hes"},
 			
@@ -207,12 +201,9 @@ public abstract class Utils {
 			
 			{"us", "i"},
 			
-			{"hoe", "hoes"},
-			{"toe", "toes"},
-			{"o", "oes"},
+			{"hoe", "hoes"}, {"toe", "toes"}, {"o", "oes"},
 			
-			{"alias", "aliases"},
-			{"gas", "gases"},
+			{"alias", "aliases"}, {"gas", "gases"},
 			
 			{"child", "children"},
 			
@@ -227,7 +218,7 @@ public abstract class Utils {
 	 * @return Pair of singular string + boolean whether it was plural
 	 */
 	@SuppressWarnings("null")
-	public final static NonNullPair<String, Boolean> getEnglishPlural(final String s) {
+	public static NonNullPair<String, Boolean> getEnglishPlural(final String s) {
 		assert s != null;
 		if (s.isEmpty())
 			return new NonNullPair<String, Boolean>("", Boolean.FALSE);
@@ -246,7 +237,7 @@ public abstract class Utils {
 	 * @param s
 	 * @return The english plural of the given word
 	 */
-	public final static String toEnglishPlural(final String s) {
+	public static String toEnglishPlural(final String s) {
 		assert s != null && s.length() != 0;
 		for (final String[] p : plurals) {
 			if (s.endsWith(p[0]))
@@ -263,7 +254,7 @@ public abstract class Utils {
 	 * @param p
 	 * @return The english plural of the given word, or the word itself if p is false.
 	 */
-	public final static String toEnglishPlural(final String s, final boolean p) {
+	public static String toEnglishPlural(final String s, final boolean p) {
 		if (p)
 			return toEnglishPlural(s);
 		return s;
@@ -277,7 +268,7 @@ public abstract class Utils {
 	 * @see #A(String)
 	 * @see #a(String, boolean)
 	 */
-	public final static String a(final String s) {
+	public static String a(final String s) {
 		return a(s, false);
 	}
 	
@@ -289,7 +280,7 @@ public abstract class Utils {
 	 * @see #a(String)
 	 * @see #a(String, boolean)
 	 */
-	public final static String A(final String s) {
+	public static String A(final String s) {
 		return a(s, true);
 	}
 	
@@ -301,7 +292,7 @@ public abstract class Utils {
 	 * @return The given string with an appended a/an (or A/An if capA is true) and a space at the beginning
 	 * @see #a(String)
 	 */
-	public final static String a(final String s, final boolean capA) {
+	public static String a(final String s, final boolean capA) {
 		assert s != null && s.length() != 0;
 		if ("aeiouAEIOU".indexOf(s.charAt(0)) != -1) {
 			if (capA)
@@ -391,7 +382,7 @@ public abstract class Utils {
 	}
 	
 	@Nullable
-	public final static String getChatStyle(final String s) {
+	public static String getChatStyle(final String s) {
 		final Color c = Color.byName(s);
 		if (c != null)
 			return c.getChat();
@@ -407,12 +398,13 @@ public abstract class Utils {
 	 * @param message
 	 * @return message with localised chat styles converted to Minecraft's format
 	 */
-	public final static String replaceChatStyles(final String message) {
+	public static String replaceChatStyles(final String message) {
 		if (message.isEmpty())
 			return message;
 		String m = StringUtils.replaceAll("" + message.replace("<<none>>", ""), stylePattern, new Callback<String, Matcher>() {
 			@Override
-			public String run(final Matcher m) {
+			public String run(final @Nullable Matcher m) {
+				@SuppressWarnings("null")
 				final Color c = Color.byName("" + m.group(1));
 				if (c != null)
 					return c.getChat();
@@ -434,12 +426,13 @@ public abstract class Utils {
 	 * @param message
 	 * @return message with english chat styles converted to Minecraft's format
 	 */
-	public final static String replaceEnglishChatStyles(final String message) {
+	public static String replaceEnglishChatStyles(final String message) {
 		if (message.isEmpty())
 			return message;
 		String m = StringUtils.replaceAll(message, stylePattern, new Callback<String, Matcher>() {
 			@Override
-			public String run(final Matcher m) {
+			public String run(final @Nullable Matcher m) {
+				@SuppressWarnings("null")
 				final Color c = Color.byEnglishName("" + m.group(1));
 				if (c != null)
 					return c.getChat();
@@ -468,7 +461,7 @@ public abstract class Utils {
 	}
 	
 	// TODO improve
-	public final static Class<?> getSuperType(final Class<?>... cs) {
+	public static Class<?> getSuperType(final Class<?>... cs) {
 		assert cs.length > 0;
 		Class<?> r = cs[0];
 		assert r != null;
@@ -507,7 +500,7 @@ public abstract class Utils {
 	 * @param s
 	 * @return The parsed integer, {@link Integer#MIN_VALUE} or {@link Integer#MAX_VALUE} respectively
 	 */
-	public final static int parseInt(final String s) {
+	public static int parseInt(final String s) {
 		assert s.matches("-?\\d+");
 		try {
 			return Integer.parseInt(s);
@@ -524,7 +517,7 @@ public abstract class Utils {
 	 * @param s
 	 * @return The parsed long, {@link Long#MIN_VALUE} or {@link Long#MAX_VALUE} respectively
 	 */
-	public final static long parseLong(final String s) {
+	public static long parseLong(final String s) {
 		assert s.matches("-?\\d+");
 		try {
 			return Long.parseLong(s);

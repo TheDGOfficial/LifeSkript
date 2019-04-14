@@ -21,9 +21,6 @@
 
 package ch.njol.skript.lang.function;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ParseContext;
@@ -31,10 +28,14 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
-public class EffFunctionCall extends Effect {
+public final class EffFunctionCall extends Effect {
 	
 	private final FunctionReference<?> function;
 	
@@ -43,7 +44,7 @@ public class EffFunctionCall extends Effect {
 	}
 	
 	@Nullable
-	public final static EffFunctionCall parse(final String line) {
+	public static EffFunctionCall parse(final String line) {
 		final FunctionReference<?> function = new SkriptParser(line, SkriptParser.ALL_FLAGS, ParseContext.DEFAULT).parseFunction((Class<?>[]) null);
 		if (function != null)
 			return new EffFunctionCall(function);

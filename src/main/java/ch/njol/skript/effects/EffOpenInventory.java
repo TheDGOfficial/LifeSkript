@@ -21,11 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.inventory.Inventory;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -36,20 +31,22 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.inventory.Inventory;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Open/Close Inventory")
-@Description({"Opens an inventory to a player. The player can then access and modify the inventory as if it was a chest that he just opened.",
-		"Please note that currently 'show' and 'open' have the same effect, but 'show' will eventually show an unmodifiable view of the inventory in the future."})
-@Examples({"show the victim's inventory to the player",
-		"open the player's inventory for the player"})
+@Description({"Opens an inventory to a player. The player can then access and modify the inventory as if it was a chest that he just opened.", "Please note that currently 'show' and 'open' have the same effect, but 'show' will eventually show an unmodifiable view of the inventory in the future."})
+@Examples({"show the victim's inventory to the player", "open the player's inventory for the player"})
 @Since("2.0, 2.1.1 (closing)")
-public class EffOpenInventory extends Effect {
+public final class EffOpenInventory extends Effect {
 	static {
-		Skript.registerEffect(EffOpenInventory.class,
-				"(0¦open|1¦show) ((crafting [table]|workbench) (view|window|inventory|)|%-inventory%) (to|for) %players%",
-				"close [the] inventory [view] (to|of|for) %players%", "close %players%'[s] inventory [view]");
+		Skript.registerEffect(EffOpenInventory.class, "(0¦open|1¦show) ((crafting [table]|workbench) (view|window|inventory|)|%-inventory%) (to|for) %players%", "close [the] inventory [view] (to|of|for) %players%", "close %players%'[s] inventory [view]");
 	}
 	
 	@Nullable

@@ -21,16 +21,17 @@
 
 package ch.njol.skript.lang;
 
+import org.bukkit.event.Event;
+
 import java.io.File;
 import java.util.List;
 
-import org.bukkit.event.Event;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
  */
-public class Trigger extends TriggerSection {
+public final class Trigger extends TriggerSection {
 	
 	private final String name;
 	private final SkriptEvent event;
@@ -38,7 +39,7 @@ public class Trigger extends TriggerSection {
 	@Nullable
 	private final File script;
 	private int line = -1; // -1 is default: it means there is no line number available
- 	private String debugLabel;
+	private String debugLabel;
 	
 	public Trigger(final @Nullable File script, final String name, final SkriptEvent event, final List<TriggerItem> items) {
 		super(items);
@@ -52,7 +53,7 @@ public class Trigger extends TriggerSection {
 	 * Executes this trigger for certain event.
 	 * 
 	 * @param e The event.
- 	 * @return false if an e error occurred.
+	 * @return false if an e error occurred.
 	 */
 	public boolean execute(final Event e) {
 		return TriggerItem.walk(this, e);
@@ -73,7 +74,7 @@ public class Trigger extends TriggerSection {
 	 * Gets name of this trigger.
 	 * 
 	 * @return Name of trigger.
- 	 */
+	 */
 	public String getName() {
 		return name;
 	}
@@ -98,7 +99,7 @@ public class Trigger extends TriggerSection {
 	 * @param line Line number.
 	 */
 	public void setLineNumber(final int line) {
-		this.line  = line;
+		this.line = line;
 	}
 	
 	/**
@@ -116,6 +117,6 @@ public class Trigger extends TriggerSection {
 	
 	public String getDebugLabel() {
 		return debugLabel;
- 	}
+	}
 	
 }

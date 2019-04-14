@@ -21,15 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Projectile;
-import org.bukkit.event.Event;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.vehicle.VehicleDamageEvent;
-import org.bukkit.event.vehicle.VehicleDestroyEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.bukkitutil.ProjectileUtils;
@@ -46,16 +37,22 @@ import ch.njol.skript.log.ErrorQuality;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Attacker")
-@Description({"The attacker of a damage event, e.g. when a player attacks a zombie this expression represents the player.",
-		"Please note that the attacker can also be a block, e.g. a cactus or lava, but this expression will not be set in these cases."})
-@Examples({"on damage:",
-		"	attacker is a player",
-		"	health of attacker is less than or equal to 2",
-		"	damage victim by 1 heart"})
+@Description({"The attacker of a damage event, e.g. when a player attacks a zombie this expression represents the player.", "Please note that the attacker can also be a block, e.g. a cactus or lava, but this expression will not be set in these cases."})
+@Examples({"on damage:", "	attacker is a player", "	health of attacker is less than or equal to 2", "	damage victim by 1 heart"})
 @Since("1.3")
 @Events({"damage", "death", "destroy"})
 public class ExprAttacker extends SimpleExpression<Entity> {

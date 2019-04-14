@@ -21,14 +21,6 @@
 
 package ch.njol.skript.expressions.base;
 
-import java.lang.reflect.Array;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.SkriptAPIException;
 import ch.njol.skript.classes.Changer;
@@ -46,6 +38,15 @@ import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
+
+import org.bukkit.event.Event;
+
+import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * A useful class for creating default expressions. It simply returns the event value of the given type.
@@ -125,7 +126,6 @@ public class EventValueExpression<T> extends SimpleExpression<T> implements Defa
 	@SuppressWarnings("null")
 	@Override
 	public boolean init() {
-		boolean hasValue = false;
 		final Class<? extends Event>[] es = ScriptLoader.getCurrentEvents();
 		if (es == null) {
 			//assert false;
@@ -133,6 +133,7 @@ public class EventValueExpression<T> extends SimpleExpression<T> implements Defa
 		}
 		final ParseLogHandler log = SkriptLogger.startParseLogHandler();
 		try {
+			boolean hasValue = false;
 			for (final Class<? extends Event> e : es) {
 				if (getters.containsKey(e)) {
 					hasValue = getters.get(e) != null;

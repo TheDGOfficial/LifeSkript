@@ -1,16 +1,17 @@
 package ch.njol.skript.util;
 
+import ch.njol.skript.Skript;
+import ch.njol.util.Closeable;
+
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.Skript;
-import ch.njol.util.Closeable;
 
 /**
  * @author Peter Güttinger
@@ -54,17 +55,13 @@ public abstract class Task implements Runnable, Closeable {
 		assert !isAlive();
 		if (period == -1) {
 			if (async) {
-				taskID = Skript.isRunningMinecraft(1, 4, 6) ?
-						Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, this, delay).getTaskId() :
-						Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, this, delay);
+				taskID = Skript.isRunningMinecraft(1, 4, 6) ? Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, this, delay).getTaskId() : Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, this, delay);
 			} else {
 				taskID = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this, delay);
 			}
 		} else {
 			if (async) {
-				taskID = Skript.isRunningMinecraft(1, 4, 6) ?
-						Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this, delay, period).getTaskId() :
-						Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, this, delay, period);
+				taskID = Skript.isRunningMinecraft(1, 4, 6) ? Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this, delay, period).getTaskId() : Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, this, delay, period);
 			} else {
 				taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, delay, period);
 			}
@@ -128,7 +125,7 @@ public abstract class Task implements Runnable, Closeable {
 	 * Equivalent to <tt>{@link #callSync(Callable, Plugin) callSync}(c, {@link Skript#getInstance()})</tt>
 	 */
 	@Nullable
-	public final static <T> T callSync(final Callable<T> c) {
+	public static <T> T callSync(final Callable<T> c) {
 		return callSync(c, Skript.getInstance());
 	}
 	
@@ -142,7 +139,7 @@ public abstract class Task implements Runnable, Closeable {
 	 * @return What the method returned or null if it threw an error or was stopped (usually due to the server shutting down)
 	 */
 	@Nullable
-	public final static <T> T callSync(final Callable<T> c, final Plugin p) {
+	public static <T> T callSync(final Callable<T> c, final Plugin p) {
 		if (Bukkit.isPrimaryThread()) {
 			try {
 				return c.call();
@@ -155,11 +152,11 @@ public abstract class Task implements Runnable, Closeable {
 			while (true) {
 				try {
 					return f.get();
-				} catch (final InterruptedException e) {}
+				} catch (final InterruptedException ignored) {}
 			}
 		} catch (final ExecutionException e) {
 			Skript.exception(e);
-		} catch (final CancellationException e) {} catch (final ThreadDeath e) {}// server shutting down
+		} catch (final CancellationException ignored) {} catch (final ThreadDeath ignored) {}// server shutting down
 		return null;
 	}
 	

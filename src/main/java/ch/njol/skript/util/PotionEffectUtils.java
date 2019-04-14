@@ -21,33 +21,36 @@
 
 package ch.njol.skript.util;
 
-import java.util.HashMap;
-import java.util.Map;
+import ch.njol.skript.localization.Language;
+import ch.njol.skript.localization.LanguageChangeListener;
 
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.skript.localization.Language;
-import ch.njol.skript.localization.LanguageChangeListener;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
  */
 @SuppressWarnings("deprecation")
-public abstract class PotionEffectUtils {
+public final class PotionEffectUtils {
 	
-	private PotionEffectUtils() {}
+	private PotionEffectUtils() {
+		throw new UnsupportedOperationException();
+	}
 	
 	final static Map<String, PotionEffectType> types = new HashMap<String, PotionEffectType>();
 	
 	final static String[] names = new String[getMaxPotionId() + 1];
 	
 	// MCPC+ workaround
-	private final static int getMaxPotionId() {
+	private static int getMaxPotionId() {
 		int i = 0;
 		for (final PotionEffectType t : PotionEffectType.values()) {
 			if (t != null && t.getId() > i)
@@ -90,7 +93,7 @@ public abstract class PotionEffectUtils {
 		return names[t.getId()];
 	}
 	
-	public final static String[] getNames() {
+	public static String[] getNames() {
 		return names;
 	}
 	

@@ -21,15 +21,6 @@
 
 package ch.njol.skript.events;
 
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.classes.Comparator.Relation;
@@ -42,32 +33,33 @@ import ch.njol.skript.log.ErrorQuality;
 import ch.njol.util.Checker;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @SuppressWarnings("unchecked")
-public class EvtClick extends SkriptEvent {
+public final class EvtClick extends SkriptEvent {
 	
 	// Important: a click on an entity fires both an PlayerInteractEntityEvent and a PlayerInteractEvent
 	
 	private final static int RIGHT = 1, LEFT = 2, ANY = RIGHT | LEFT;
 	
 	static {
-		Skript.registerEvent("Click", EvtClick.class, CollectionUtils.array(PlayerInteractEvent.class, PlayerInteractEntityEvent.class),
-				"[(" + RIGHT + "¦right|" + LEFT + "¦left)(| |-)][mouse(| |-)]click[ing] [on %-entitydata/itemtype%] [(with|using|holding) %itemtype%]",
-				"[(" + RIGHT + "¦right|" + LEFT + "¦left)(| |-)][mouse(| |-)]click[ing] (with|using|holding) %itemtype% on %entitydata/itemtype%")
-				.description("Called when a user clicks on a block, an entity or air with or without an item in their hand.",
-						"Please note that rightclick events with an empty hand while not looking at a block are not sent to the server, so there's no way to detect them.")
-				.examples("on click",
-						"on rightclick holding a fishing rod",
-						"on leftclick on a stone or obsidian",
-						"on rightclick on a creeper",
-						"on click with a sword")
-				.since("1.0");
+		Skript.registerEvent("Click", EvtClick.class, CollectionUtils.array(PlayerInteractEvent.class, PlayerInteractEntityEvent.class), "[(" + RIGHT + "¦right|" + LEFT + "¦left)(| |-)][mouse(| |-)]click[ing] [on %-entitydata/itemtype%] [(with|using|holding) %itemtype%]", "[(" + RIGHT + "¦right|" + LEFT + "¦left)(| |-)][mouse(| |-)]click[ing] (with|using|holding) %itemtype% on %entitydata/itemtype%").description("Called when a user clicks on a block, an entity or air with or without an item in their hand.", "Please note that rightclick events with an empty hand while not looking at a block are not sent to the server, so there's no way to detect them.").examples("on click", "on rightclick holding a fishing rod", "on leftclick on a stone or obsidian", "on rightclick on a creeper", "on click with a sword").since("1.0");
 	}
 	
 	@Nullable
-	private Literal<?> types = null;
+	private Literal<?> types;
+	
 	@Nullable
 	private Literal<ItemType> tools;
 	
@@ -143,7 +135,7 @@ public class EvtClick extends SkriptEvent {
 					if (entity != null) {
 						return o instanceof EntityData ? ((EntityData<?>) o).isInstance(entity) : Relation.EQUAL.is(DefaultComparators.entityItemComparator.compare(EntityData.fromEntity(entity), (ItemType) o));
 					} else {
-						return o instanceof EntityData ? false : ((ItemType) o).isOfType(block);
+						return !(o instanceof EntityData) && ((ItemType) o).isOfType(block);
 					}
 				}
 			});

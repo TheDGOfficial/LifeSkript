@@ -21,21 +21,23 @@
 
 package ch.njol.skript.classes;
 
+import ch.njol.skript.expressions.base.EventValueExpression;
+import ch.njol.skript.lang.Debuggable;
+import ch.njol.skript.lang.DefaultExpression;
+import ch.njol.skript.lang.util.SimpleLiteral;
+import ch.njol.skript.localization.Noun;
+
+import org.bukkit.event.Event;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.bukkit.event.Event;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.skript.expressions.base.EventValueExpression;
-import ch.njol.skript.lang.Debuggable;
-import ch.njol.skript.lang.DefaultExpression;
-import ch.njol.skript.lang.util.SimpleLiteral;
-import ch.njol.skript.localization.Noun;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -50,37 +52,43 @@ public class ClassInfo<T> implements Debuggable {
 	private final Noun name;
 	
 	@Nullable
-	private DefaultExpression<T> defaultExpression = null;
+	private DefaultExpression<T> defaultExpression;
 	
 	@Nullable
-	private Parser<? extends T> parser = null;
+	private Parser<? extends T> parser;
 	
 	@Nullable
-	private Pattern[] userInputPatterns = null;
+	private Pattern[] userInputPatterns;
 	
 	@Nullable
-	private Changer<? super T> changer = null;
+	private Changer<? super T> changer;
 	
 	@Nullable
-	private Serializer<? super T> serializer = null;
-	@Nullable
-	private Class<?> serializeAs = null;
+	private Serializer<? super T> serializer;
 	
 	@Nullable
-	private Arithmetic<? super T, ?> math = null;
-	@Nullable
-	private Class<?> mathRelativeType = null;
+	private Class<?> serializeAs;
 	
 	@Nullable
-	private String docName = null;
+	private Arithmetic<? super T, ?> math;
+	
 	@Nullable
-	private String[] description = null;
+	private Class<?> mathRelativeType;
+	
 	@Nullable
-	private String[] usage = null;
+	private String docName;
+	
 	@Nullable
-	private String[] examples = null;
+	private String[] description;
+	
 	@Nullable
-	private String since = null;
+	private String[] usage;
+	
+	@Nullable
+	private String[] examples;
+	
+	@Nullable
+	private String since;
 	
 	/**
 	 * @param c The class
@@ -94,7 +102,7 @@ public class ClassInfo<T> implements Debuggable {
 		name = new Noun("types." + codeName);
 	}
 	
-	public final static boolean isVaildCodeName(final String name) {
+	public static boolean isVaildCodeName(final String name) {
 		return name.matches("[a-z0-9]+");
 	}
 	
@@ -154,11 +162,6 @@ public class ClassInfo<T> implements Debuggable {
 			throw new IllegalStateException("Can't set this class to be serialized as another one if a serializer is already set");
 		this.serializeAs = serializeAs;
 		return this;
-	}
-	
-	@Deprecated
-	public ClassInfo<T> changer(final SerializableChanger<? super T> changer) {
-		return changer((Changer<? super T>) changer);
 	}
 	
 	public ClassInfo<T> changer(final Changer<? super T> changer) {

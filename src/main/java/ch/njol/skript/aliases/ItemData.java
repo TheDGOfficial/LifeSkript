@@ -21,19 +21,20 @@
 
 package ch.njol.skript.aliases;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.util.Utils;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.coll.CollectionUtils;
 import ch.njol.util.coll.iterator.SingleItemIterator;
 import ch.njol.yggdrasil.YggdrasilSerializable;
+
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -162,9 +163,7 @@ public final class ItemData implements Cloneable, YggdrasilSerializable {
 		if (other.dataMin != -1 && dataMin != -1 && (other.dataMax < dataMin || dataMax < other.dataMin) || other.typeid != -1 && typeid != -1 && other.typeid != typeid)
 			return null;
 		
-		return new ItemData(typeid == -1 ? other.typeid : typeid,
-				(short) Math.max(dataMin, other.dataMin),
-				dataMax == -1 ? other.dataMax : other.dataMax == -1 ? dataMax : (short) Math.min(dataMax, other.dataMax));
+		return new ItemData(typeid == -1 ? other.typeid : typeid, (short) Math.max(dataMin, other.dataMin), dataMax == -1 ? other.dataMax : other.dataMax == -1 ? dataMax : (short) Math.min(dataMax, other.dataMax));
 	}
 	
 	public ItemStack getRandom() {

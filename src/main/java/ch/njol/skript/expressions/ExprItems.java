@@ -21,15 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import org.bukkit.Material;
-import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.doc.Description;
@@ -47,27 +38,32 @@ import ch.njol.util.coll.iterator.ArrayIterator;
 import ch.njol.util.coll.iterator.CheckedIterator;
 import ch.njol.util.coll.iterator.IteratorIterable;
 
+import org.bukkit.Material;
+import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Items")
 @Description("Items or blocks of a specific type, useful for looping.")
-@Examples({"loop items of type ore and log:",
-		"	block contains loop-item",
-		"	message \"Theres at least one %loop-item% in this block\"",
-		"drop all blocks at the player # drops one of every block at the player"})
+@Examples({"loop items of type ore and log:", "	block contains loop-item", "	message \"Theres at least one %loop-item% in this block\"", "drop all blocks at the player # drops one of every block at the player"})
 @Since("")
 public class ExprItems extends SimpleExpression<ItemStack> {
 	
 	static {
-		Skript.registerExpression(ExprItems.class, ItemStack.class, ExpressionType.COMBINED,
-				"[(all|every)] item(s|[ ]types)", "items of type[s] %itemtypes%",
-				"[(all|every)] block(s|[ ]types)", "blocks of type[s] %itemtypes%");
+		Skript.registerExpression(ExprItems.class, ItemStack.class, ExpressionType.COMBINED, "[(all|every)] item(s|[ ]types)", "items of type[s] %itemtypes%", "[(all|every)] block(s|[ ]types)", "blocks of type[s] %itemtypes%");
 	}
 	
 	@Nullable
-	Expression<ItemType> types = null;
-	private boolean blocks = false;
+	Expression<ItemType> types;
+	private boolean blocks;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -83,7 +79,7 @@ public class ExprItems extends SimpleExpression<ItemStack> {
 	}
 	
 	@Nullable
-	private ItemStack[] buffer = null;
+	private ItemStack[] buffer;
 	
 	@SuppressWarnings("null")
 	@Override
@@ -94,8 +90,8 @@ public class ExprItems extends SimpleExpression<ItemStack> {
 		for (final ItemStack is : new IteratorIterable<ItemStack>(iterator(e)))
 			r.add(is);
 		if (types instanceof Literal)
-			return buffer = r.toArray(new ItemStack[r.size()]);
-		return r.toArray(new ItemStack[r.size()]);
+			return buffer = r.toArray(new ItemStack[0]);
+		return r.toArray(new ItemStack[0]);
 	}
 	
 	@Override
@@ -105,16 +101,16 @@ public class ExprItems extends SimpleExpression<ItemStack> {
 		if (types == null) {
 			iter = new Iterator<ItemStack>() {
 				
-				private final Iterator<Material> iter = new ArrayIterator<Material>(Material.values());
+				private final Iterator<Material> iterator = new ArrayIterator<Material>(Material.values());
 				
 				@Override
 				public boolean hasNext() {
-					return iter.hasNext();
+					return iterator.hasNext();
 				}
 				
 				@Override
 				public ItemStack next() {
-					return new ItemStack(iter.next());
+					return new ItemStack(iterator.next());
 				}
 				
 				@Override
@@ -167,7 +163,7 @@ public class ExprItems extends SimpleExpression<ItemStack> {
 	}
 	
 	@Override
-	public Class<? extends ItemStack> getReturnType() {
+	public Class<ItemStack> getReturnType() {
 		return ItemStack.class;
 	}
 	
@@ -184,7 +180,7 @@ public class ExprItems extends SimpleExpression<ItemStack> {
 	
 	@Override
 	public boolean isLoopOf(final String s) {
-		return blocks && s.equalsIgnoreCase("block") || !blocks && s.equalsIgnoreCase("item");
+		return blocks && "block".equalsIgnoreCase(s) || !blocks && "item".equalsIgnoreCase(s);
 	}
 	
 }

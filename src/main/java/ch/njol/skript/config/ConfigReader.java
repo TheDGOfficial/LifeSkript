@@ -39,10 +39,10 @@ public class ConfigReader extends BufferedReader {
 	
 	@Nullable
 	private String line;
-	private boolean reset = false;
-	private int ln = 0;
+	private boolean reset;
+	private int ln;
 	
-	private boolean hasNonEmptyLine = false;
+	private boolean hasNonEmptyLine;
 	
 	public ConfigReader(final InputStream source) {
 		super(new InputStreamReader(source, UTF_8));
@@ -61,7 +61,7 @@ public class ConfigReader extends BufferedReader {
 	}
 	
 	@Nullable
-	private final String stripUTF8BOM(final @Nullable String line) {
+	private String stripUTF8BOM(final @Nullable String line) {
 		if (!hasNonEmptyLine && line != null && !line.isEmpty()) {
 			hasNonEmptyLine = true;
 			if (line.startsWith("\uFEFF")) {

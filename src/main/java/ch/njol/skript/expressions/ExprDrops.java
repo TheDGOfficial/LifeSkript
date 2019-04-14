@@ -21,14 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.List;
-
-import org.bukkit.event.Event;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemType;
@@ -49,13 +41,21 @@ import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 import ch.njol.util.coll.iterator.IteratorIterable;
 
+import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Drops")
 @Description("Only works in death events. Holds the drops of the dying creature. Drops can be prevented by removing them with \"remove ... from drops\", e.g. \"remove all pickaxes from the drops\", or \"clear drops\" if you don't want any drops at all.")
-@Examples({"clear drops",
-		"remove 4 planks from the drops"})
+@Examples({"clear drops", "remove 4 planks from the drops"})
 @Since("1.0")
 @Events("death")
 public class ExprDrops extends SimpleExpression<ItemStack> {
@@ -170,7 +170,7 @@ public class ExprDrops extends SimpleExpression<ItemStack> {
 	}
 	
 	@Override
-	public Class<? extends ItemStack> getReturnType() {
+	public Class<ItemStack> getReturnType() {
 		return ItemStack.class;
 	}
 	

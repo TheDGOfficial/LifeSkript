@@ -21,10 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.command.EffectCommandEvent;
@@ -37,6 +33,11 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+
+import org.bukkit.command.CommandSender;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -72,7 +73,7 @@ public class ExprMe extends SimpleExpression<CommandSender> {
 	}
 	
 	@Override
-	public Class<? extends CommandSender> getReturnType() {
+	public Class<CommandSender> getReturnType() {
 		return CommandSender.class;
 	}
 	

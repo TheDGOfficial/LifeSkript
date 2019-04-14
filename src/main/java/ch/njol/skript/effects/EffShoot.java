@@ -21,15 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Projectile;
-import org.bukkit.event.Event;
-import org.bukkit.util.Vector;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.bukkitutil.ProjectileUtils;
 import ch.njol.skript.doc.Description;
@@ -43,20 +34,26 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.util.Direction;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.Event;
+import org.bukkit.util.Vector;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Shoot")
 @Description("Shoots a projectile (or any other entity) from a given entity.")
-@Examples({"shoot an arrow",
-		"make the player shoot a creeper at speed 10",
-		"shoot a pig from the creeper"})
+@Examples({"shoot an arrow", "make the player shoot a creeper at speed 10", "shoot a pig from the creeper"})
 @Since("1.4")
-public class EffShoot extends Effect {
+public final class EffShoot extends Effect {
 	static {
-		Skript.registerEffect(EffShoot.class,
-				"shoot %entitydatas% [from %livingentities/locations%] [(at|with) (speed|velocity) %-number%] [%-direction%]",
-				"(make|let) %livingentities/locations% shoot %entitydatas% [(at|with) (speed|velocity) %-number%] [%-direction%]");
+		Skript.registerEffect(EffShoot.class, "shoot %entitydatas% [from %livingentities/locations%] [(at|with) (speed|velocity) %-number%] [%-direction%]", "(make|let) %livingentities/locations% shoot %entitydatas% [(at|with) (speed|velocity) %-number%] [%-direction%]");
 	}
 	
 	private final static Double DEFAULT_SPEED = 5.;
@@ -71,7 +68,7 @@ public class EffShoot extends Effect {
 	private Expression<Direction> direction;
 	
 	@Nullable
-	public static Entity lastSpawned = null;
+	public static Entity lastSpawned;
 	
 	@SuppressWarnings({"unchecked", "null"})
 	@Override
@@ -129,7 +126,7 @@ public class EffShoot extends Effect {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private final static <E extends Entity> void set(final Entity e, final EntityData<E> d) {
+	private static <E extends Entity> void set(final Entity e, final EntityData<E> d) {
 		d.set((E) e);
 	}
 	

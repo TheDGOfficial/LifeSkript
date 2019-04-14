@@ -21,6 +21,19 @@
 
 package ch.njol.skript.lang.function;
 
+import ch.njol.skript.ScriptLoader;
+import ch.njol.skript.Skript;
+import ch.njol.skript.SkriptAPIException;
+import ch.njol.skript.classes.ClassInfo;
+import ch.njol.skript.config.SectionNode;
+import ch.njol.skript.lang.ParseContext;
+import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.log.SkriptLogger;
+import ch.njol.skript.registrations.Classes;
+import ch.njol.skript.util.Utils;
+import ch.njol.util.NonNullPair;
+import ch.njol.util.StringUtils;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,23 +47,14 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.skript.Skript;
-import ch.njol.skript.SkriptAPIException;
-import ch.njol.skript.classes.ClassInfo;
-import ch.njol.skript.config.SectionNode;
-import ch.njol.skript.lang.ParseContext;
-import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.log.SkriptLogger;
-import ch.njol.skript.registrations.Classes;
-import ch.njol.skript.util.Utils;
-import ch.njol.util.NonNullPair;
-import ch.njol.util.StringUtils;
-
 /**
  * @author Peter Güttinger
  */
-public abstract class Functions {
-	private Functions() {}
+public final class Functions {
+	
+	private Functions() {
+		throw new UnsupportedOperationException();
+	}
 	
 	final static class FunctionData {
 		final Function<?> function;
@@ -62,7 +66,7 @@ public abstract class Functions {
 	}
 	
 	@Nullable
-	public static ScriptFunction<?> currentFunction = null;
+	public static ScriptFunction<?> currentFunction;
 	
 	final static Map<String, JavaFunction<?>> javaFunctions = new HashMap<String, JavaFunction<?>>();
 	final static Map<String, FunctionData> functions = new HashMap<String, FunctionData>();
@@ -71,7 +75,7 @@ public abstract class Functions {
 	 * @param function
 	 * @return The passed function
 	 */
-	public final static JavaFunction<?> registerFunction(final JavaFunction<?> function) {
+	public static JavaFunction<?> registerFunction(final JavaFunction<?> function) {
 		Skript.checkAcceptRegistrations();
 		if (!function.name.matches(functionNamePattern))
 			throw new SkriptAPIException("Invalid function name '" + function.name + "'");
@@ -82,7 +86,7 @@ public abstract class Functions {
 		return function;
 	}
 	
-	final static void registerCaller(final FunctionReference<?> r) {
+	static void registerCaller(final FunctionReference<?> r) {
 		final FunctionData d = functions.get(r.functionName);
 		assert d != null;
 		d.calls.add(r);
@@ -96,16 +100,15 @@ public abstract class Functions {
 	
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public final static Function<?> loadFunction(final SectionNode node) {
+	public static Function<?> loadFunction(final SectionNode node) {
 		SkriptLogger.setNode(node);
-		final String definition = node.getKey();
+		final String key = node.getKey();
+		final String definition = ScriptLoader.replaceOptions(key == null ? "" : key);
 		assert definition != null;
 		final Matcher m = functionPattern.matcher(definition);
 		if (!m.matches())
 			return error("Invalid function definition. Please check for typos and that the function's name only contains letters and underscores. Refer to the documentation for more information.");
-		final String name = "" + m.group(1);
 		final String args = m.group(2);
-		final String returnType = m.group(3);
 		final List<Parameter<?>> params = new ArrayList<Parameter<?>>();
 		int j = 0;
 		for (int i = 0; i <= args.length(); i = SkriptParser.next(args, i, ParseContext.DEFAULT)) {
@@ -117,7 +120,7 @@ public abstract class Functions {
 				if (arg.isEmpty()) // Zero-argument function
 					break;
 				
- 				// One ore more arguments, indeed
+				// One ore more arguments, indeed
 				final Matcher n = paramPattern.matcher(arg);
 				if (!n.matches())
 					return error("The " + StringUtils.fancyOrderNumber(params.size() + 1) + " argument's definition is invalid. It should look like 'name: type' or 'name: type = default value'.");
@@ -131,7 +134,7 @@ public abstract class Functions {
 				if (argType.endsWith("?")) {
 					nullable = true;
 					argType = argType.substring(0, argType.length() - 1);
- 				}
+				}
 				ClassInfo<?> c;
 				c = Classes.getClassInfoFromUserInput("" + argType);
 				final NonNullPair<String, Boolean> pl = Utils.getEnglishPlural("" + argType);
@@ -151,6 +154,7 @@ public abstract class Functions {
 		}
 		ClassInfo<?> c;
 		final NonNullPair<String, Boolean> p;
+		final String returnType = m.group(3);
 		if (returnType == null) {
 			c = null;
 			p = null;
@@ -165,23 +169,24 @@ public abstract class Functions {
 			}
 		}
 		
+		final String name = "" + m.group(1);
 		if (Skript.debug() || node.debug())
 			Skript.debug("function " + name + "(" + StringUtils.join(params, ", ") + ")" + (c != null && p != null ? " :: " + Utils.toEnglishPlural(c.getCodeName(), p.getSecond()) : "") + ":");
 		
 		@SuppressWarnings("null")
-		final Function<?> f = new ScriptFunction<Object>(name, params.toArray(new Parameter[params.size()]), node, (ClassInfo<Object>) c, p == null ? false : !p.getSecond());
+		final Function<?> f = new ScriptFunction<Object>(name, params.toArray(new Parameter[0]), node, (ClassInfo<Object>) c, p != null && !p.getSecond());
 //		functions.put(name, new FunctionData(f)); // in constructor
 		return f;
 	}
 	
 	@Nullable
-	private final static Function<?> error(final String error) {
+	private static Function<?> error(final String error) {
 		Skript.error(error);
 		return null;
 	}
 	
 	@Nullable
-	public final static Function<?> getFunction(final String name) {
+	public static Function<?> getFunction(final String name) {
 		final FunctionData d = functions.get(name);
 		if (d == null)
 			return null;
@@ -196,7 +201,7 @@ public abstract class Functions {
 	 * @param script
 	 * @return How many functions were removed
 	 */
-	public final static int clearFunctions(final File script) {
+	public static int clearFunctions(final File script) {
 		int r = 0;
 		final Iterator<FunctionData> iter = functions.values().iterator();
 		while (iter.hasNext()) {
@@ -217,7 +222,7 @@ public abstract class Functions {
 		return r;
 	}
 	
-	public final static void validateFunctions() {
+	public static void validateFunctions() {
 		for (final FunctionReference<?> c : toValidate)
 			c.validateFunction(false);
 		toValidate.clear();
@@ -226,7 +231,7 @@ public abstract class Functions {
 	/**
 	 * Clears all function calls and removes script functions.
 	 */
-	public final static void clearFunctions() {
+	public static void clearFunctions() {
 		final Iterator<FunctionData> iter = functions.values().iterator();
 		while (iter.hasNext()) {
 			final FunctionData d = iter.next();

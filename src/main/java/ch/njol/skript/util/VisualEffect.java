@@ -21,19 +21,6 @@
 
 package ch.njol.skript.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Effect;
-import org.bukkit.EntityEffect;
-import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -49,16 +36,28 @@ import ch.njol.util.StringUtils;
 import ch.njol.util.coll.iterator.SingleItemIterator;
 import ch.njol.yggdrasil.YggdrasilSerializable;
 
+import org.bukkit.Effect;
+import org.bukkit.EntityEffect;
+import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 public final class VisualEffect implements SyntaxElement, YggdrasilSerializable {
 	private final static String LANGUAGE_NODE = "visual effects";
 	
-	private static enum Type implements YggdrasilSerializable {
-		ENDER_SIGNAL(Effect.ENDER_SIGNAL),
-		MOBSPAWNER_FLAMES(Effect.MOBSPAWNER_FLAMES),
-		POTION_BREAK(Effect.POTION_BREAK) {
+	private enum Type implements YggdrasilSerializable {
+		ENDER_SIGNAL(Effect.ENDER_SIGNAL), MOBSPAWNER_FLAMES(Effect.MOBSPAWNER_FLAMES), POTION_BREAK(Effect.POTION_BREAK) {
 			@Override
 			public Object getData(final @Nullable Object raw, final Location l) {
 				return new PotionEffect(raw == null ? PotionEffectType.SPEED : (PotionEffectType) raw, 1, 0);
@@ -72,19 +71,15 @@ public final class VisualEffect implements SyntaxElement, YggdrasilSerializable 
 				return Direction.getFacing(((Direction) raw).getDirection(l), false); // TODO allow this to not be a literal
 			}
 		},
-		HURT(EntityEffect.HURT),
-		SHEEP_EAT(EntityEffect.SHEEP_EAT),
-		WOLF_HEARTS(EntityEffect.WOLF_HEARTS),
-		WOLF_SHAKE(EntityEffect.WOLF_SHAKE),
-		WOLF_SMOKE(EntityEffect.WOLF_SMOKE);
+		HURT(EntityEffect.HURT), SHEEP_EAT(EntityEffect.SHEEP_EAT), WOLF_HEARTS(EntityEffect.WOLF_HEARTS), WOLF_SHAKE(EntityEffect.WOLF_SHAKE), WOLF_SMOKE(EntityEffect.WOLF_SMOKE);
 		
 		final Object effect;
 		
-		private Type(final Effect effect) {
+		Type(final Effect effect) {
 			this.effect = effect;
 		}
 		
-		private Type(final EntityEffect effect) {
+		Type(final EntityEffect effect) {
 			this.effect = effect;
 		}
 		
@@ -129,7 +124,7 @@ public final class VisualEffect implements SyntaxElement, YggdrasilSerializable 
 					if (names[i] == null)
 						names[i] = new Noun(node + ".name");
 				}
-				final String[] ps = patterns.toArray(new String[patterns.size()]);
+				final String[] ps = patterns.toArray(new String[0]);
 				assert ps != null;
 				info = new SyntaxElementInfo<VisualEffect>(ps, VisualEffect.class);
 			}
@@ -137,6 +132,7 @@ public final class VisualEffect implements SyntaxElement, YggdrasilSerializable 
 	}
 	
 	private Type type;
+	
 	@Nullable
 	private Object data;
 	
@@ -144,7 +140,9 @@ public final class VisualEffect implements SyntaxElement, YggdrasilSerializable 
 	 * For parsing & deserialisation
 	 */
 	@SuppressWarnings("null")
-	public VisualEffect() {}
+	public VisualEffect() {
+		super();
+	}
 	
 	@SuppressWarnings("null")
 	@Override
@@ -160,7 +158,7 @@ public final class VisualEffect implements SyntaxElement, YggdrasilSerializable 
 	}
 	
 	@Nullable
-	public final static VisualEffect parse(final String s) {
+	public static VisualEffect parse(final String s) {
 		final SyntaxElementInfo<VisualEffect> info = VisualEffect.info;
 		if (info == null)
 			return null;

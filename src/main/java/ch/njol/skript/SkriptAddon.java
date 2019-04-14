@@ -21,6 +21,13 @@
 
 package ch.njol.skript;
 
+import ch.njol.skript.localization.Language;
+import ch.njol.skript.util.Utils;
+import ch.njol.skript.util.Version;
+import ch.njol.util.coll.iterator.EnumerationIterable;
+
+import org.bukkit.plugin.java.JavaPlugin;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -31,13 +38,7 @@ import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bukkit.plugin.java.JavaPlugin;
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.localization.Language;
-import ch.njol.skript.util.Utils;
-import ch.njol.skript.util.Version;
-import ch.njol.util.coll.iterator.EnumerationIterable;
 
 /**
  * Utility class for Skript addons. Use {@link Skript#registerAddon(JavaPlugin)} to create a SkriptAddon instance for your plugin.
@@ -75,7 +76,7 @@ public final class SkriptAddon {
 	}
 	
 	@Override
-	public final String toString() {
+	public String toString() {
 		return name;
 	}
 	
@@ -123,11 +124,11 @@ public final class SkriptAddon {
 							loadedClasses.incrementAndGet(); // successfully loaded
 						} catch (final NoClassDefFoundError ncdfe) {
 							// not supported or not available on this version, skip it.
-							if(Skript.logHigh()) {
-								if(!plugin.equals(Skript.getInstance())) { // if it is not a Skript class (e.g from a addon)
+							if (Skript.logHigh()) {
+								if (!plugin.equals(Skript.getInstance())) { // if it is not a Skript class (e.g from a addon)
 									Skript.exception(ncdfe, "Cannot load class " + c + " from " + this);
 								} else {
-									if(Skript.debug()) {
+									if (Skript.debug()) {
 										Skript.exception(ncdfe, "Cannot load class " + c + " from " + this);
 									}
 								}
@@ -140,25 +141,24 @@ public final class SkriptAddon {
 							Skript.exception(err.getCause(), this + "'s class " + c + " generated an exception while loading");
 							unloadableClasses.incrementAndGet();
 						} catch (final LinkageError le) {
-							if(Skript.debug()) {
+							if (Skript.debug()) {
 								Skript.exception(le, "Cannot load class " + c + " from " + this);
 							}
 							unloadableClasses.incrementAndGet();
 						}
-						continue;
 					}
 				}
 			}
 		} finally {
 			try {
 				jar.close();
-			} catch (final IOException e) {}
+			} catch (final IOException ignored) {}
 		}
 		return this;
 	}
 	
 	@Nullable
-	private String languageFileDirectory = null;
+	private String languageFileDirectory;
 	
 	/**
 	 * Makes Skript load language files from the specified directory, e.g. "lang" or "skript lang" if you have a lang folder yourself. Localised files will be read from the
@@ -184,7 +184,7 @@ public final class SkriptAddon {
 	}
 	
 	@Nullable
-	private File file = null;
+	private File file;
 	
 	/**
 	 * @return The jar file of the plugin. The first invocation of this method uses reflection to invoke the protected method {@link JavaPlugin#getFile()} to get the plugin's jar

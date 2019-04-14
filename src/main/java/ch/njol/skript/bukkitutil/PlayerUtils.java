@@ -21,6 +21,12 @@
 
 package ch.njol.skript.bukkitutil;
 
+import ch.njol.skript.Skript;
+import ch.njol.skript.util.Task;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -29,24 +35,22 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.Skript;
-import ch.njol.skript.util.Task;
 
 /**
  * TODO check all updates and find out which ones are not required
  * 
  * @author Peter Güttinger
  */
-public abstract class PlayerUtils {
-	private PlayerUtils() {}
+public final class PlayerUtils {
+	
+	private PlayerUtils() {
+		throw new UnsupportedOperationException();
+	}
 	
 	final static Set<Player> inviUpdate = new HashSet<Player>();
 	
-	public final static void updateInventory(final @Nullable Player p) {
+	public static void updateInventory(final @Nullable Player p) {
 		if (p != null)
 			inviUpdate.add(p);
 	}
@@ -68,11 +72,12 @@ public abstract class PlayerUtils {
 	};
 	
 	private final static boolean hasCollecionGetOnlinePlayers = Skript.methodExists(Bukkit.class, "getOnlinePlayers", new Class[0], Collection.class);
+	
 	@Nullable
-	private static Method getOnlinePlayers = null;
+	private static Method getOnlinePlayers;
 	
 	@SuppressWarnings({"null", "unchecked"})
-	public final static Collection<? extends Player> getOnlinePlayers() {
+	public static Collection<? extends Player> getOnlinePlayers() {
 		if (hasCollecionGetOnlinePlayers) {
 			return Bukkit.getOnlinePlayers();
 		} else {

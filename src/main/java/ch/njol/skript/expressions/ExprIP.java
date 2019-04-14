@@ -21,9 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.entity.Player;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -32,16 +29,18 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.lang.ExpressionType;
 
+import org.bukkit.entity.Player;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("IP")
 @Description("The IP address of a player.")
-@Examples({"IP-ban the player # is equal to the next line",
-		"ban the IP-address of the player",
-		"broadcast \"Banned the IP %IP of player%\""})
+@Examples({"IP-ban the player # is equal to the next line", "ban the IP-address of the player", "broadcast \"Banned the IP %IP of player%\""})
 @Since("1.4")
-public class ExprIP extends SimplePropertyExpression<Player, String> {
+public final class ExprIP extends SimplePropertyExpression<Player, String> {
 	static {
 		Skript.registerExpression(ExprIP.class, String.class, ExpressionType.PROPERTY, "IP[s][( |-)address[es]] of %players%", "%players%'[s] IP[s][( |-)address[es]]");
 	}

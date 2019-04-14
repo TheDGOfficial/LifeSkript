@@ -21,22 +21,26 @@
 
 package ch.njol.skript.bukkitutil;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import ch.njol.skript.Skript;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.projectiles.ProjectileSource;
-import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.skript.Skript;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
  */
 @SuppressWarnings("null")
-public abstract class ProjectileUtils {
-	private ProjectileUtils() {}
+public final class ProjectileUtils {
+	
+	private ProjectileUtils() {
+		throw new UnsupportedOperationException();
+	}
 	
 	private static Method getShooter, setShooter;
 	static {
@@ -55,7 +59,7 @@ public abstract class ProjectileUtils {
 	}
 	
 	@Nullable
-	public final static Object getShooter(final @Nullable Projectile p) {
+	public static Object getShooter(final @Nullable Projectile p) {
 		if (p == null)
 			return null;
 		try {
@@ -72,7 +76,7 @@ public abstract class ProjectileUtils {
 		}
 	}
 	
-	public final static void setShooter(final Projectile p, final @Nullable Object shooter) {
+	public static void setShooter(final Projectile p, final @Nullable Object shooter) {
 		try {
 			setShooter.invoke(p, shooter);
 		} catch (final IllegalAccessException e) {

@@ -21,10 +21,6 @@
 
 package ch.njol.skript.conditions;
 
-import org.bukkit.World;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -36,13 +32,17 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Checker;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.World;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("PvP")
 @Description("Checks the PvP status of a world.")
-@Examples({"PvP is enabled",
-		"PvP is disabled in \"world\""})
+@Examples({"PvP is enabled", "PvP is disabled in \"world\""})
 @Since("1.3.4")
 public class CondPvP extends Condition {
 	

@@ -21,10 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.Location;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -36,17 +32,19 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Location;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Location")
-@Description({"The location of a block or entity. This not only represents the x, y and z coordinates of the location but also includes the world and the direction an entity is looking " +
-		"(e.g. teleporting to a saved location will make the teleported entity face the same saved direction every time).",
-		"Please note that the location of an entity is at it's feet, use <a href='#ExprEyeLocation'>head location</a> to get the location of the head."})
-@Examples({"set {home.%player%} to the location of the player",
-		"message \"You home was set to %player's location% in %player's world%.\""})
+@Description({"The location of a block or entity. This not only represents the x, y and z coordinates of the location but also includes the world and the direction an entity is looking " + "(e.g. teleporting to a saved location will make the teleported entity face the same saved direction every time).", "Please note that the location of an entity is at it's feet, use <a href='#ExprEyeLocation'>head location</a> to get the location of the head."})
+@Examples({"set {home.%player%} to the location of the player", "message \"You home was set to %player's location% in %player's world%.\""})
 @Since("")
-public class ExprLocationOf extends WrapperExpression<Location> {
+public final class ExprLocationOf extends WrapperExpression<Location> {
 	static {
 		Skript.registerExpression(ExprLocationOf.class, Location.class, ExpressionType.PROPERTY, "(location|position) of %location%", "%location%'[s] (location|position)");
 	}

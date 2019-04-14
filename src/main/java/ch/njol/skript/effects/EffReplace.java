@@ -21,9 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptConfig;
 import ch.njol.skript.classes.Changer.ChangeMode;
@@ -38,25 +35,23 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 import ch.njol.util.StringUtils;
 
+import org.bukkit.event.Event;
+
 import java.util.regex.Matcher;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
  */
 @Name("Replace")
 @Description("Replaces all occurrences of a given text with another text. Please note that you can only change variables and a few expressions, e.g. a <a href='../expressions/#ExprMessage'>message</a> or a line of a sign.")
-@Examples({"replace \"<item>\" in {textvar} with \"%item%\"",
-		"replace every \"&\" with \"§\" in line 1",
-		"# The following acts as a simple chat censor, but it will e.g. censor mass, hassle, assassin, etc. as well:",
-		"on chat:",
-		"	replace all \"fuck\", \"bitch\" and \"ass\" with \"****\" in the message"})
+@Examples({"replace \"<item>\" in {textvar} with \"%item%\"", "replace every \"&\" with \"§\" in line 1", "# The following acts as a simple chat censor, but it will e.g. censor mass, hassle, assassin, etc. as well:", "on chat:", "	replace all \"fuck\", \"bitch\" and \"ass\" with \"****\" in the message"})
 @Since("2.0")
 // TODO add 'replace all <items> in <inventories> with <item>'
-public class EffReplace extends Effect {
+public final class EffReplace extends Effect {
 	static {
-		Skript.registerEffect(EffReplace.class,
-				"replace (all|every|) %strings% in %string% with %strings%",
-				"replace (all|every|) %strings% with %string% in %strings%");
+		Skript.registerEffect(EffReplace.class, "replace (all|every|) %strings% in %string% with %strings%", "replace (all|every|) %strings% with %string% in %strings%");
 	}
 	
 	@SuppressWarnings("null")

@@ -21,11 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.List;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.command.Argument;
@@ -46,26 +41,22 @@ import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
 import ch.njol.util.StringUtils;
 
+import org.bukkit.event.Event;
+
+import java.util.List;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Argument")
-@Description({"Only usable in command events. Holds the value of the nth argument given to the command, " +
-		"e.g. if the command \"/tell &lt;player&gt; &lt;text&gt;\" is used like \"/tell Njol Hello Njol!\" argument 1 is the player named \"Njol\" and argument 2 is \"Hello Njol!\".",
-		"One can also use the type of the argument instead of its index to address the argument, e.g. in the above example 'player-argument' is the same as 'argument 1'."})
-@Examples({"give the item-argument to the player-argument",
-		"damage the player-argument by the number-argument",
-		"give a diamond pickaxe to the argument",
-		"add argument 1 to argument 2",
-		"heal the last argument"})
+@Description({"Only usable in command events. Holds the value of the nth argument given to the command, " + "e.g. if the command \"/tell &lt;player&gt; &lt;text&gt;\" is used like \"/tell Njol Hello Njol!\" argument 1 is the player named \"Njol\" and argument 2 is \"Hello Njol!\".", "One can also use the type of the argument instead of its index to address the argument, e.g. in the above example 'player-argument' is the same as 'argument 1'."})
+@Examples({"give the item-argument to the player-argument", "damage the player-argument by the number-argument", "give a diamond pickaxe to the argument", "add argument 1 to argument 2", "heal the last argument"})
 @Since("1.0")
 public class ExprArgument extends SimpleExpression<Object> {
 	static {
-		Skript.registerExpression(ExprArgument.class, Object.class, ExpressionType.SIMPLE,
-				"[the] last arg[ument][s]",
-				"[the] arg[ument][s](-| )<(\\d+)>", "[the] <(\\d*1)st|(\\d*2)nd|(\\d*3)rd|(\\d*[4-90])th> arg[ument][s]",
-				"[the] arg[ument][s]",
-				"[the] %*classinfo%( |-)arg[ument][( |-)<\\d+>]", "[the] arg[ument]( |-)%*classinfo%[( |-)<\\d+>]");
+		Skript.registerExpression(ExprArgument.class, Object.class, ExpressionType.SIMPLE, "[the] last arg[ument][s]", "[the] arg[ument][s](-| )<(\\d+)>", "[the] <(\\d*1)st|(\\d*2)nd|(\\d*3)rd|(\\d*[4-90])th> arg[ument][s]", "[the] arg[ument][s]", "[the] %*classinfo%( |-)arg[ument][( |-)<\\d+>]", "[the] arg[ument]( |-)%*classinfo%[( |-)<\\d+>]");
 	}
 	
 	@SuppressWarnings("null")
@@ -79,7 +70,7 @@ public class ExprArgument extends SimpleExpression<Object> {
 			Skript.error("The expression 'argument' can only be used within a command", ErrorQuality.SEMANTIC_ERROR);
 			return false;
 		}
-		if (currentArguments.size() == 0) {
+		if (currentArguments.isEmpty()) {
 			Skript.error("This command doesn't have any arguments", ErrorQuality.SEMANTIC_ERROR);
 			return false;
 		}
@@ -94,6 +85,9 @@ public class ExprArgument extends SimpleExpression<Object> {
 				final int i = Utils.parseInt(parser.regexes.get(0).group(1));
 				if (i > currentArguments.size()) {
 					Skript.error("The command doesn't have a " + StringUtils.fancyOrderNumber(i) + " argument", ErrorQuality.SEMANTIC_ERROR);
+					return false;
+				} else if (i < 1) {
+					Skript.error("Command arguments start from one; argument number " + i + " is invalid", ErrorQuality.SEMANTIC_ERROR);
 					return false;
 				}
 				arg = currentArguments.get(i - 1);
@@ -111,7 +105,7 @@ public class ExprArgument extends SimpleExpression<Object> {
 				@SuppressWarnings("unchecked")
 				final ClassInfo<?> c = ((Literal<ClassInfo<?>>) exprs[0]).getSingle();
 				@SuppressWarnings("null")
-				final int num = parser.regexes.size() > 0 ? Utils.parseInt(parser.regexes.get(0).group()) : -1;
+				final int num = !parser.regexes.isEmpty() ? Utils.parseInt(parser.regexes.get(0).group()) : -1;
 				int j = 1;
 				for (final Argument<?> a : currentArguments) {
 					if (!c.getC().isAssignableFrom(a.getType()))
@@ -157,7 +151,7 @@ public class ExprArgument extends SimpleExpression<Object> {
 	}
 	
 	@Override
-	public Class<? extends Object> getReturnType() {
+	public Class<?> getReturnType() {
 		return arg.getType();
 	}
 	
@@ -175,7 +169,7 @@ public class ExprArgument extends SimpleExpression<Object> {
 	
 	@Override
 	public boolean isLoopOf(final String s) {
-		return s.equalsIgnoreCase("argument");
+		return "argument".equalsIgnoreCase(s);
 	}
 	
 }

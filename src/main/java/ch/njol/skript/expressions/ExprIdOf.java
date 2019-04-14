@@ -21,15 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import org.bukkit.Material;
-import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemData;
 import ch.njol.skript.aliases.ItemType;
@@ -47,6 +38,16 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.iterator.SingleItemIterator;
 
+import org.bukkit.Material;
+import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
@@ -59,7 +60,7 @@ public class ExprIdOf extends PropertyExpression<ItemType, Integer> {
 		Skript.registerExpression(ExprIdOf.class, Integer.class, ExpressionType.PROPERTY, "[the] id(1¦s|) of %itemtype%", "%itemtype%'[s] id(1¦s|)");
 	}
 	
-	private boolean single = false;
+	private boolean single;
 	
 	@SuppressWarnings({"unchecked", "null"})
 	@Override
@@ -87,10 +88,10 @@ public class ExprIdOf extends PropertyExpression<ItemType, Integer> {
 		final ArrayList<Integer> r = new ArrayList<Integer>();
 		for (final ItemType t : source) {
 			for (final ItemData d : t) {
-				r.add(Integer.valueOf(d.getId()));
+				r.add(d.getId());
 			}
 		}
-		return r.toArray(new Integer[r.size()]);
+		return r.toArray(new Integer[0]);
 	}
 	
 	@Override
@@ -125,7 +126,6 @@ public class ExprIdOf extends PropertyExpression<ItemType, Integer> {
 	@Override
 	public void change(final Event e, final @Nullable Object[] delta, final ChangeMode mode) {
 		assert delta != null;
-		final int i = ((Number) delta[0]).intValue();
 		final ItemType it = getExpr().getSingle(e);
 		if (it == null)
 			return;
@@ -133,6 +133,7 @@ public class ExprIdOf extends PropertyExpression<ItemType, Integer> {
 		if (is == null)
 			return;
 		int type = is.getTypeId();
+		final int i = ((Number) delta[0]).intValue();
 		switch (mode) {
 			case ADD:
 				type += i;
@@ -206,7 +207,7 @@ public class ExprIdOf extends PropertyExpression<ItemType, Integer> {
 	
 	@Override
 	public boolean isLoopOf(final String s) {
-		return s.equalsIgnoreCase("id");
+		return "id".equalsIgnoreCase(s);
 	}
 	
 }

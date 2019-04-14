@@ -21,16 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.inventory.HorseInventory;
-import org.bukkit.inventory.ItemStack;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.bukkitutil.PlayerUtils;
@@ -44,19 +34,27 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.Testable;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Material;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.inventory.HorseInventory;
+import org.bukkit.inventory.ItemStack;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Equip")
 @Description("Equips a player with some given armor. This will replace any armor that the player is wearing.")
-@Examples({"equip player with diamond helmet",
-		"equip player with all diamond armor"})
+@Examples({"equip player with diamond helmet", "equip player with all diamond armor"})
 @Since("1.0")
 public class EffEquip extends Effect implements Testable {
 	static {
-		Skript.registerEffect(EffEquip.class,
-				"equip [%livingentity%] with %itemtypes%",
-				"make %livingentity% wear %itemtypes%");
+		Skript.registerEffect(EffEquip.class, "equip [%livingentity%] with %itemtypes%", "make %livingentity% wear %itemtypes%");
 	}
 	
 	@SuppressWarnings("null")

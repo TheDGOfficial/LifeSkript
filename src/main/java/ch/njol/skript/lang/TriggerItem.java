@@ -21,13 +21,14 @@
 
 package ch.njol.skript.lang;
 
-import java.io.File;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.util.StringUtils;
+
+import org.bukkit.event.Event;
+
+import java.io.File;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Represents a trigger item, i.e. a trigger section, a condition or an effect.
@@ -40,9 +41,10 @@ import ch.njol.util.StringUtils;
 public abstract class TriggerItem implements Debuggable {
 	
 	@Nullable
-	protected TriggerSection parent = null;
+	protected TriggerSection parent;
+	
 	@Nullable
-	private TriggerItem next = null;
+	private TriggerItem next;
 	
 	protected TriggerItem() {}
 	
@@ -83,7 +85,7 @@ public abstract class TriggerItem implements Debuggable {
 	 * @param e
 	 * @return false iff an exception occurred
 	 */
-	public final static boolean walk(final TriggerItem start, final Event e) {
+	public static boolean walk(final TriggerItem start, final Event e) {
 		assert start != null && e != null;
 		TriggerItem i = start;
 		try {
@@ -109,7 +111,7 @@ public abstract class TriggerItem implements Debuggable {
 	private final static String indent = "  ";
 	
 	@Nullable
-	private String indentation = null;
+	private String indentation;
 	
 	public String getIndentation() {
 		String ind = indentation;

@@ -21,12 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.Locale;
-
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.EntityEquipment;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -39,13 +33,19 @@ import ch.njol.skript.util.EquipmentSlot.EquipSlot;
 import ch.njol.skript.util.Slot;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.EntityEquipment;
+
+import java.util.Locale;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Armour Slot")
 @Description("A part of a player's armour, i.e. the boots, leggings, chestplate or helmet.")
-@Examples({"set chestplate of the player to a diamond chestplate",
-		"helmet of player is neither a helmet nor air # player is wearing a block, e.g. from another plugin"})
+@Examples({"set chestplate of the player to a diamond chestplate", "helmet of player is neither a helmet nor air # player is wearing a block, e.g. from another plugin"})
 @Since("1.0")
 public class ExprArmorSlot extends SimplePropertyExpression<LivingEntity, Slot> {
 	static {

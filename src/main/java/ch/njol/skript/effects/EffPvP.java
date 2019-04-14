@@ -21,10 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.World;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -35,13 +31,17 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.World;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("PvP")
 @Description("Set the PvP status for a given world.")
-@Examples({"enable PvP #(current world only)",
-		"disable PvP in all worlds"})
+@Examples({"enable PvP #(current world only)", "disable PvP in all worlds"})
 @Since("1.3.4")
 public class EffPvP extends Effect {
 	

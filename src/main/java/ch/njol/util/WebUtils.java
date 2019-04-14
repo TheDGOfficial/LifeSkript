@@ -39,47 +39,51 @@ import org.eclipse.jdt.annotation.Nullable;
  * @author TheDGOfficial
  * @since 2.2-Fixes-V10b
  */
-public abstract class WebUtils {
+public final class WebUtils {
 	
-    /**
-     * Connects to the given address and returns the web response as
-     * {@link java.lang.String String}.
-     *
-     * This the overloaded version of the original
-     * {@link WebUtils#getResponse(String, String)} method. This overloaded version
-     * of the original method is just uses the default content type (json).
-     *
-     * @param address - The url (address) of the web server / web site to connect
-     *                and get response from it.
-     *
-     * @throws IOException If any connection errors occured when making the http
-     *                     request to the address.
-     * @return The web response from the given url as {@link java.lang.String
-     *         String}, maybe null in some cases.
-     */
+	/**
+	 * Static magic.
+	 */
+	private WebUtils() {
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * Connects to the given address and returns the web response as
+	 * {@link java.lang.String String}.
+	 * This the overloaded version of the original
+	 * {@link WebUtils#getResponse(String, String)} method. This overloaded version
+	 * of the original method is just uses the default content type (json).
+	 *
+	 * @param address - The url (address) of the web server / web site to connect
+	 *            and get response from it.
+	 * @throws IOException If any connection errors occured when making the http
+	 *             request to the address.
+	 * @return The web response from the given url as {@link java.lang.String
+	 *         String}, maybe null in some cases.
+	 */
 	@Nullable
-	public static final String getResponse(final String address) throws IOException {
+	public static String getResponse(final String address) throws IOException {
 		
 		return getResponse(address, "application/json; charset=utf-8");
 		
 	}
 	
-    /**
-     * Connects to the given address and returns the web response as
-     * {@link java.lang.String String}.
-     *
-     * @param address     - The url (address) of the web server / web site to
-     *                    connect and get response from it.
-     * @param contentType - The content type header of the http web request to the
-     *                    selected address / url.
-     *
-     * @throws IOException If any connection errors occured when making the http
-     *                     request to the address.
-     * @return The web response from the given url as {@link java.lang.String
-     *         String}, maybe null in some cases.
-     */
+	/**
+	 * Connects to the given address and returns the web response as
+	 * {@link java.lang.String String}.
+	 *
+	 * @param address - The url (address) of the web server / web site to
+	 *            connect and get response from it.
+	 * @param contentType - The content type header of the http web request to the
+	 *            selected address / url.
+	 * @throws IOException If any connection errors occured when making the http
+	 *             request to the address.
+	 * @return The web response from the given url as {@link java.lang.String
+	 *         String}, maybe null in some cases.
+	 */
 	@Nullable
-	public static final String getResponse(final String address, final String contentType) throws IOException {
+	public static String getResponse(final String address, final String contentType) throws IOException {
 		
 		String response = null;
 		
@@ -100,38 +104,38 @@ public abstract class WebUtils {
 			con.setRequestProperty("Content-Type", contentType);
 			con.setRequestProperty("Accept", "*/*");
 			con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36");
-		    con.setRequestProperty("Referer", "https://www.lifemcserver.com/forum/");
-		    
-		    in = new BufferedInputStream(con.getInputStream());
-		    
-		    final String encoding = con.getContentEncoding();
-		    
-		    if (encoding != null) {
-		    	
-		    	if (encoding.equalsIgnoreCase("gzip")) {
-		    	  
-		          in = new BufferedInputStream(new GZIPInputStream(in));
-		          
-		        } else if (encoding.equalsIgnoreCase("deflate")) {
-		          
-		          in = new BufferedInputStream(new InflaterInputStream(in, new Inflater(true)));
-		          
-		        }
-		    	
+			con.setRequestProperty("Referer", "https://www.lifemcserver.com/forum/");
+			
+			in = new BufferedInputStream(con.getInputStream());
+			
+			final String encoding = con.getContentEncoding();
+			
+			if (encoding != null) {
+				
+				if ("gzip".equalsIgnoreCase(encoding)) {
+					
+					in = new BufferedInputStream(new GZIPInputStream(in));
+					
+				} else if ("deflate".equalsIgnoreCase(encoding)) {
+					
+					in = new BufferedInputStream(new InflaterInputStream(in, new Inflater(true)));
+					
+				}
+				
 			}
-		    
+			
 			final StringBuilder responseBody = new StringBuilder(4096);
-		    br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-		    
-		    String line;
-		    
-		    while ((line = br.readLine()) != null) {
-		    	
-		    	responseBody.append(line.trim());
-		    	responseBody.append("\n");
-		    	
-		    }
-		    
+			br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+			
+			String line;
+			
+			while ((line = br.readLine()) != null) {
+				
+				responseBody.append(line.trim());
+				responseBody.append("\n");
+				
+			}
+			
 			in.close();
 			br.close();
 			
@@ -140,7 +144,7 @@ public abstract class WebUtils {
 			
 			response = responseBody.toString();
 			
-			if(response != null) {
+			if (response != null) {
 				
 				response = response.trim();
 				
@@ -150,13 +154,13 @@ public abstract class WebUtils {
 			
 		} finally {
 			
-			if(in != null) {
+			if (in != null) {
 				
 				in.close();
 				
 			}
 			
-			if(br != null) {
+			if (br != null) {
 				
 				br.close();
 				

@@ -21,11 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import java.util.List;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -39,17 +34,18 @@ import ch.njol.skript.log.SkriptLogger;
 import ch.njol.skript.util.AsyncEffect;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import java.util.List;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Async Execute")
 @Description("Execute a effect dynamically and asynchronously in runtime")
-@Examples({"command /eval <text>:",
-		"\tdescription: Evaluates the given effect.",
-		"\tusage: /eval <effect>",
-		"\texecutable by: players",
-		"\ttrigger:",
-		"\t\texecute arg-1 async if the player has permission \"skript.eval\""})
+@Examples({"command /eval <text>:", "\tdescription: Evaluates the given effect.", "\tusage: /eval <effect>", "\texecutable by: players", "\ttrigger:", "\t\texecute arg-1 async if the player has permission \"skript.eval\""})
 @Since("2.2-Fixes-V10c")
 public class EffAsyncExec extends AsyncEffect {
 	static {
@@ -79,17 +75,20 @@ public class EffAsyncExec extends AsyncEffect {
 			return;
 		}
 		final List<LogEntry> entryList = SkriptLogger.stopSuppressing();
-		if(eff != null) {
+		if (eff != null) {
 			eff.run(e);
 		} else {
 			final StringBuilder errorBuilder = new StringBuilder();
-			for(final LogEntry entry : entryList) {
+			for (final LogEntry entry : entryList) {
 				errorBuilder.append(entry.getLevel().getLocalizedName()).append(" ").append(SkriptLogger.format(entry)).append("\n");
 			}
 			assert errorBuilder != null;
 			EffExec.lastExecuteErrors = errorBuilder.toString();
 		}
-		EffExec.lastExecuteState = entryList.isEmpty(); entryList.clear();
+		
+		EffExec.lastExecuteState = entryList.isEmpty();
+		entryList.clear();
+		
 		SkriptLogger.cleanSuppressState();
 	}
 	

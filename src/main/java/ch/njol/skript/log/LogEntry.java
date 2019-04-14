@@ -21,13 +21,13 @@
 
 package ch.njol.skript.log;
 
-import java.util.logging.Level;
-
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.Config;
 import ch.njol.skript.config.Node;
+
+import java.util.logging.Level;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -108,23 +108,14 @@ public class LogEntry {
 		return toString();
 	}
 	
-	private boolean used = false;
-	
 	void discarded(final String info) {
-		used = true;
 		if (tracked)
 			SkriptLogger.LOGGER.warning(" # LogEntry '" + message + "'" + from + " discarded" + findCaller() + "; " + new Exception().getStackTrace()[1] + "; " + info);
 	}
 	
 	void logged() {
-		used = true;
 		if (tracked)
 			SkriptLogger.LOGGER.warning(" # LogEntry '" + message + "'" + from + " logged" + findCaller());
-	}
-	
-	@Override
-	protected void finalize() throws Throwable {
-		assert used : message + from;
 	}
 	
 	@Override

@@ -21,29 +21,29 @@
 
 package ch.njol.skript.log;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.Node;
 import ch.njol.skript.log.LogHandler.LogResult;
 
+import org.bukkit.Bukkit;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
-public abstract class SkriptLogger {
+public final class SkriptLogger {
 	
 	@SuppressWarnings("null")
 	public final static Level SEVERE = Level.SEVERE;
 	
 	@Nullable
-	private static Node node = null;
+	private static Node node;
 	
 	private static Verbosity verbosity = Verbosity.NORMAL;
 	
@@ -62,7 +62,7 @@ public abstract class SkriptLogger {
 	 * 
 	 * @return A newly created RetainingLogHandler
 	 */
-	public final static RetainingLogHandler startRetainingLog() {
+	public static RetainingLogHandler startRetainingLog() {
 		return startLogHandler(new RetainingLogHandler());
 	}
 	
@@ -71,7 +71,7 @@ public abstract class SkriptLogger {
 	 * 
 	 * @return A newly created ParseLogHandler
 	 */
-	public final static ParseLogHandler startParseLogHandler() {
+	public static ParseLogHandler startParseLogHandler() {
 		return startLogHandler(new ParseLogHandler());
 	}
 	
@@ -99,28 +99,28 @@ public abstract class SkriptLogger {
 	 * @see FilteringLogHandler
 	 * @see RedirectingLogHandler
 	 */
-	public final static <T extends LogHandler> T startLogHandler(final T h) {
+	public static <T extends LogHandler> T startLogHandler(final T h) {
 		handlers.add(h);
 		return h;
 	}
 	
-	final static void removeHandler(final LogHandler h) {
+	static void removeHandler(final LogHandler h) {
 		if (!handlers.contains(h))
 			return;
 		if (!h.equals(handlers.remove())) {
 			int i = 1;
 			while (!h.equals(handlers.remove()))
 				i++;
-			LOGGER.severe("[Skript] " + i + " log handler" + (i == 1 ? " was" : "s were") + " not stopped properly! (at " + getCaller() + ") [if you're a server admin and you see this message please file a bug report at http://dev.bukkit.org/server-mods/skript/tickets/ if there is not already one]");
+			LOGGER.severe("[Skript] " + i + " log handler" + (i == 1 ? " was" : "s were") + " not stopped properly! (at " + getCaller() + ") [if you're a server admin and you see this message please create a bug report at " + Skript.ISSUES_LINK + " if there is not already one]");
 		}
 	}
 	
-	final static boolean isStopped(final LogHandler h) {
+	static boolean isStopped(final LogHandler h) {
 		return !handlers.contains(h);
 	}
 	
 	@Nullable
-	final static StackTraceElement getCaller() {
+	static StackTraceElement getCaller() {
 		for (final StackTraceElement e : new Exception().getStackTrace()) {
 			if (!e.getClassName().startsWith(SkriptLogger.class.getPackage().getName()))
 				return e;
@@ -164,9 +164,10 @@ public abstract class SkriptLogger {
 	public static void log(final Level level, final String message) {
 		log(new LogEntry(level, message, node));
 	}
-		
-	@Nullable private static List<LogEntry> suppressed;
-	private static volatile boolean suppressing = false;
+	
+	@Nullable
+	private static List<LogEntry> suppressed;
+	private static volatile boolean suppressing;
 	
 	private static volatile boolean suppressWarnings;
 	private static volatile boolean suppressErrors;
@@ -185,27 +186,26 @@ public abstract class SkriptLogger {
 					entry.discarded("denied by " + h);
 					return;
 				case LOG:
-					continue;
 			}
 		}
-		if(suppressing && suppressed != null) {
+		if (suppressing && suppressed != null) {
 			suppressed.add(entry);
 			return;
 		}
-		if(suppressWarnings && entry.getLevel() == Level.WARNING) {
+		if (suppressWarnings && entry.getLevel() == Level.WARNING) {
 			return;
 		}
-		if(suppressErrors && entry.getLevel() == Level.SEVERE) {
+		if (suppressErrors && entry.getLevel() == Level.SEVERE) {
 			return;
 		}
 		entry.logged();
 		LOGGER.log(entry.getLevel(), format(entry));
 	}
-		
+	
 	public static void suppressWarnings(final boolean suppressWarnings) {
 		SkriptLogger.suppressWarnings = suppressWarnings;
 	}
-		
+	
 	public static void suppressErrors(final boolean suppressErrors) {
 		SkriptLogger.suppressErrors = suppressErrors;
 	}
@@ -217,7 +217,7 @@ public abstract class SkriptLogger {
 	
 	@SuppressWarnings("null")
 	public static List<LogEntry> stopSuppressing() {
-		if(suppressed == null) {
+		if (suppressed == null) {
 			return new ArrayList<LogEntry>();
 		}
 		return suppressed;
@@ -231,7 +231,7 @@ public abstract class SkriptLogger {
 		return "[Skript] " + entry.getMessage();
 	}
 	
-	public static void logAll(final Collection<LogEntry> entries) {
+	public static void logAll(final Iterable<LogEntry> entries) {
 		for (final LogEntry entry : entries) {
 			if (entry == null)
 				continue;

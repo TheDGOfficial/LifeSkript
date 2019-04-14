@@ -21,9 +21,6 @@
 
 package ch.njol.skript.conditions;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -35,21 +32,20 @@ import ch.njol.skript.lang.ExpressionList;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Exists/Is Set")
 @Description("Checks whether a given expression or variable is set.")
-@Examples({"{teamscript.%player%.preferred team} is not set",
-		"on damage:",
-		"	projectile exists",
-		"	broadcast \"%attacker% used a %projectile% to attack %victim%!\""})
+@Examples({"{teamscript.%player%.preferred team} is not set", "on damage:", "	projectile exists", "	broadcast \"%attacker% used a %projectile% to attack %victim%!\""})
 @Since("1.2")
-public class CondIsSet extends Condition {
+public final class CondIsSet extends Condition {
 	static {
-		Skript.registerCondition(CondIsSet.class,
-				"%~objects% (exist[s]|(is|are) set)",
-				"%~objects% (do[es](n't| not) exist|(is|are)(n't| not) set)");
+		Skript.registerCondition(CondIsSet.class, "%~objects% (exist[s]|(is|are) set)", "%~objects% (do[es](n't| not) exist|(is|are)(n't| not) set)");
 	}
 	
 	@SuppressWarnings("null")

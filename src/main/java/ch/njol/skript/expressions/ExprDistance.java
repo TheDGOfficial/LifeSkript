@@ -21,10 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.Location;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -36,13 +32,17 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Location;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Distance")
 @Description("The distance between two points.")
-@Examples({"distance between the player and {%player%.home} is smaller than 20:",
-		"	message \"You're very close to your home!\""})
+@Examples({"distance between the player and {%player%.home} is smaller than 20:", "	message \"You're very close to your home!\""})
 @Since("1.0")
 public class ExprDistance extends SimpleExpression<Double> {
 	static {
@@ -80,7 +80,7 @@ public class ExprDistance extends SimpleExpression<Double> {
 	}
 	
 	@Override
-	public Class<? extends Double> getReturnType() {
+	public Class<Double> getReturnType() {
 		return Double.class;
 	}
 	

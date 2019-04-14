@@ -21,11 +21,6 @@
 
 package ch.njol.skript.conditions;
 
-import org.bukkit.World;
-import org.bukkit.event.Event;
-import org.bukkit.event.weather.WeatherEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -39,14 +34,18 @@ import ch.njol.skript.util.WeatherType;
 import ch.njol.util.Checker;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.World;
+import org.bukkit.event.Event;
+import org.bukkit.event.weather.WeatherEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Weather")
-@Description({"Checks whether the weather in a world is of a specific type.",
-		"<i>I welcome any ideas how to write this condition differently.</i>"})
-@Examples({"is thundering",
-		"is raining in \"world\" or \"world2\""})
+@Description({"Checks whether the weather in a world is of a specific type.", "<i>I welcome any ideas how to write this condition differently.</i>"})
+@Examples({"is thundering", "is raining in \"world\" or \"world2\""})
 @Since("1.0")
 public class CondWeather extends Condition {
 	static {

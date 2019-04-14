@@ -21,15 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -42,13 +33,22 @@ import ch.njol.skript.util.Direction;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerRespawnEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Teleport")
 @Description("Teleport an entity to a specific location.")
-@Examples({"teleport the player to {homes.%player%}",
-		"teleport the attacker to the victim"})
+@Examples({"teleport the player to {homes.%player%}", "teleport the attacker to the victim"})
 @Since("1.0")
 public class EffTeleport extends Effect {
 	static {
@@ -104,9 +104,8 @@ public class EffTeleport extends Effect {
 	 * @param pitch Notch-pitch
 	 * @return Whether the given pitch and yaw represent a cartesian coordinate direction
 	 */
-	private final static boolean ignoreDirection(final float yaw, final float pitch) {
-		return (pitch == 0 || Math.abs(pitch - 90) < Skript.EPSILON || Math.abs(pitch + 90) < Skript.EPSILON)
-				&& (yaw == 0 || Math.abs(Math.sin(Math.toRadians(yaw))) < Skript.EPSILON || Math.abs(Math.cos(Math.toRadians(yaw))) < Skript.EPSILON);
+	private static boolean ignoreDirection(final float yaw, final float pitch) {
+		return (pitch == 0 || Math.abs(pitch - 90) < Skript.EPSILON || Math.abs(pitch + 90) < Skript.EPSILON) && (yaw == 0 || Math.abs(Math.sin(Math.toRadians(yaw))) < Skript.EPSILON || Math.abs(Math.cos(Math.toRadians(yaw))) < Skript.EPSILON);
 	}
 	
 	@Override

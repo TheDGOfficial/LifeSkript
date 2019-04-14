@@ -21,11 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.lang.reflect.Array;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.doc.Description;
@@ -40,15 +35,20 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.event.Event;
+
+import java.lang.reflect.Array;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Random")
 @Description("Gets a random item out of a set, e.g. a random player out of all players online.")
-@Examples({"give a diamond to a random player out of all players",
-		"give a random item out of all items to the player"})
+@Examples({"give a diamond to a random player out of all players", "give a random item out of all items to the player"})
 @Since("1.4.9")
-public class ExprRandom extends SimpleExpression<Object> {
+public final class ExprRandom extends SimpleExpression<Object> {
 	static {
 		Skript.registerExpression(ExprRandom.class, Object.class, ExpressionType.COMBINED, "[a] random %*classinfo% [out] of %objects%");
 	}
@@ -77,7 +77,7 @@ public class ExprRandom extends SimpleExpression<Object> {
 	}
 	
 	@Override
-	public Class<? extends Object> getReturnType() {
+	public Class<?> getReturnType() {
 		return expr.getReturnType();
 	}
 	

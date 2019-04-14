@@ -21,10 +21,6 @@
 
 package ch.njol.skript.conditions;
 
-import org.bukkit.event.Event;
-import org.bukkit.inventory.Inventory;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptConfig;
 import ch.njol.skript.aliases.ItemType;
@@ -44,21 +40,21 @@ import ch.njol.util.Checker;
 import ch.njol.util.Kleenean;
 import ch.njol.util.StringUtils;
 
+import org.bukkit.event.Event;
+import org.bukkit.inventory.Inventory;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Contains")
 @Description("Checks whether an inventory contains the given item, a text contains another piece of text, or a list of objects (e.g. a {list variable::*}) contains another object.")
-@Examples({"block contains 20 cobblestone",
-		"player has 4 flint and 2 iron ingots"})
+@Examples({"block contains 20 cobblestone", "player has 4 flint and 2 iron ingots"})
 @Since("1.0")
 public final class CondContains extends Condition {
 	static {
-		Skript.registerCondition(CondContains.class,
-				"%inventories% ha(s|ve) %itemtypes% [in [(the[ir]|his|her|its)] inventory]",
-				"%inventories/strings/objects% contain[s] %itemtypes/strings/objects%",
-				"%inventories% do[es](n't| not) have %itemtypes% [in [(the[ir]|his|her|its)] inventory]",
-				"%inventories/strings/objects% do[es](n't| not) contain %itemtypes/strings/objects%");
+		Skript.registerCondition(CondContains.class, "%inventories% ha(s|ve) %itemtypes% [in [(the[ir]|his|her|its)] inventory]", "%inventories/strings/objects% contain[s] %itemtypes/strings/objects%", "%inventories% do[es](n't| not) have %itemtypes% [in [(the[ir]|his|her|its)] inventory]", "%inventories/strings/objects% do[es](n't| not) contain %itemtypes/strings/objects%");
 	}
 	
 	@SuppressWarnings("null")

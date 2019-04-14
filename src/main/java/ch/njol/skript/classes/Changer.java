@@ -21,11 +21,10 @@
 
 package ch.njol.skript.classes;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.classes.data.DefaultChangers;
 import ch.njol.skript.lang.Expression;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * An interface to declare changeable values. All Expressions implement something similar like this by default, but refuse any change if {@link Expression#acceptChange(ChangeMode)}
@@ -39,8 +38,8 @@ import ch.njol.skript.lang.Expression;
  */
 public interface Changer<T> {
 	
-	public static enum ChangeMode {
-		ADD, SET, REMOVE, REMOVE_ALL, DELETE, RESET;
+	enum ChangeMode {
+		ADD, SET, REMOVE, REMOVE_ALL, DELETE, RESET
 	}
 	
 	/**
@@ -54,7 +53,7 @@ public interface Changer<T> {
 	 *         mark them as supported.
 	 */
 	@Nullable
-	public abstract Class<?>[] acceptChange(ChangeMode mode);
+	Class<?>[] acceptChange(final ChangeMode mode);
 	
 	/**
 	 * @param what The objects to change
@@ -63,12 +62,12 @@ public interface Changer<T> {
 	 * @param mode
 	 * @throws UnsupportedOperationException (optional) if this method was called on an unsupported ChangeMode.
 	 */
-	public abstract void change(T[] what, @Nullable Object[] delta, ChangeMode mode);
+	void change(final T[] what, final @Nullable Object[] delta, final ChangeMode mode);
 	
-	public static abstract class ChangerUtils {
+	abstract class ChangerUtils {
 		
 		@SuppressWarnings("unchecked")
-		public final static <T, V> void change(final Changer<T> changer, final Object[] what, final @Nullable Object[] delta, final ChangeMode mode) {
+		public static <T, V> void change(final Changer<T> changer, final Object[] what, final @Nullable Object[] delta, final ChangeMode mode) {
 			changer.change((T[]) what, delta, mode);
 		}
 		
@@ -78,9 +77,9 @@ public interface Changer<T> {
 		 * @param e The expression to test
 		 * @param mode The ChangeMode to use in the test
 		 * @param types The types to test for
-		 * @return Whether <tt>e.{@link Expression#change(Event, Object[], ChangeMode) change}(event, type[], mode)</tt> can be used or not.
+		 * @return Whether <tt>e.{@link Expression#change(org.bukkit.event.Event, Object[], ChangeMode) change}(event, type[], mode)</tt> can be used or not.
 		 */
-		public final static boolean acceptsChange(final Expression<?> e, final ChangeMode mode, final Class<?>... types) {
+		public static boolean acceptsChange(final Expression<?> e, final ChangeMode mode, final Class<?>... types) {
 			final Class<?>[] cs = e.acceptChange(mode);
 			if (cs == null)
 				return false;

@@ -21,13 +21,6 @@
 
 package ch.njol.skript.lang;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.SkriptAPIException;
 import ch.njol.skript.config.SectionNode;
@@ -35,12 +28,20 @@ import ch.njol.skript.lang.util.ContainerExpression;
 import ch.njol.skript.util.Container;
 import ch.njol.skript.util.Container.ContainerType;
 
+import org.bukkit.event.Event;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.WeakHashMap;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * A trigger section which represents a loop.
  * 
  * @author Peter Güttinger
  */
-public class Loop extends TriggerSection {
+public final class Loop extends TriggerSection {
 	
 	private final Expression<?> expr;
 	

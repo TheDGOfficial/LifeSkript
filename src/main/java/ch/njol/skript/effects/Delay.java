@@ -21,16 +21,9 @@
 
 package ch.njol.skript.effects;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.WeakHashMap;
-
-import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
+import ch.njol.skript.SkriptConfig;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -44,14 +37,21 @@ import ch.njol.skript.lang.function.FunctionEvent;
 import ch.njol.skript.util.Timespan;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.WeakHashMap;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Delay")
 @Description("Delays the script's execution by a given timespan. Please note that delays are not persistent, e.g. trying to create a tempban script with <code>ban player → wait 7 days → unban player</code> will not work if you restart your server anytime within these 7 days. You also have to be careful even when using small delays!")
-@Examples({"wait 2 minutes",
-		"halt for 5 minecraft hours",
-		"wait a tick"})
+@Examples({"wait 2 minutes", "halt for 5 minecraft hours", "wait a tick"})
 @Since("1.4")
 public final class Delay extends Effect {
 	static {
@@ -59,7 +59,7 @@ public final class Delay extends Effect {
 	}
 	
 	@SuppressWarnings("null")
-	protected Expression<Timespan> duration;
+	Expression<Timespan> duration;
 	
 	@SuppressWarnings({"unchecked", "null"})
 	@Override
@@ -67,13 +67,11 @@ public final class Delay extends Effect {
 		duration = (Expression<Timespan>) exprs[0];
 		if (duration instanceof Literal) {
 			final long millis = ((Literal<Timespan>) duration).getSingle().getMilliSeconds();
-			if (millis > 86400000L) {
+			if (millis > 86400000L && !SkriptConfig.disableTooLongDelayWarnings.value())
 				Skript.warning("Delays greater than one day are not persistent, please use variables to store date and calculate difference instead.");
-			}
 		}
-		if (ScriptLoader.isCurrentEvent(FunctionEvent.class)) {
+		if (ScriptLoader.isCurrentEvent(FunctionEvent.class) && !SkriptConfig.disableDelaysInFunctionsWarnings.value())
 			Skript.warning("Delays in functions causes function to return instantly, this may cause bugs, so don't use a delay in functions.");
-		}
 		return true;
 	}
 	
@@ -92,7 +90,7 @@ public final class Delay extends Effect {
 				@Override
 				public final void run() {
 					if (Skript.debug())
-						Skript.info(getIndentation() + "... continuing after " + (System.nanoTime() - start) / 1000000000. + "s");
+						Skript.info(getIndentation() + " ... continuing after " + (System.nanoTime() - start) / 1000000000. + "s");
 					TriggerItem.walk(next, e);
 				}
 			}, d.getTicks_i());
@@ -101,13 +99,13 @@ public final class Delay extends Effect {
 	}
 	
 	@SuppressWarnings("null")
-	protected final static Set<Event> delayed = Collections.newSetFromMap(new WeakHashMap<Event, Boolean>());
+	final static Set<Event> delayed = Collections.newSetFromMap(new WeakHashMap<Event, Boolean>());
 	
-	public final static boolean isDelayed(final Event e) {
+	public static boolean isDelayed(final Event e) {
 		return delayed.contains(e);
 	}
 	
-	public final static void addDelayedEvent(final Event event){
+	public static void addDelayedEvent(final Event event) {
 		delayed.add(event);
 	}
 	

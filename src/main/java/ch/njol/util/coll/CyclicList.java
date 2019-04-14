@@ -19,13 +19,14 @@
 
 package ch.njol.util.coll;
 
+import ch.njol.util.Math2;
+
 import java.lang.reflect.Array;
 import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.util.Math2;
 
 /**
  * A list with fixed size that overrides the oldest elements when new elements are added and no more space is available.
@@ -35,7 +36,7 @@ import ch.njol.util.Math2;
 public final class CyclicList<E> extends AbstractList<E> {
 	
 	private final Object[] items;
-	private int start = 0;
+	private int start;
 	
 	public CyclicList(final int size) {
 		this.items = new Object[size];
@@ -53,11 +54,11 @@ public final class CyclicList<E> extends AbstractList<E> {
 		this.items = items;
 	}
 	
-	private final int toInternalIndex(final int index) {
+	private int toInternalIndex(final int index) {
 		return Math2.mod(start + index, items.length);
 	}
 	
-	private final int toExternalIndex(final int internal) {
+	private int toExternalIndex(final int internal) {
 		return Math2.mod(internal - start, items.length);
 	}
 	
@@ -184,6 +185,37 @@ public final class CyclicList<E> extends AbstractList<E> {
 		if (array.length > items.length)
 			array[items.length] = null;
 		return array;
+	}
+	
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Arrays.deepHashCode(this.items);
+		result = prime * result + this.start;
+		return result;
+	}
+	
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(@Nullable final Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof CyclicList))
+			return false;
+		final CyclicList<?> other = (CyclicList<?>) obj;
+		if (!Arrays.deepEquals(this.items, other.items))
+			return false;
+		if (this.start != other.start)
+			return false;
+		return true;
 	}
 	
 }

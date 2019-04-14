@@ -21,11 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import java.util.List;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -39,42 +34,45 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.TriggerItem;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.event.Event;
+
+import java.util.List;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Continue")
 @Description("Skips the value currently being looped, moving on to the next value if it exists.")
-@Examples("loop all players:\n" +
-		"\tif loop-value does not have permission \"moderator\":\n" +
-		"\t\tcontinue # filter out non moderators\n" +
-		"\tbroadcast \"%loop-player% is a moderator!\" # only moderators get broadcast")
+@Examples("loop all players:\n" + "\tif loop-value does not have permission \"moderator\":\n" + "\t\tcontinue # filter out non moderators\n" + "\tbroadcast \"%loop-player% is a moderator!\" # only moderators get broadcast")
 @Since("2.2-Fixes-V10")
-public class EffContinue extends Effect {
-
+public final class EffContinue extends Effect {
+	
 	static {
 		Skript.registerEffect(EffContinue.class, "continue [loop]");
 	}
-
+	
 	@SuppressWarnings("null")
 	private Loop loop;
-
+	
 	@Override
 	protected void execute(final Event e) {
 		throw new UnsupportedOperationException();
 	}
-
+	
 	@Nullable
 	@Override
 	protected TriggerItem walk(final Event e) {
 		TriggerItem.walk(loop, e);
 		return null;
 	}
-
+	
 	@Override
 	public String toString(@Nullable final Event e, final boolean debug) {
 		return "continue";
 	}
-
+	
 	@Override
 	@SuppressWarnings("null")
 	public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final SkriptParser.ParseResult parseResult) {
@@ -86,5 +84,5 @@ public class EffContinue extends Effect {
 		loop = loops.get(loops.size() - 1); // the most recent loop
 		return true;
 	}
-
+	
 }

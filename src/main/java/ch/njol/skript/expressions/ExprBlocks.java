@@ -21,14 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptConfig;
 import ch.njol.skript.doc.Description;
@@ -45,22 +37,26 @@ import ch.njol.util.Kleenean;
 import ch.njol.util.coll.iterator.ArrayIterator;
 import ch.njol.util.coll.iterator.IteratorIterable;
 
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.event.Event;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Blocks")
 @Description("Blocks relative to other blocks or between other blocks. Can be used to get blocks relative to other blocks or for looping.")
-@Examples({"loop blocks above the player:",
-		"loop blocks between the block below the player and the targeted block:",
-		"set the blocks below the player, the victim and the targeted block to air"})
+@Examples({"loop blocks above the player:", "loop blocks between the block below the player and the targeted block:", "set the blocks below the player, the victim and the targeted block to air"})
 @Since("1.0")
 public class ExprBlocks extends SimpleExpression<Block> {
 	static {
-		Skript.registerExpression(ExprBlocks.class, Block.class, ExpressionType.COMBINED,
-				"[the] blocks %direction% [%locations%]", // TODO doesn't loop all blocks?
-				"[the] blocks from %location% [on] %direction%",
-				"[the] blocks from %block% to %block%",
-				"[the] blocks between %block% and %block%");
+		Skript.registerExpression(ExprBlocks.class, Block.class, ExpressionType.COMBINED, "[the] blocks %direction% [%locations%]", // TODO doesn't loop all blocks?
+				"[the] blocks from %location% [on] %direction%", "[the] blocks from %block% to %block%", "[the] blocks between %block% and %block%");
 	}
 	
 	@SuppressWarnings("null")
@@ -110,13 +106,13 @@ public class ExprBlocks extends SimpleExpression<Block> {
 			}
 			return bs;
 		}
-		final ArrayList<Block> r = new ArrayList<Block>();
 		final Iterator<Block> iter = iterator(e);
 		if (iter == null)
 			return new Block[0];
+		final ArrayList<Block> r = new ArrayList<Block>();
 		for (final Block b : new IteratorIterable<Block>(iter))
 			r.add(b);
-		return r.toArray(new Block[r.size()]);
+		return r.toArray(new Block[0]);
 	}
 	
 	@Override
@@ -131,10 +127,10 @@ public class ExprBlocks extends SimpleExpression<Block> {
 				final Object o = from.getSingle(e);
 				if (o == null)
 					return null;
-				final Location l = o instanceof Location ? (Location) o : ((Block) o).getLocation().add(0.5, 0.5, 0.5);
 				final Direction d = direction.getSingle(e);
 				if (d == null)
 					return null;
+				final Location l = o instanceof Location ? (Location) o : ((Block) o).getLocation().add(0.5, 0.5, 0.5);
 				if (l.getBlock() == null)
 					return null;
 				return new BlockLineIterator(l, o != l ? d.getDirection((Block) o) : d.getDirection(l), SkriptConfig.maxTargetBlockDistance.value());
@@ -149,14 +145,14 @@ public class ExprBlocks extends SimpleExpression<Block> {
 				return new BlockLineIterator(b, b2);
 			}
 		} catch (final IllegalStateException ex) {
-			if (ex.getMessage().equals("Start block missed in BlockIterator"))
+			if ("Start block missed in BlockIterator".equals(ex.getMessage()))
 				return null;
 			throw ex;
 		}
 	}
 	
 	@Override
-	public Class<? extends Block> getReturnType() {
+	public Class<Block> getReturnType() {
 		return Block.class;
 	}
 	

@@ -24,7 +24,7 @@ package ch.njol.skript.classes;
 /**
  * @author Peter Güttinger
  */
-public class NumberArithmetic implements Arithmetic<Number, Number> {
+public final class NumberArithmetic implements Arithmetic<Number, Number> {
 	
 	@Override
 	public Number difference(final Number first, final Number second) {
@@ -34,13 +34,13 @@ public class NumberArithmetic implements Arithmetic<Number, Number> {
 	@Override
 	@SuppressWarnings("null")
 	public Number add(final Number value, final Number difference) {
-		return Double.valueOf(value.doubleValue() + difference.doubleValue());
+		return value.doubleValue() + difference.doubleValue();
 	}
 	
 	@Override
 	@SuppressWarnings("null")
 	public Number subtract(final Number value, final Number difference) {
-		return Double.valueOf(value.doubleValue() - difference.doubleValue());
+		return value.doubleValue() - difference.doubleValue();
 	}
 	
 }

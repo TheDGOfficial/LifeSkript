@@ -21,16 +21,17 @@
 
 package ch.njol.skript.entity;
 
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.Horse.Color;
-import org.bukkit.entity.Horse.Style;
-import org.bukkit.entity.Horse.Variant;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.variables.Variables;
+
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.Horse.Color;
+import org.bukkit.entity.Horse.Style;
+import org.bukkit.entity.Horse.Variant;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -80,9 +81,7 @@ public class HorseData extends EntityData<Horse> {
 	
 	@Override
 	protected boolean match(final Horse entity) {
-		return (variant == null || variant == entity.getVariant())
-				&& (color == null || color == entity.getColor())
-				&& (style == null || style == entity.getStyle());
+		return (variant == null || variant == entity.getVariant()) && (color == null || color == entity.getColor()) && (style == null || style == entity.getStyle());
 	}
 	
 	@Override
@@ -105,9 +104,7 @@ public class HorseData extends EntityData<Horse> {
 		if (!(e instanceof HorseData))
 			return false;
 		final HorseData d = (HorseData) e;
-		return (variant == null || variant == d.variant)
-				&& (color == null || color == d.color)
-				&& (style == null || style == d.style);
+		return (variant == null || variant == d.variant) && (color == null || color == d.color) && (style == null || style == d.style);
 	}
 	
 	@Override

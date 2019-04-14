@@ -21,19 +21,19 @@
 
 package ch.njol.skript.events.bukkit;
 
+import ch.njol.skript.registrations.EventValues;
+import ch.njol.skript.util.Experience;
+import ch.njol.skript.util.Getter;
+
 import org.bukkit.Location;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import ch.njol.skript.registrations.EventValues;
-import ch.njol.skript.util.Experience;
-import ch.njol.skript.util.Getter;
-
 /**
  * @author Peter Güttinger
  */
-public class ExperienceSpawnEvent extends Event implements Cancellable {
+public final class ExperienceSpawnEvent extends Event implements Cancellable {
 	static {
 		EventValues.registerEventValue(ExperienceSpawnEvent.class, Location.class, new Getter<Location, ExperienceSpawnEvent>() {
 			@Override
@@ -70,7 +70,7 @@ public class ExperienceSpawnEvent extends Event implements Cancellable {
 		return l;
 	}
 	
-	private boolean cancelled = false;
+	private boolean cancelled;
 	
 	@Override
 	public boolean isCancelled() {

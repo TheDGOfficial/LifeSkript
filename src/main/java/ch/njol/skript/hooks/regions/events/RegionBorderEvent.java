@@ -21,17 +21,17 @@
 
 package ch.njol.skript.hooks.regions.events;
 
+import ch.njol.skript.hooks.regions.classes.Region;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import ch.njol.skript.hooks.regions.classes.Region;
-
 /**
  * @author Peter Güttinger
  */
-public class RegionBorderEvent extends Event implements Cancellable {
+public final class RegionBorderEvent extends Event implements Cancellable {
 	
 	private final Region region;
 	final Player player;
@@ -55,7 +55,7 @@ public class RegionBorderEvent extends Event implements Cancellable {
 		return player;
 	}
 	
-	private boolean cancelled = false;
+	private boolean cancelled;
 	
 	@Override
 	public boolean isCancelled() {

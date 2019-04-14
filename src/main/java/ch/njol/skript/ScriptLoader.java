@@ -21,21 +21,6 @@
 
 package ch.njol.skript;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.aliases.Aliases;
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.classes.ClassInfo;
@@ -84,6 +69,22 @@ import ch.njol.util.NonNullPair;
 import ch.njol.util.StringUtils;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.event.Event;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
@@ -95,13 +96,13 @@ final public class ScriptLoader {
 	private final static PluralizingArgsMessage m_scripts_loaded = new PluralizingArgsMessage("skript.scripts loaded");
 	
 	@Nullable
-	public static Config currentScript = null;
+	public static Config currentScript;
 	
 	/**
 	 * use {@link #setCurrentEvent(String, Class...)}
 	 */
 	@Nullable
-	private static String currentEventName = null;
+	private static String currentEventName;
 	
 	@Nullable
 	public static String getCurrentEventName() {
@@ -112,7 +113,7 @@ final public class ScriptLoader {
 	 * use {@link #setCurrentEvent(String, Class...)}
 	 */
 	@Nullable
-	private static Class<? extends Event>[] currentEvents = null;
+	private static Class<? extends Event>[] currentEvents;
 	
 	/**
 	 * Call {@link #deleteCurrentEvent()} after parsing
@@ -133,7 +134,7 @@ final public class ScriptLoader {
 	}
 	
 	public static List<TriggerSection> currentSections = new ArrayList<TriggerSection>();
-	public static List<Loop> currentLoops = new ArrayList<Loop>();
+	public final static List<Loop> currentLoops = new ArrayList<Loop>();
 	private final static Map<String, ItemType> currentAliases = new HashMap<String, ItemType>();
 	final static HashMap<String, String> currentOptions = new HashMap<String, String>();
 	
@@ -233,7 +234,7 @@ final public class ScriptLoader {
 	 * @param directory
 	 * @return Info on the loaded scripts
 	 */
-	public final static ScriptInfo loadScripts(final File directory) {
+	public static ScriptInfo loadScripts(final File directory) {
 		final ScriptInfo i = new ScriptInfo();
 		final boolean wasLocal = Language.setUseLocal(false);
 		try {
@@ -259,7 +260,7 @@ final public class ScriptLoader {
 	 * @param files
 	 * @return Info on the loaded scripts
 	 */
-	public final static ScriptInfo loadScripts(final File[] files) {
+	public static ScriptInfo loadScripts(final File[] files) {
 		Arrays.sort(files);
 		final ScriptInfo i = new ScriptInfo();
 		final boolean wasLocal = Language.setUseLocal(false);
@@ -283,7 +284,7 @@ final public class ScriptLoader {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public final static ScriptInfo loadScript(final File f) {
+	public static ScriptInfo loadScript(final File f) {
 //		File cache = null;
 //		if (SkriptConfig.enableScriptCaching.value()) {
 //			cache = new File(f.getParentFile(), "cache" + File.separator + f.getName() + "c");
@@ -341,11 +342,17 @@ final public class ScriptLoader {
 //		}
 		try {
 			
-			final Date startDate = new Date();
+			@Nullable
+			Date startDate = null;
+			
+			if (Skript.logHigh())
+				startDate = new Date();
+			
 			final Config config = new Config(f, true, false, ":");
 			
 			if (SkriptConfig.keepConfigsLoaded.value())
 				SkriptConfig.configs.add(config);
+			
 			int numTriggers = 0;
 			int numCommands = 0;
 			int numFunctions = 0;
@@ -370,7 +377,7 @@ final public class ScriptLoader {
 					if (event == null)
 						continue;
 					
-					if (event.equalsIgnoreCase("aliases")) {
+					if ("aliases".equalsIgnoreCase(event)) {
 						node.convertToEntries(0, "=");
 						for (final Node n : node) {
 							if (!(n instanceof EntryNode)) {
@@ -383,7 +390,7 @@ final public class ScriptLoader {
 							currentAliases.put(((EntryNode) n).getKey().toLowerCase(), t);
 						}
 						continue;
-					} else if (event.equalsIgnoreCase("options")) {
+					} else if ("options".equalsIgnoreCase(event)) {
 						node.convertToEntries(0);
 						for (final Node n : node) {
 							if (!(n instanceof EntryNode)) {
@@ -393,7 +400,7 @@ final public class ScriptLoader {
 							currentOptions.put(((EntryNode) n).getKey(), ((EntryNode) n).getValue());
 						}
 						continue;
-					} else if (event.equalsIgnoreCase("variables")) {
+					} else if ("variables".equalsIgnoreCase(event)) {
 						node.convertToEntries(0, "=");
 						for (final Node n : node) {
 							if (!(n instanceof EntryNode)) {
@@ -514,7 +521,7 @@ final public class ScriptLoader {
 					try {
 						trigger = new Trigger(config.getFile(), event, parsedEvent.getSecond(), loadItems(node));
 						trigger.setLineNumber(node.getLine());
- 						trigger.setDebugLabel(config.getFileName() + ": line " + node.getLine());
+						trigger.setDebugLabel(config.getFileName() + ": line " + node.getLine());
 					} finally {
 						deleteCurrentEvent();
 					}
@@ -531,12 +538,15 @@ final public class ScriptLoader {
 					numTriggers++;
 				}
 				
-				final long loadTime = TimeUnit.MILLISECONDS.toSeconds(startDate.difference(new Date()).getMilliSeconds());
-				
-				if (Skript.logHigh())
+				if (Skript.logHigh() && startDate != null) {
+					
+					final long loadTime = TimeUnit.MILLISECONDS.toSeconds(startDate.difference(new Date()).getMilliSeconds());
 					Skript.info("Loaded " + numTriggers + " trigger" + (numTriggers == 1 ? "" : "s") + " and " + numCommands + " command" + (numCommands == 1 ? "" : "s") + " from '" + config.getFileName() + "' in " + loadTime + " seconds.");
+					
+				}
 				
 				currentScript = null;
+				
 			} finally {
 				numErrors.stop();
 			}
@@ -583,13 +593,13 @@ final public class ScriptLoader {
 	 * @param folder
 	 * @return Info on the unloaded scripts
 	 */
-	final static ScriptInfo unloadScripts(final File folder) {
+	static ScriptInfo unloadScripts(final File folder) {
 		final ScriptInfo r = unloadScripts_(folder);
 		Functions.validateFunctions();
 		return r;
 	}
 	
-	private final static ScriptInfo unloadScripts_(final File folder) {
+	private static ScriptInfo unloadScripts_(final File folder) {
 		final ScriptInfo info = new ScriptInfo();
 		final File[] files = folder.listFiles(scriptFilter);
 		for (final File f : files) {
@@ -608,13 +618,13 @@ final public class ScriptLoader {
 	 * @param script
 	 * @return Info on the unloaded script
 	 */
-	final static ScriptInfo unloadScript(final File script) {
+	static ScriptInfo unloadScript(final File script) {
 		final ScriptInfo r = unloadScript_(script);
 		Functions.validateFunctions();
 		return r;
 	}
 	
-	private final static ScriptInfo unloadScript_(final File script) {
+	private static ScriptInfo unloadScript_(final File script) {
 		final ScriptInfo info = SkriptEventHandler.removeTriggers(script);
 		synchronized (loadedScripts) {
 			loadedScripts.subtract(info);
@@ -622,7 +632,13 @@ final public class ScriptLoader {
 		return info;
 	}
 	
-	public final static String replaceOptions(final String s) {
+	/**
+	 * Replaces options in a string. May return null, but only if the input is null.
+	 * 
+	 * @param s The string to replace options.
+	 * @return The replaced string. May return null, but only if the input is null.
+	 */
+	public static String replaceOptions(final String s) {
 		final String r = StringUtils.replaceAll(s, "\\{@(.+?)\\}", new Callback<String, Matcher>() {
 			@Override
 			@Nullable
@@ -640,12 +656,12 @@ final public class ScriptLoader {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static ArrayList<TriggerItem> loadItems(final SectionNode node) {
+	public static List<TriggerItem> loadItems(final SectionNode node) {
 		
 		if (Skript.debug())
 			indentation += "    ";
 		
-		final ArrayList<TriggerItem> items = new ArrayList<TriggerItem>();
+		final List<TriggerItem> items = new ArrayList<TriggerItem>();
 		
 		Kleenean hadDelayBeforeLastIf = Kleenean.FALSE;
 		
@@ -706,8 +722,8 @@ final public class ScriptLoader {
 					items.add(new While(c, (SectionNode) n));
 					if (hadDelayBefore != Kleenean.TRUE && hasDelayBefore != Kleenean.FALSE)
 						hasDelayBefore = Kleenean.UNKNOWN;
-				} else if (name.equalsIgnoreCase("else")) {
-					if (items.size() == 0 || !(items.get(items.size() - 1) instanceof Conditional) || ((Conditional) items.get(items.size() - 1)).hasElseClause()) {
+				} else if ("else".equalsIgnoreCase(name)) {
+					if (items.isEmpty() || !(items.get(items.size() - 1) instanceof Conditional) || ((Conditional) items.get(items.size() - 1)).hasElseClause()) {
 						Skript.error("'else' has to be placed just after an 'if' or 'else if' section");
 						continue;
 					}
@@ -718,7 +734,7 @@ final public class ScriptLoader {
 					((Conditional) items.get(items.size() - 1)).loadElseClause((SectionNode) n);
 					hasDelayBefore = hadDelayBeforeLastIf.or(hadDelayAfterLastIf.and(hasDelayBefore));
 				} else if (StringUtils.startsWithIgnoreCase(name, "else if ")) {
-					if (items.size() == 0 || !(items.get(items.size() - 1) instanceof Conditional) || ((Conditional) items.get(items.size() - 1)).hasElseClause()) {
+					if (items.isEmpty() || !(items.get(items.size() - 1) instanceof Conditional) || ((Conditional) items.get(items.size() - 1)).hasElseClause()) {
 						Skript.error("'else if' has to be placed just after another 'if' or 'else if' section");
 						continue;
 					}
@@ -789,35 +805,35 @@ final public class ScriptLoader {
 		}
 	}
 	
-	public final static int loadedScripts() {
+	public static int loadedScripts() {
 		synchronized (loadedScripts) {
 			return loadedScripts.files;
 		}
 	}
 	
-	public final static int loadedCommands() {
+	public static int loadedCommands() {
 		synchronized (loadedScripts) {
 			return loadedScripts.commands;
 		}
 	}
 	
-	public final static int loadedFunctions() {
+	public static int loadedFunctions() {
 		synchronized (loadedScripts) {
 			return loadedScripts.functions;
 		}
 	}
 	
-	public final static int loadedTriggers() {
+	public static int loadedTriggers() {
 		synchronized (loadedScripts) {
 			return loadedScripts.triggers;
 		}
 	}
 	
-	public final static boolean isCurrentEvent(final @Nullable Class<? extends Event> event) {
+	public static boolean isCurrentEvent(final @Nullable Class<? extends Event> event) {
 		return CollectionUtils.containsSuperclass(currentEvents, event);
 	}
 	
-	public final static boolean isCurrentEvent(final Class<? extends Event>... events) {
+	public static boolean isCurrentEvent(final Class<? extends Event>... events) {
 		return CollectionUtils.containsAnySuperclass(currentEvents, events);
 	}
 	

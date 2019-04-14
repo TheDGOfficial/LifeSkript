@@ -21,6 +21,17 @@
 
 package ch.njol.skript;
 
+import ch.njol.skript.localization.FormattedMessage;
+import ch.njol.skript.localization.Message;
+import ch.njol.skript.util.Date;
+import ch.njol.skript.util.ExceptionUtils;
+import ch.njol.skript.util.FileUtils;
+import ch.njol.skript.util.Task;
+import ch.njol.skript.util.Version;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -42,20 +53,11 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.eclipse.jdt.annotation.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import ch.njol.skript.localization.FormattedMessage;
-import ch.njol.skript.localization.Message;
-import ch.njol.skript.util.Date;
-import ch.njol.skript.util.ExceptionUtils;
-import ch.njol.skript.util.FileUtils;
-import ch.njol.skript.util.Task;
-import ch.njol.skript.util.Version;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -90,7 +92,7 @@ public final class Updater {
 		public int compareTo(final @Nullable VersionInfo o) {
 			return version.compareTo(o == null ? null : o.version);
 		}
-
+		
 		@Override
 		@SuppressWarnings("null")
 		public int hashCode() {
@@ -103,7 +105,7 @@ public final class Updater {
 			result = prime * result + (version == null ? 0 : version.hashCode());
 			return result;
 		}
-
+		
 		@Override
 		@SuppressWarnings({"null", "unused"})
 		public boolean equals(@Nullable final Object obj) {
@@ -155,8 +157,8 @@ public final class Updater {
 	
 	private final static DateFormat RFC2822 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
 	
-	public static enum UpdateState {
-		NOT_STARTED, CHECK_IN_PROGRESS, CHECK_ERROR, CHECKED_FOR_UPDATE, DOWNLOAD_IN_PROGRESS, DOWNLOAD_ERROR, DOWNLOADED;
+	public enum UpdateState {
+		NOT_STARTED, CHECK_IN_PROGRESS, CHECK_ERROR, CHECKED_FOR_UPDATE, DOWNLOAD_IN_PROGRESS, DOWNLOAD_ERROR, DOWNLOADED
 	}
 	
 	public final static ReentrantReadWriteLock stateLock = new ReentrantReadWriteLock();
@@ -184,10 +186,9 @@ public final class Updater {
 	public final static Message m_internal_error = new Message("updater.internal error");
 	
 	@Nullable
-	static Task checkerTask = null;
+	static Task checkerTask;
 	
 	static void start() {
-		return;
 		/*
 		checkerTask = new Task(Skript.getInstance(), 0, true) {
 			@SuppressWarnings("null")
@@ -221,6 +222,7 @@ public final class Updater {
 		if (!isAutomatic || Skript.logNormal())
 			Skript.info(sender, "" + m_checking);
 		Skript.newThread(new Runnable() {
+			@SuppressWarnings("null")
 			@Override
 			public void run() {
 				infos.clear();
@@ -310,7 +312,7 @@ public final class Updater {
 					if (in != null) {
 						try {
 							in.close();
-						} catch (final IOException e) {}
+						} catch (final IOException ignored) {}
 					}
 				}
 			}
@@ -322,7 +324,7 @@ public final class Updater {
 	 * 
 	 * @param sender
 	 */
-	final static void getChangelogs(final CommandSender sender) {
+	static void getChangelogs(final CommandSender sender) {
 		InputStream in = null;
 		InputStreamReader r = null;
 		try {
@@ -339,7 +341,7 @@ public final class Updater {
 				XMLEvent e = reader.nextEvent();
 				if (e.isStartElement()) {
 					final String element = e.asStartElement().getName().getLocalPart();
-					if (element.equalsIgnoreCase("title")) {
+					if ("title".equalsIgnoreCase(element)) {
 						final String name = reader.nextEvent().asCharacters().getData().trim();
 						for (final VersionInfo i : infos) {
 							if (name.equals(i.name)) {
@@ -348,14 +350,14 @@ public final class Updater {
 							}
 						}
 						current = null;
-					} else if (element.equalsIgnoreCase("description")) {
+					} else if ("description".equalsIgnoreCase(element)) {
 						if (current == null)
 							continue;
 						final StringBuilder cl = new StringBuilder();
 						while ((e = reader.nextEvent()).isCharacters())
 							cl.append(e.asCharacters().getData());
 						current.changelog = "- " + StringEscapeUtils.unescapeHtml("" + cl).replace("<br>", "").replace("<p>", "").replace("</p>", "").replaceAll("\n(?!\n)", "\n- ");
-					} else if (element.equalsIgnoreCase("pubDate")) {
+					} else if ("pubDate".equalsIgnoreCase(element)) {
 						if (current == null)
 							continue;
 						synchronized (RFC2822) { // to make FindBugs shut up
@@ -387,12 +389,12 @@ public final class Updater {
 			if (in != null) {
 				try {
 					in.close();
-				} catch (final IOException e) {}
+				} catch (final IOException ignored) {}
 			}
 			if (r != null) {
 				try {
 					r.close();
-				} catch (final IOException e) {}
+				} catch (final IOException ignored) {}
 			}
 		}
 	}
@@ -470,7 +472,7 @@ public final class Updater {
 			if (in != null) {
 				try {
 					in.close();
-				} catch (final IOException e) {}
+				} catch (final IOException ignored) {}
 			}
 		}
 	}

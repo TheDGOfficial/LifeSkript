@@ -21,25 +21,24 @@
 
 package ch.njol.skript.entity;
 
-import org.bukkit.entity.Wolf;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
+
+import org.bukkit.entity.Wolf;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
  */
 public class WolfData extends EntityData<Wolf> {
 	static {
-		EntityData.register(WolfData.class, "wolf", Wolf.class, 1,
-				"angry wolf", "wolf", "peaceful wolf",
-				"wild wolf", "tamed wolf");
+		EntityData.register(WolfData.class, "wolf", Wolf.class, 1, "angry wolf", "wolf", "peaceful wolf", "wild wolf", "tamed wolf");
 	}
 	
-	private int angry = 0;
-//	private String owner = null;
-	private int tamed = 0;
+	private int angry;
+//	private String owner;
+	private int tamed;
 	
 	@Override
 	protected boolean init(final Literal<?>[] exprs, final int matchedPattern, final ParseResult parseResult) {

@@ -21,8 +21,6 @@
 
 package ch.njol.skript.lang.function;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.lang.Expression;
@@ -34,6 +32,8 @@ import ch.njol.skript.lang.util.SimpleLiteral;
 import ch.njol.skript.log.RetainingLogHandler;
 import ch.njol.skript.log.SkriptLogger;
 import ch.njol.skript.util.Utils;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 public final class Parameter<T> {
 	
@@ -71,7 +71,7 @@ public final class Parameter<T> {
 	
 	@Nullable
 	public static <T> Parameter<T> newInstance(final String name, final ClassInfo<T> type, final boolean single, final @Nullable String def) {
-		if(def != null) {
+		if (def != null) {
 			final boolean isNone = (def.contains("none") || def.contains("null")) && def.contains("value of");
 			return newInstance(name, type, single, def, isNone);
 		} else {
@@ -112,7 +112,7 @@ public final class Parameter<T> {
 					d = new SkriptParser(def, SkriptParser.PARSE_LITERALS, ParseContext.DEFAULT).parseExpression(type.getC());
 				}
 				if (d == null) {
-					if(!isNone) {
+					if (!isNone) {
 						log.printErrors("'" + def + "' is not " + type.getName().withIndefiniteArticle());
 						return null;
 					}

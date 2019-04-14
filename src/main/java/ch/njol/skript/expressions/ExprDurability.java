@@ -21,10 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.classes.Changer.ChangerUtils;
@@ -36,13 +32,16 @@ import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.util.Slot;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Data Value")
-@Description({"The data value of an item.",
-		"You usually don't need this expression as you can check and set items with aliases easily, " +
-				"but this expression can e.g. be used to \"add 1 to data of &lt;item&gt;\", e.g. for cycling through all wool colours."})
+@Description({"The data value of an item.", "You usually don't need this expression as you can check and set items with aliases easily, " + "but this expression can e.g. be used to \"add 1 to data of &lt;item&gt;\", e.g. for cycling through all wool colours."})
 @Examples({"add 1 to the data value of the clicked block"})
 @Since("1.2")
 public class ExprDurability extends SimplePropertyExpression<Object, Short> {

@@ -21,12 +21,12 @@
 
 package ch.njol.skript.lang.function;
 
+import ch.njol.skript.classes.ClassInfo;
+import ch.njol.util.coll.CollectionUtils;
+
 import java.util.Arrays;
 
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.classes.ClassInfo;
-import ch.njol.util.coll.CollectionUtils;
 
 /**
  * @author Peter Güttinger
@@ -83,7 +83,7 @@ public abstract class Function<T> {
 	public int getMaxParameters() {
 		return parameters.length;
 	}
-		
+	
 	/**
 	 * @param params An array with at least {@link #getMinParameters()} elements and at most {@link #getMaxParameters()} elements.
 	 * @return The result of the function
@@ -91,13 +91,13 @@ public abstract class Function<T> {
 	@SuppressWarnings("null")
 	@Nullable
 	public final T[] execute(final Object[][] params) {
-		final FunctionEvent e = new FunctionEvent();
 		if (params.length > parameters.length) {
 			assert false : params.length;
 			return null;
 		}
 		final Object[][] ps = params.length < parameters.length ? Arrays.copyOf(params, parameters.length) : params;
 		assert ps != null;
+		final FunctionEvent e = new FunctionEvent();
 		for (int i = 0; i < parameters.length; i++) {
 			final Parameter<?> p = parameters[i];
 			final Object[] val = i < params.length ? params[i] : p.def != null ? p.def.getArray(e) : null;

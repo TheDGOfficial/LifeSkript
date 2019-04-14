@@ -21,9 +21,9 @@
 
 package ch.njol.skript.classes;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.registrations.Converters;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Used to chain convertes to build a single converter. This is automatically created when a new converter is added.
@@ -48,7 +48,7 @@ public final class ChainedConverter<F, M, T> implements Converter<F, T> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public final static <F, M, T> ChainedConverter<F, M, T> newInstance(final Converter<? super F, ?> first, final Converter<?, ? extends T> second) {
+	public static <F, M, T> ChainedConverter<F, M, T> newInstance(final Converter<? super F, ?> first, final Converter<?, ? extends T> second) {
 		return new ChainedConverter<F, M, T>((Converter<? super F, ? extends M>) first, (Converter<? super M, ? extends T>) second);
 	}
 	

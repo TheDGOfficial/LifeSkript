@@ -21,14 +21,14 @@
 
 package ch.njol.skript.util;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.yggdrasil.YggdrasilSerializable;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
  */
-public class Timeperiod implements YggdrasilSerializable {
+public final class Timeperiod implements YggdrasilSerializable {
 	
 	public final int start, end;
 	

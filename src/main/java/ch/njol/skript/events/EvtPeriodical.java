@@ -21,11 +21,6 @@
 
 package ch.njol.skript.events;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptEventHandler;
 import ch.njol.skript.events.bukkit.ScheduledEvent;
@@ -37,20 +32,19 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.Trigger;
 import ch.njol.skript.util.Timespan;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 public final class EvtPeriodical extends SelfRegisteringSkriptEvent {
 	static {
-		Skript.registerEvent("*Periodical", EvtPeriodical.class, ScheduledNoWorldEvent.class, "every %timespan%")
-				.description(SkriptEventInfo.NO_DOC);
-		Skript.registerEvent("*Periodical", EvtPeriodical.class, ScheduledEvent.class, "every %timespan% in [world[s]] %worlds%")
-				.description("An event that is called periodically. The event is used like 'every &lt;<a href='../classes/#timespan'>timespan</a>&gt;', e.g. 'every second' or 'every 5 minutes'.")
-				.examples("every second",
-						"every minecraft hour",
-						"every tick # warning: lag!",
-						"every minecraft day in \"world\"")
-				.since("1.0");
+		Skript.registerEvent("*Periodical", EvtPeriodical.class, ScheduledNoWorldEvent.class, "every %timespan%").description(SkriptEventInfo.NO_DOC);
+		Skript.registerEvent("*Periodical", EvtPeriodical.class, ScheduledEvent.class, "every %timespan% in [world[s]] %worlds%").description("An event that is called periodically. The event is used like 'every &lt;<a href='../classes/#timespan'>timespan</a>&gt;', e.g. 'every second' or 'every 5 minutes'.").examples("every second", "every minecraft hour", "every tick # warning: lag!", "every minecraft day in \"world\"").since("1.0");
 	}
 	
 	@SuppressWarnings("null")
@@ -64,18 +58,12 @@ public final class EvtPeriodical extends SelfRegisteringSkriptEvent {
 	@Nullable
 	private transient World[] worlds;
 	
-//	@Nullable
-//	private String[] worldNames;
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(final Literal<?>[] args, final int matchedPattern, final ParseResult parser) {
 		period = ((Literal<Timespan>) args[0]).getSingle();
 		if (args.length > 1 && args[1] != null) {
 			worlds = ((Literal<World>) args[1]).getArray();
-//			worldNames = new String[worlds.length];
-//			for (int i = 0; i < worlds.length; i++)
-//				worldNames[i] = worlds[i].getName();
 		}
 		return true;
 	}
@@ -102,7 +90,7 @@ public final class EvtPeriodical extends SelfRegisteringSkriptEvent {
 		if (worlds == null) {
 			taskIDs = new int[] {Bukkit.getScheduler().scheduleSyncRepeatingTask(Skript.getInstance(), new Runnable() {
 				@Override
-				public void run() {
+				public final void run() {
 					execute(null);
 				}
 			}, period.getTicks_i(), period.getTicks_i())};
@@ -112,7 +100,7 @@ public final class EvtPeriodical extends SelfRegisteringSkriptEvent {
 				final World w = worlds[i];
 				taskIDs[i] = Bukkit.getScheduler().scheduleSyncRepeatingTask(Skript.getInstance(), new Runnable() {
 					@Override
-					public void run() {
+					public final void run() {
 						execute(w);
 					}
 				}, period.getTicks_i() - w.getFullTime() % period.getTicks_i(), period.getTicks_i());

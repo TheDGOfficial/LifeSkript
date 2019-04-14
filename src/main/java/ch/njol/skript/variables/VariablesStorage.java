@@ -21,14 +21,6 @@
 
 package ch.njol.skript.variables;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.lang.ParseContext;
@@ -41,6 +33,14 @@ import ch.njol.skript.util.Timespan;
 import ch.njol.skript.variables.SerializedVariable.Value;
 import ch.njol.util.Closeable;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 // FIXME ! large databases (>25 MB) cause the server to be unresponsive instead of loading slowly
 
 /**
@@ -52,7 +52,7 @@ public abstract class VariablesStorage implements Closeable {
 	
 	final LinkedBlockingQueue<SerializedVariable> changesQueue = new LinkedBlockingQueue<SerializedVariable>(QUEUE_SIZE);
 	
-	protected volatile boolean closed = false;
+	protected volatile boolean closed;
 	
 	protected final String databaseName;
 	
@@ -73,7 +73,7 @@ public abstract class VariablesStorage implements Closeable {
 		writeThread = Skript.newThread(new Runnable() {
 			@SuppressWarnings({"unused", "null"})
 			@Override
-			public void run() {
+			public final void run() {
 				while (!closed) {
 					try {
 						final SerializedVariable var = changesQueue.take();
@@ -82,19 +82,19 @@ public abstract class VariablesStorage implements Closeable {
 							save(var.name, d.type, d.data);
 						else
 							save(var.name, null, null);
-					} catch (final InterruptedException e) {}
+					} catch (final InterruptedException ignored) {}
 				}
 			}
 		}, "Skript variable save thread for database '" + name + "'");
 	}
 	
 	@Nullable
-	protected String getValue(final SectionNode n, final String key) {
+	protected final String getValue(final SectionNode n, final String key) {
 		return getValue(n, key, String.class);
 	}
 	
 	@Nullable
-	protected <T> T getValue(final SectionNode n, final String key, final Class<T> type) {
+	protected final <T> T getValue(final SectionNode n, final String key, final Class<T> type) {
 		final String v = n.getValue(key);
 		if (v == null) {
 			Skript.error("The config is missing the entry for '" + key + "' in the database '" + databaseName + "'");
@@ -118,7 +118,7 @@ public abstract class VariablesStorage implements Closeable {
 		if (pattern == null)
 			return false;
 		try {
-			variablePattern = pattern.equals(".*") || pattern.equals(".+") ? null : Pattern.compile(pattern);
+			variablePattern = ".*".equals(pattern) || ".+".equals(pattern) ? null : Pattern.compile(pattern);
 		} catch (final PatternSyntaxException e) {
 			Skript.error("Invalid pattern '" + pattern + "': " + e.getLocalizedMessage());
 			return false;
@@ -178,7 +178,7 @@ public abstract class VariablesStorage implements Closeable {
 	 * 
 	 * @return Whether the database could be loaded successfully, i.e. whether the config is correct and all variables could be loaded
 	 */
-	protected abstract boolean load_i(SectionNode n);
+	protected abstract boolean load_i(final SectionNode n);
 	
 	/**
 	 * Called after all storages have been loaded, and variables have been redistributed if settings have changed. This should commit the first transaction (which is not empty if
@@ -188,7 +188,7 @@ public abstract class VariablesStorage implements Closeable {
 	
 	protected abstract boolean requiresFile();
 	
-	protected abstract File getFile(String file);
+	protected abstract File getFile(final String file);
 	
 	/**
 	 * Must be locked after {@link Variables#getReadLock()} (if that lock is used at all)
@@ -208,9 +208,9 @@ public abstract class VariablesStorage implements Closeable {
 	protected abstract void disconnect();
 	
 	@Nullable
-	protected Task backupTask = null;
+	protected Task backupTask;
 	
-	public void startBackupTask(final Timespan t) {
+	public final void startBackupTask(final Timespan t) {
 		final File file = this.file;
 		if (file == null || t.getTicks_i() == 0)
 			return;
@@ -231,10 +231,11 @@ public abstract class VariablesStorage implements Closeable {
 		};
 	}
 	
+	@SuppressWarnings("null")
 	boolean accept(final @Nullable String var) {
 		if (var == null)
 			return false;
-		return variablePattern != null ? variablePattern.matcher(var).matches() : true;
+		return variablePattern == null || variablePattern.matcher(var).matches();
 	}
 	
 	private long lastWarning = Long.MIN_VALUE;
@@ -260,7 +261,7 @@ public abstract class VariablesStorage implements Closeable {
 					// REMIND add repetitive error and/or stop saving variables altogether?
 					changesQueue.put(var);
 					break;
-				} catch (final InterruptedException e) {}
+				} catch (final InterruptedException ignored) {}
 			}
 		}
 	}
@@ -271,10 +272,10 @@ public abstract class VariablesStorage implements Closeable {
 	 */
 	@Override
 	public void close() {
-		while (changesQueue.size() > 0) {
+		while (!changesQueue.isEmpty()) {
 			try {
 				Thread.sleep(10);
-			} catch (final InterruptedException e) {}
+			} catch (final InterruptedException ignored) {}
 		}
 		closed = true;
 		writeThread.interrupt();
@@ -283,7 +284,7 @@ public abstract class VariablesStorage implements Closeable {
 	/**
 	 * Clears the queue of unsaved variables. Only used if all variables are saved immediately after calling this method.
 	 */
-	protected void clearChangesQueue() {
+	protected final void clearChangesQueue() {
 		changesQueue.clear();
 	}
 	

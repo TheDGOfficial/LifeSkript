@@ -21,12 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.bukkitutil.PlayerUtils;
 import ch.njol.skript.doc.Description;
@@ -38,15 +32,21 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Broadcast")
 @Description("Broadcasts a message to the server.")
-@Examples({"broadcast \"Welcome %player% to the server!\"",
-		"broadcast \"Woah! It's a message!\""})
+@Examples({"broadcast \"Welcome %player% to the server!\"", "broadcast \"Woah! It's a message!\""})
 @Since("1.0")
-public class EffBroadcast extends Effect {
+public final class EffBroadcast extends Effect {
 	static {
 		Skript.registerEffect(EffBroadcast.class, "broadcast %strings% [(to|in) %-worlds%]");
 	}

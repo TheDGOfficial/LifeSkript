@@ -21,15 +21,16 @@
 
 package ch.njol.skript.entity;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Villager;
-import org.bukkit.entity.Villager.Profession;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.coll.CollectionUtils;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.Villager.Profession;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -38,14 +39,13 @@ public class VillagerData extends EntityData<Villager> {
 	static {
 		// professions in order!
 		// FARMER(0), LIBRARIAN(1), PRIEST(2), BLACKSMITH(3), BUTCHER(4);
-		register(VillagerData.class, "villager", Villager.class, 0,
-				"villager", "farmer", "librarian", "priest", "blacksmith", "butcher");
+		register(VillagerData.class, "villager", Villager.class, 0, "villager", "farmer", "librarian", "priest", "blacksmith", "butcher");
 		
 		Variables.yggdrasil.registerSingleClass(Profession.class, "Villager.Profession");
 	}
 	
 	@Nullable
-	private Profession profession = null;
+	private Profession profession;
 	
 	@Override
 	protected boolean init(final Literal<?>[] exprs, final int matchedPattern, final ParseResult parseResult) {

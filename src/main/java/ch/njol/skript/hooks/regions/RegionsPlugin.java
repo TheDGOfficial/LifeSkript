@@ -21,22 +21,23 @@
 
 package ch.njol.skript.hooks.regions;
 
+import ch.njol.skript.hooks.Hook;
+import ch.njol.skript.hooks.regions.classes.Region;
+import ch.njol.skript.variables.Variables;
+import ch.njol.yggdrasil.ClassResolver;
+
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.hooks.Hook;
-import ch.njol.skript.hooks.regions.classes.Region;
-import ch.njol.skript.variables.Variables;
-import ch.njol.yggdrasil.ClassResolver;
 
 /**
  * @author Peter Güttinger
@@ -46,7 +47,7 @@ public abstract class RegionsPlugin<P extends Plugin> extends Hook<P> {
 	
 	public RegionsPlugin() throws IOException {}
 	
-	public static Collection<RegionsPlugin<?>> plugins = new ArrayList<RegionsPlugin<?>>(2);
+	public static final Collection<RegionsPlugin<?>> plugins = new ArrayList<RegionsPlugin<?>>(2);
 	
 	static {
 		Variables.yggdrasil.registerClassResolver(new ClassResolver() {
@@ -78,7 +79,7 @@ public abstract class RegionsPlugin<P extends Plugin> extends Hook<P> {
 	
 	public abstract boolean canBuild_i(Player p, Location l);
 	
-	public final static boolean canBuild(final Player p, final Location l) {
+	public static boolean canBuild(final Player p, final Location l) {
 		for (final RegionsPlugin<?> pl : plugins) {
 			if (!pl.canBuild_i(p, l))
 				return false;
@@ -88,7 +89,7 @@ public abstract class RegionsPlugin<P extends Plugin> extends Hook<P> {
 	
 	public abstract Collection<? extends Region> getRegionsAt_i(Location l);
 	
-	public final static Set<? extends Region> getRegionsAt(final Location l) {
+	public static Set<? extends Region> getRegionsAt(final Location l) {
 		final Set<Region> r = new HashSet<Region>();
 		for (final RegionsPlugin<?> pl : plugins) {
 			r.addAll(pl.getRegionsAt_i(l));
@@ -100,7 +101,7 @@ public abstract class RegionsPlugin<P extends Plugin> extends Hook<P> {
 	public abstract Region getRegion_i(World world, String name);
 	
 	@Nullable
-	public final static Region getRegion(final World world, final String name) {
+	public static Region getRegion(final World world, final String name) {
 		for (final RegionsPlugin<?> pl : plugins) {
 			return pl.getRegion_i(world, name);
 		}
@@ -109,7 +110,7 @@ public abstract class RegionsPlugin<P extends Plugin> extends Hook<P> {
 	
 	public abstract boolean hasMultipleOwners_i();
 	
-	public final static boolean hasMultipleOwners() {
+	public static boolean hasMultipleOwners() {
 		for (final RegionsPlugin<?> pl : plugins) {
 			if (pl.hasMultipleOwners_i())
 				return true;

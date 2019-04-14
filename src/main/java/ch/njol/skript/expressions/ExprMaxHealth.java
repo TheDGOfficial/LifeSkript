@@ -21,11 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.bukkitutil.HealthUtils;
 import ch.njol.skript.classes.Changer.ChangeMode;
@@ -36,15 +31,18 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Max Health")
 @Description("The maximum health of an entity, e.g. 10 for a player")
-@Examples({"on join:",
-		"	set the maximum health of the player to 100",
-		"spawn a giant",
-		"set the last spawned entity's max health to 1000"})
+@Examples({"on join:", "	set the maximum health of the player to 100", "spawn a giant", "set the last spawned entity's max health to 1000"})
 @Since("2.0")
 @Events({"damage", "death"})
 public class ExprMaxHealth extends SimplePropertyExpression<LivingEntity, Double> {
@@ -58,7 +56,7 @@ public class ExprMaxHealth extends SimplePropertyExpression<LivingEntity, Double
 	}
 	
 	@Override
-	public Class<? extends Double> getReturnType() {
+	public Class<Double> getReturnType() {
 		return Double.class;
 	}
 	

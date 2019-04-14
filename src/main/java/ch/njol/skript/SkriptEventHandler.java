@@ -21,15 +21,11 @@
 
 package ch.njol.skript;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import ch.njol.skript.ScriptLoader.ScriptInfo;
+import ch.njol.skript.command.Commands;
+import ch.njol.skript.lang.SelfRegisteringSkriptEvent;
+import ch.njol.skript.lang.Trigger;
+import ch.njol.skript.lang.function.Functions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
@@ -40,30 +36,40 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.EventExecutor;
-import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.skript.ScriptLoader.ScriptInfo;
-import ch.njol.skript.command.Commands;
-import ch.njol.skript.lang.SelfRegisteringSkriptEvent;
-import ch.njol.skript.lang.Trigger;
-import ch.njol.skript.lang.function.Functions;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
  */
-public abstract class SkriptEventHandler {
-	private SkriptEventHandler() {}
+public final class SkriptEventHandler {
+	
+	private SkriptEventHandler() {
+		throw new UnsupportedOperationException();
+	}
 	
 	final static Map<Class<? extends Event>, List<Trigger>> triggers = new HashMap<Class<? extends Event>, List<Trigger>>();
 	
 	private final static List<Trigger> selfRegisteredTriggers = new ArrayList<Trigger>();
 	
-	private final static Iterator<Trigger> getTriggers(final Class<? extends Event> event) {
+	private static Iterator<Trigger> getTriggers(final Class<? extends Event> event) {
 		return new Iterator<Trigger>() {
 			@Nullable
 			private Class<?> e = event;
+			
 			@Nullable
-			private Iterator<Trigger> current = null;
+			private Iterator<Trigger> current;
 			
 			@Override
 			public boolean hasNext() {
@@ -97,7 +103,7 @@ public abstract class SkriptEventHandler {
 	}
 	
 	@Nullable
-	static Event last = null;
+	static Event last;
 	
 	final static EventExecutor ee = new EventExecutor() {
 		@Override
@@ -133,11 +139,9 @@ public abstract class SkriptEventHandler {
 			logEventStart(e);
 		}
 		
-		if (e instanceof Cancellable && ((Cancellable) e).isCancelled() &&
-				!(e instanceof PlayerInteractEvent && (((PlayerInteractEvent) e).getAction() == Action.LEFT_CLICK_AIR || ((PlayerInteractEvent) e).getAction() == Action.RIGHT_CLICK_AIR) && ((PlayerInteractEvent) e).useItemInHand() != Result.DENY)
-				|| e instanceof ServerCommandEvent && (((ServerCommandEvent) e).getCommand() == null || ((ServerCommandEvent) e).getCommand().isEmpty())) {
+		if (e instanceof Cancellable && ((Cancellable) e).isCancelled() && !(e instanceof PlayerInteractEvent && (((PlayerInteractEvent) e).getAction() == Action.LEFT_CLICK_AIR || ((PlayerInteractEvent) e).getAction() == Action.RIGHT_CLICK_AIR) && ((PlayerInteractEvent) e).useItemInHand() != Result.DENY) || e instanceof ServerCommandEvent && (((ServerCommandEvent) e).getCommand() == null || ((ServerCommandEvent) e).getCommand().isEmpty())) {
 			if (Skript.logVeryHigh())
-				Skript.info(" -x- was cancelled");
+				Skript.info(e.getClass().getSimpleName() + " was cancelled");
 			return;
 		}
 		
@@ -253,7 +257,7 @@ public abstract class SkriptEventHandler {
 	private final static Listener listener = new Listener() {};
 	
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	final static void registerBukkitEvents() {
+	static void registerBukkitEvents() {
 		for (final Class<? extends Event> e : triggers.keySet()) {
 			assert e != null;
 			if (!containsSuperclass((Set) registeredEvents, e)) { // I just love Java's generics
@@ -270,7 +274,7 @@ public abstract class SkriptEventHandler {
 		}
 	}
 	
-	public final static boolean containsSuperclass(final Set<Class<?>> classes, final Class<?> c) {
+	public static boolean containsSuperclass(final Collection<Class<?>> classes, final Class<?> c) {
 		if (classes.contains(c))
 			return true;
 		for (final Class<?> cl : classes) {

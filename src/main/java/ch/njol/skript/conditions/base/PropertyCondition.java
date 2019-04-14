@@ -21,15 +21,16 @@
 
 package ch.njol.skript.conditions.base;
 
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Checker;
 import ch.njol.util.Kleenean;
+
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -60,9 +61,6 @@ public abstract class PropertyCondition<T> extends Condition implements Checker<
 	public final boolean check(final Event e) {
 		return expr.check(e, this, isNegated());
 	}
-	
-	@Override
-	public abstract boolean check(T t);
 	
 	protected abstract String getPropertyName();
 	

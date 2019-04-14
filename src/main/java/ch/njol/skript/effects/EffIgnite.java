@@ -21,13 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.Event;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -39,19 +32,24 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.util.Timespan;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Ignite/Extinguish")
 @Description({"Lights entities on fire or extinguishes them."})
-@Examples({"ignite the player",
-		"extinguish the player"})
+@Examples({"ignite the player", "extinguish the player"})
 @Since("1.4")
 public class EffIgnite extends Effect {
 	static {
-		Skript.registerEffect(EffIgnite.class,
-				"(ignite|set fire to) %entities% [for %-timespan%]", "(set|light) %entities% on fire [for %-timespan%]",
-				"extinguish %entities%");
+		Skript.registerEffect(EffIgnite.class, "(ignite|set fire to) %entities% [for %-timespan%]", "(set|light) %entities% on fire [for %-timespan%]", "extinguish %entities%");
 	}
 	
 	private final static int DEFAULT_DURATION = 8 * 20; // default is 8 seconds for lava and fire, I didn't test other sources
@@ -60,7 +58,7 @@ public class EffIgnite extends Effect {
 	private Expression<Entity> entities;
 	private boolean ignite;
 	@Nullable
-	private Expression<Timespan> duration = null;
+	private Expression<Timespan> duration;
 	
 	@SuppressWarnings({"unchecked", "null"})
 	@Override

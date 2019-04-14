@@ -21,12 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Event;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -38,22 +32,25 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.util.Timespan;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Event;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Potion Effects")
 @Description("Apply or remove potion effects to/from entities.")
-@Examples({"apply swiftness 2 to the player",
-		"remove haste from the victim",
-		"on join:",
-		"	apply potion of strength of tier {strength.%player%} to the player for 999 days"})
+@Examples({"apply swiftness 2 to the player", "remove haste from the victim", "on join:", "	apply potion of strength of tier {strength.%player%} to the player for 999 days"})
 @Since("2.0")
 public class EffPotion extends Effect {
 	static {
-		Skript.registerEffect(EffPotion.class,
-				"apply [potion of] %potioneffecttypes% [potion] [[[of] tier] %-number%] to %livingentities% [for %-timespan%]"
-				//, "apply %itemtypes% to %livingentities%"
-				/*,"remove %potioneffecttypes% from %livingentities%"*/);
+		Skript.registerEffect(EffPotion.class, "apply [potion of] %potioneffecttypes% [potion] [[[of] tier] %-number%] to %livingentities% [for %-timespan%]"
+		//, "apply %itemtypes% to %livingentities%"
+		/*,"remove %potioneffecttypes% from %livingentities%"*/);
 	}
 	
 	private final static int DEFAULT_DURATION = 15 * 20; // 15 seconds, same as EffPoison
@@ -108,7 +105,7 @@ public class EffPotion extends Effect {
 			final Timespan dur = duration.getSingle(e);
 			if (dur == null)
 				return;
-			d = (int) (dur.getTicks_i() >= Integer.MAX_VALUE ? Integer.MAX_VALUE: dur.getTicks_i());
+			d = (int) (dur.getTicks_i() >= Integer.MAX_VALUE ? Integer.MAX_VALUE : dur.getTicks_i());
 		}
 		for (final LivingEntity en : entities.getArray(e)) {
 			for (final PotionEffectType t : ts) {

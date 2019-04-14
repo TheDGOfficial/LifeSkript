@@ -21,17 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.WeakHashMap;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptConfig;
 import ch.njol.skript.classes.Converter;
@@ -46,29 +35,37 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.WeakHashMap;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Targeted Block")
 @Description("The block at the crosshair. This regards all blocks that are not air as fully opaque, e.g. torches will be like a solid stone block for this expression.")
-@Examples({"# A command to set the block a player looks at to a specific type:",
-		"command /setblock <material>:",
-		"    trigger:",
-		"        set targeted block to argument"})
+@Examples({"# A command to set the block a player looks at to a specific type:", "command /setblock <material>:", "    trigger:", "        set targeted block to argument"})
 @Since("1.0")
 public class ExprTargetedBlock extends PropertyExpression<Player, Block> {
 	static {
-		Skript.registerExpression(ExprTargetedBlock.class, Block.class, ExpressionType.COMBINED,
-				"[the] target[ed] block[s] [of %players%]", "%players%'[s] target[ed] block[s]",
-				"[the] actual[ly] target[ed] block[s] [of %players%]", "%players%'[s] actual[ly] target[ed] block[s]");
+		Skript.registerExpression(ExprTargetedBlock.class, Block.class, ExpressionType.COMBINED, "[the] target[ed] block[s] [of %players%]", "%players%'[s] target[ed] block[s]", "[the] actual[ly] target[ed] block[s] [of %players%]", "%players%'[s] actual[ly] target[ed] block[s]");
 	}
 	
 	private boolean actualTargetedBlock;
 	
 	@Nullable
-	private static Event last = null;
+	private static Event last;
+	
 	private final static WeakHashMap<Player, Block> targetedBlocks = new WeakHashMap<Player, Block>();
-	private static long blocksValidForTick = 0;
+	private static long blocksValidForTick;
 	
 	@SuppressWarnings({"unchecked", "null"})
 	@Override
@@ -84,6 +81,8 @@ public class ExprTargetedBlock extends PropertyExpression<Player, Block> {
 			return "the targeted block" + (getExpr().isSingle() ? "" : "s") + " of " + getExpr().toString(e, debug);
 		return Classes.getDebugMessage(getAll(e));
 	}
+	
+	public static final boolean set = Skript.methodExists(Player.class, "getTargetBlock", Set.class, int.class);
 	
 	@SuppressWarnings("deprecation")
 	@Nullable
@@ -104,11 +103,12 @@ public class ExprTargetedBlock extends PropertyExpression<Player, Block> {
 //		}
 		try {
 			Block b;
-			if(Skript.methodExists(Player.class, "getTargetBlock", Set.class, int.class)){
-				b = p.getTargetBlock((Set<Material>)null, SkriptConfig.maxTargetBlockDistance.value());
-			}else{
-				b = p.getTargetBlock((HashSet<Byte>)null, SkriptConfig.maxTargetBlockDistance.value());
-			}if (b.getType() == Material.AIR)
+			if (set) {
+				b = p.getTargetBlock((Set<Material>) null, SkriptConfig.maxTargetBlockDistance.value());
+			} else {
+				b = p.getTargetBlock((HashSet<Byte>) null, SkriptConfig.maxTargetBlockDistance.value());
+			}
+			if (b.getType() == Material.AIR)
 				b = null;
 			targetedBlocks.put(p, b);
 			return b;

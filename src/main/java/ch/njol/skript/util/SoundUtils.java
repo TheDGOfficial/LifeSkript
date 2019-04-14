@@ -22,13 +22,17 @@
 package ch.njol.skript.util;
 
 import org.bukkit.Sound;
+
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
  */
-public abstract class SoundUtils {
-	private SoundUtils() {}
+public final class SoundUtils {
+	
+	private SoundUtils() {
+		throw new UnsupportedOperationException();
+	}
 	
 	static {
 		assert false;
@@ -37,7 +41,7 @@ public abstract class SoundUtils {
 	private final static EnumUtils<Sound> util = new EnumUtils<Sound>(Sound.class, "sounds");
 	
 	@Nullable
-	public final static Sound parse(final String s) {
+	public static Sound parse(final String s) {
 		return util.parse(s);
 	}
 	
@@ -45,7 +49,7 @@ public abstract class SoundUtils {
 		return util.toString(s, flags);
 	}
 	
-	public final static String getAllNames() {
+	public static String getAllNames() {
 		return util.getAllNames();
 	}
 	

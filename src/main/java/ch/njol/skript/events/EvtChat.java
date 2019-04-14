@@ -21,18 +21,6 @@
 
 package ch.njol.skript.events;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.Callable;
-
-import org.bukkit.event.Event;
-import org.bukkit.event.EventException;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.plugin.EventExecutor;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptConfig;
 import ch.njol.skript.SkriptEventHandler;
@@ -43,21 +31,31 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.Trigger;
 import ch.njol.skript.util.Task;
 
+import org.bukkit.event.Event;
+import org.bukkit.event.EventException;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.plugin.EventExecutor;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.Callable;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @SuppressWarnings("deprecation")
-public class EvtChat extends SelfRegisteringSkriptEvent {
+public final class EvtChat extends SelfRegisteringSkriptEvent {
 	static {
-		Skript.registerEvent("Chat", EvtChat.class, PlayerChatEventHandler.usesAsyncEvent ? AsyncPlayerChatEvent.class : PlayerChatEvent.class, "chat")
-				.description("Called whenever a player chats.")
-				.examples("")
-				.since("1.4.1");
+		Skript.registerEvent("Chat", EvtChat.class, PlayerChatEventHandler.usesAsyncEvent ? AsyncPlayerChatEvent.class : PlayerChatEvent.class, "chat").description("Called whenever a player chats.").examples("").since("1.4.1");
 	}
 	
 	final static Collection<Trigger> triggers = new ArrayList<Trigger>();
 	
-	private static boolean registeredExecutor = false;
+	private static boolean registeredExecutor;
 	private final static EventExecutor executor = new EventExecutor() {
 		
 		final void execute(final Event e) {

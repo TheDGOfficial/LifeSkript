@@ -35,13 +35,9 @@ import java.util.UUID;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-public class JRESerializer extends YggdrasilSerializer<Object> {
+public final class JRESerializer extends YggdrasilSerializer<Object> {
 	
-	private final static Class<?>[] supportedClasses = {
-			ArrayList.class, LinkedList.class,
-			HashSet.class,
-			HashMap.class,
-			UUID.class
+	private final static Class<?>[] supportedClasses = {ArrayList.class, LinkedList.class, HashSet.class, HashMap.class, UUID.class
 	};
 	
 	private final static Set<Class<?>> set = new HashSet<Class<?>>(Arrays.asList(supportedClasses));
@@ -77,15 +73,15 @@ public class JRESerializer extends YggdrasilSerializer<Object> {
 			f.putObject("keys", m.keySet().toArray());
 			f.putObject("values", m.values().toArray());
 		} else if (o instanceof UUID) {
-			f.putPrimitive("mostSigBits", Long.valueOf(((UUID)o).getMostSignificantBits()));
-			f.putPrimitive("leastSigBits", Long.valueOf(((UUID)o).getLeastSignificantBits()));
+			f.putPrimitive("mostSigBits", ((UUID) o).getMostSignificantBits());
+			f.putPrimitive("leastSigBits", ((UUID) o).getLeastSignificantBits());
 		}
 		assert f.size() > 0 : o;
 		return f;
 	}
 	
 	@Override
-	public boolean canBeInstantiated(final Class<? extends Object> c){
+	public boolean canBeInstantiated(final Class<?> c) {
 		return c != UUID.class;
 	}
 	
@@ -110,17 +106,17 @@ public class JRESerializer extends YggdrasilSerializer<Object> {
 	public void deserialize(final Object o, final Fields fields) throws StreamCorruptedException {
 		try {
 			if (o instanceof Collection) {
-				final Collection<?> c = (Collection<?>) o;
 				final Object[] values = fields.getObject("values", Object[].class);
 				if (values == null)
 					throw new StreamCorruptedException();
+				final Collection<?> c = (Collection<?>) o;
 				c.addAll((Collection) Arrays.asList(values));
 				return;
 			} else if (o instanceof Map) {
-				final Map<?, ?> m = (Map<?, ?>) o;
 				final Object[] keys = fields.getObject("keys", Object[].class), values = fields.getObject("values", Object[].class);
 				if (keys == null || values == null || keys.length != values.length)
 					throw new StreamCorruptedException();
+				final Map<?, ?> m = (Map<?, ?>) o;
 				for (int i = 0; i < keys.length; i++)
 					((Map) m).put(keys[i], values[i]);
 				return;
@@ -135,7 +131,7 @@ public class JRESerializer extends YggdrasilSerializer<Object> {
 	@Override
 	public <E> E deserialize(final Class<E> c, final Fields fields) throws StreamCorruptedException, NotSerializableException {
 		if (c == UUID.class) {
-			return (E) new UUID(((Long)fields.getPrimitive("mostSigBits", Long.TYPE)).longValue(), ((Long)fields.getPrimitive("leastSigBits", Long.TYPE)).longValue());
+			return (E) new UUID((Long) fields.getPrimitive("mostSigBits", Long.TYPE), (Long) fields.getPrimitive("leastSigBits", Long.TYPE));
 		}
 		throw new StreamCorruptedException();
 	}

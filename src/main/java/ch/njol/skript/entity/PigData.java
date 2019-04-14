@@ -21,11 +21,12 @@
 
 package ch.njol.skript.entity;
 
-import org.bukkit.entity.Pig;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
+
+import org.bukkit.entity.Pig;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Peter Güttinger
@@ -35,7 +36,7 @@ public class PigData extends EntityData<Pig> {
 		register(PigData.class, "pig", Pig.class, 1, "unsaddled pig", "pig", "saddled pig");
 	}
 	
-	private int saddled = 0;
+	private int saddled;
 	
 	@Override
 	protected boolean init(final Literal<?>[] exprs, final int matchedPattern, final ParseResult parseResult) {

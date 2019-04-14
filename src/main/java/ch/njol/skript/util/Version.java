@@ -31,7 +31,7 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * @author Peter Güttinger
  */
-public class Version implements Serializable, Comparable<Version> {
+public final class Version implements Serializable, Comparable<Version> {
 	private final static long serialVersionUID = 8687040355286333293L;
 	
 	private final int[] version = new int[3];
@@ -44,8 +44,8 @@ public class Version implements Serializable, Comparable<Version> {
 	public Version(final int... version) {
 		if (version.length < 1 || version.length > 3)
 			throw new IllegalArgumentException("Versions must have a minimum of 2 and a maximum of 3 numbers (" + version.length + " numbers given)");
-		for (int i = 0; i < version.length; i++)
-			this.version[i] = version[i];
+		if (version.length >= 0)
+			System.arraycopy(version, 0, this.version, 0, version.length);
 		postfix = null;
 	}
 	
@@ -145,7 +145,7 @@ public class Version implements Serializable, Comparable<Version> {
 		return version[0] + "." + version[1] + (version[2] == 0 ? "" : "." + version[2]) + (pf == null ? "" : pf.startsWith("-") ? pf : " " + pf);
 	}
 	
-	public final static int compare(final String v1, final String v2) {
+	public static int compare(final String v1, final String v2) {
 		return new Version(v1).compareTo(new Version(v2));
 	}
 }

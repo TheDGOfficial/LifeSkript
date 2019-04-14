@@ -21,19 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptConfig;
 import ch.njol.skript.aliases.ItemType;
@@ -51,6 +38,21 @@ import ch.njol.util.Kleenean;
 import ch.njol.util.Math2;
 import ch.njol.util.StringUtils;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * TODO make a 'line %number% of %text%' expression and figure out how to deal with signs (4 lines, delete = empty, etc...)
  * 
@@ -65,12 +67,9 @@ public class ExprLore extends SimpleExpression<String> {
 		try {
 			ItemMeta.class.getName();
 			
-			Skript.registerExpression(ExprLore.class, String.class, ExpressionType.PROPERTY,
-					"[the] lore of %itemstack/itemtype%", "%itemstack/itemtype%'[s] lore",
-					"[the] line %number% of [the] lore of %itemstack/itemtype%", "[the] line %number% of %itemstack/itemtype%'[s] lore",
-					"[the] %number%(st|nd|rd|th) line of [the] lore of %itemstack/itemtype%", "[the] %number%(st|nd|rd|th) line of %itemstack/itemtype%'[s] lore");
+			Skript.registerExpression(ExprLore.class, String.class, ExpressionType.PROPERTY, "[the] lore of %itemstack/itemtype%", "%itemstack/itemtype%'[s] lore", "[the] line %number% of [the] lore of %itemstack/itemtype%", "[the] line %number% of %itemstack/itemtype%'[s] lore", "[the] %number%(st|nd|rd|th) line of [the] lore of %itemstack/itemtype%", "[the] %number%(st|nd|rd|th) line of %itemstack/itemtype%'[s] lore");
 			
-		} catch (final NoClassDefFoundError e) {}
+		} catch (final NoClassDefFoundError ignored) {}
 	}
 	
 	@Nullable
@@ -88,17 +87,17 @@ public class ExprLore extends SimpleExpression<String> {
 	}
 	
 	@Override
-	public Class<? extends String> getReturnType() {
+	public Class<String> getReturnType() {
 		return String.class;
 	}
 	
 	@Override
 	@Nullable
 	protected String[] get(final Event e) {
-		final Object i = item.getSingle(e);
 		final Number n = line != null ? line.getSingle(e) : null;
 		if (n == null && line != null)
 			return null;
+		final Object i = item.getSingle(e);
 		if (i == null || i instanceof ItemStack && ((ItemStack) i).getType() == Material.AIR)
 			return new String[0];
 		final ItemMeta meta = i instanceof ItemStack ? ((ItemStack) i).getItemMeta() : (ItemMeta) ((ItemType) i).getItemMeta();
@@ -153,7 +152,7 @@ public class ExprLore extends SimpleExpression<String> {
 			switch (mode) {
 				case SET:
 					assert delta != null;
-					lore = Arrays.asList((String) delta[0]);
+					lore = Collections.singletonList((String) delta[0]);
 					break;
 				case ADD:
 					assert delta != null;
@@ -207,7 +206,7 @@ public class ExprLore extends SimpleExpression<String> {
 					return;
 			}
 		}
-		meta.setLore(lore == null || lore.size() == 0 ? null : lore);
+		meta.setLore(lore == null || lore.isEmpty() ? null : lore);
 		if (i instanceof ItemStack)
 			((ItemStack) i).setItemMeta(meta);
 		else
@@ -217,7 +216,6 @@ public class ExprLore extends SimpleExpression<String> {
 		} else {
 			item.change(e, i instanceof ItemStack ? new ItemType[] {new ItemType((ItemStack) i)} : new ItemStack[] {((ItemType) i).getRandom()}, ChangeMode.SET);
 		}
-		return;
 	}
 	
 	@Override

@@ -21,6 +21,11 @@
 
 package ch.njol.yggdrasil;
 
+import ch.njol.yggdrasil.Fields.FieldContext;
+import ch.njol.yggdrasil.YggdrasilSerializable.YggdrasilExtendedSerializable;
+import ch.njol.yggdrasil.YggdrasilSerializable.YggdrasilRobustEnum;
+import ch.njol.yggdrasil.YggdrasilSerializable.YggdrasilRobustSerializable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -38,13 +43,6 @@ import java.util.List;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.yggdrasil.Fields.FieldContext;
-import ch.njol.yggdrasil.YggdrasilSerializable.YggdrasilExtendedSerializable;
-import ch.njol.yggdrasil.YggdrasilSerializable.YggdrasilRobustEnum;
-import ch.njol.yggdrasil.YggdrasilSerializable.YggdrasilRobustSerializable;
-import ch.njol.yggdrasil.xml.YggXMLInputStream;
-import ch.njol.yggdrasil.xml.YggXMLOutputStream;
 
 /**
  * Yggdrasil is a simple data format to store object graphs.
@@ -117,16 +115,6 @@ public final class Yggdrasil {
 		return new DefaultYggdrasilInputStream(this, in);
 	}
 	
-	@Deprecated
-	public YggXMLOutputStream newXMLOutputStream(final OutputStream out) throws IOException {
-		return new YggXMLOutputStream(this, out);
-	}
-	
-	@Deprecated
-	public YggdrasilInputStream newXMLInputStream(final InputStream in) throws IOException {
-		return new YggXMLInputStream(this, in);
-	}
-	
 	public void registerClassResolver(final ClassResolver r) {
 		if (!classResolvers.contains(r))
 			classResolvers.add(r);
@@ -151,10 +139,9 @@ public final class Yggdrasil {
 			fieldHandlers.add(h);
 	}
 	
-	public final boolean isSerializable(final Class<?> c) {
+	public boolean isSerializable(final Class<?> c) {
 		try {
-			return c.isPrimitive() || c == Object.class || (Enum.class.isAssignableFrom(c) || PseudoEnum.class.isAssignableFrom(c)) && getIDNoError(c) != null ||
-					(YggdrasilSerializable.class.isAssignableFrom(c) || getSerializer(c) != null) && newInstance(c) != c;// whatever, just make true out if it (null is a valid return value)
+			return c.isPrimitive() || c == Object.class || (Enum.class.isAssignableFrom(c) || PseudoEnum.class.isAssignableFrom(c)) && getIDNoError(c) != null || (YggdrasilSerializable.class.isAssignableFrom(c) || getSerializer(c) != null) && newInstance(c) != c;// whatever, just make true out if it (null is a valid return value)
 		} catch (final StreamCorruptedException e) { // thrown by newInstance if the class does not provide a correct constructor or is abstract
 			return false;
 		} catch (final NotSerializableException e) {
@@ -227,7 +214,7 @@ public final class Yggdrasil {
 	 * @param f
 	 * @return The field's id as given by its {@link YggdrasilID} annotation, or its name if it's not annotated.
 	 */
-	public final static String getID(final Field f) {
+	public static String getID(final Field f) {
 		final YggdrasilID yid = f.getAnnotation(YggdrasilID.class);
 		if (yid != null) {
 			return yid.value();
@@ -236,7 +223,7 @@ public final class Yggdrasil {
 	}
 	
 	@SuppressWarnings("null")
-	public final static String getID(final Enum<?> e) {
+	public static String getID(final Enum<?> e) {
 		try {
 			return getID(e.getDeclaringClass().getDeclaredField(e.name()));
 		} catch (final NoSuchFieldException ex) {
@@ -246,7 +233,7 @@ public final class Yggdrasil {
 	}
 	
 	@SuppressWarnings({"unchecked", "null", "unused"})
-	public final static <T extends Enum<T>> Enum<T> getEnumConstant(final Class<T> c, final String id) throws StreamCorruptedException {
+	public static <T extends Enum<T>> Enum<T> getEnumConstant(final Class<T> c, final String id) throws StreamCorruptedException {
 		final Field[] fields = c.getDeclaredFields();
 		for (final Field f : fields) {
 			assert f != null;
@@ -326,7 +313,7 @@ public final class Yggdrasil {
 	
 	@SuppressWarnings({"rawtypes", "unchecked", "unused", "null"})
 	@Nullable
-	final Object newInstance(final Class<?> c) throws StreamCorruptedException, NotSerializableException {
+	Object newInstance(final Class<?> c) throws StreamCorruptedException, NotSerializableException {
 		final YggdrasilSerializer s = getSerializer(c);
 		if (s != null) {
 			if (!s.canBeInstantiated(c)) { // only used by isSerializable - return null if OK, throw an YggdrasilException if not
@@ -366,12 +353,6 @@ public final class Yggdrasil {
 		} catch (final InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	// TODO command line, e.g. convert to XML
-	public static void main(final String[] args) {
-		System.err.println("Command line not supported yet");
-		System.exit(1);
 	}
 	
 }

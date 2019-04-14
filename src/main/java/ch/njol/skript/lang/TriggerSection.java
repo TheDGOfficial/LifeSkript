@@ -21,13 +21,14 @@
 
 package ch.njol.skript.lang;
 
-import java.util.List;
-
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.config.SectionNode;
+
+import org.bukkit.event.Event;
+
+import java.util.List;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Represents a section of a trigger, e.g. a conditional or a loop
@@ -39,9 +40,10 @@ import ch.njol.skript.config.SectionNode;
 public abstract class TriggerSection extends TriggerItem {
 	
 	@Nullable
-	private TriggerItem first = null;
+	private TriggerItem first;
+	
 	@Nullable
-	protected TriggerItem last = null;
+	protected TriggerItem last;
 	
 	/**
 	 * Reserved for new Trigger(...)
@@ -78,8 +80,7 @@ public abstract class TriggerSection extends TriggerItem {
 	protected void setTriggerItems(final List<TriggerItem> items) {
 		if (!items.isEmpty()) {
 			first = items.get(0);
-			(last = items.get(items.size() - 1))
-					.setNext(getNext());
+			(last = items.get(items.size() - 1)).setNext(getNext());
 		}
 		for (final TriggerItem item : items) {
 			item.setParent(this);

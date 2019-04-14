@@ -21,19 +21,19 @@
 
 package ch.njol.skript.lang;
 
+import ch.njol.skript.lang.util.SimpleLiteral;
+import ch.njol.skript.util.Utils;
+
 import java.lang.reflect.Array;
 
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.lang.util.SimpleLiteral;
-import ch.njol.skript.util.Utils;
 
 /**
  * A list of literals. Can contain {@link UnparsedLiteral}s.
  * 
  * @author Peter Güttinger
  */
-public class LiteralList<T> extends ExpressionList<T> implements Literal<T> {
+public final class LiteralList<T> extends ExpressionList<T> implements Literal<T> {
 	
 	public LiteralList(final Literal<? extends T>[] literals, final Class<T> returnType, final boolean and) {
 		super(literals, returnType, and);

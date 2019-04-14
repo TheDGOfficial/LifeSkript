@@ -21,15 +21,6 @@
 
 package ch.njol.skript.entity;
 
-import java.util.Arrays;
-import java.util.Iterator;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.inventory.ItemStack;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemData;
 import ch.njol.skript.aliases.ItemType;
@@ -44,6 +35,16 @@ import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.registrations.Converters;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.Iterator;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
@@ -56,7 +57,7 @@ public final class FallingBlockData extends EntityData<FallingBlock> {
 	private final static Adjective m_adjective = new Adjective("entities.falling block.adjective");
 	
 	@Nullable
-	private ItemType[] types = null;
+	private ItemType[] types;
 	
 	@SuppressWarnings("unchecked")
 	@Override

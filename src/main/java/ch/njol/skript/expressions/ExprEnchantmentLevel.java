@@ -21,12 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.Map;
-
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.classes.Converter;
@@ -40,19 +34,23 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.Event;
+
+import java.util.Map;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Enchantment Level")
 @Description("The level of a particular <a href='../classes/#enchantment'>enchantment</a> on an item")
-@Examples({"player' tool is a sword of sharpness:",
-		"	message \"You have a sword of sharpness %level of sharpness of the player's tool% equipped\""})
+@Examples({"player' tool is a sword of sharpness:", "	message \"You have a sword of sharpness %level of sharpness of the player's tool% equipped\""})
 @Since("2.0")
 public class ExprEnchantmentLevel extends PropertyExpression<ItemType, Integer> {
 	static {
-		Skript.registerExpression(ExprEnchantmentLevel.class, Integer.class, ExpressionType.PROPERTY,
-				"[the] (%-enchantment% level|level of [[the] enchant[ment]] %-enchantment%) o(f|n) %itemtypes%",
-				"%itemtypes%'[s] (%-enchantment% level|level of [[the] enchant[ment]] %-enchantment%)");
+		Skript.registerExpression(ExprEnchantmentLevel.class, Integer.class, ExpressionType.PROPERTY, "[the] (%-enchantment% level|level of [[the] enchant[ment]] %-enchantment%) o(f|n) %itemtypes%", "%itemtypes%'[s] (%-enchantment% level|level of [[the] enchant[ment]] %-enchantment%)");
 	}
 	
 	@SuppressWarnings("null")
@@ -77,7 +75,7 @@ public class ExprEnchantmentLevel extends PropertyExpression<ItemType, Integer> 
 			public Integer convert(final ItemType i) {
 				final Map<Enchantment, Integer> enchs = i.getEnchantments();
 				if (enchs == null)
-					return Integer.valueOf(0);
+					return 0;
 				final Integer l = enchs.get(ench);
 				return l == null ? Integer.valueOf(0) : l;
 			}
@@ -85,7 +83,7 @@ public class ExprEnchantmentLevel extends PropertyExpression<ItemType, Integer> 
 	}
 	
 	@Override
-	public Class<? extends Integer> getReturnType() {
+	public Class<Integer> getReturnType() {
 		return Integer.class;
 	}
 	

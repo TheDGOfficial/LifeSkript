@@ -21,14 +21,6 @@
 
 package ch.njol.skript.expressions;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -43,6 +35,15 @@ import ch.njol.util.Kleenean;
 import ch.njol.util.coll.iterator.EmptyIterator;
 import ch.njol.util.coll.iterator.IteratorIterable;
 
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.event.Event;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
@@ -52,9 +53,7 @@ import ch.njol.util.coll.iterator.IteratorIterable;
 @Since("1.0")
 public class ExprBlockSphere extends SimpleExpression<Block> {
 	static {
-		Skript.registerExpression(ExprBlockSphere.class, Block.class, ExpressionType.COMBINED,
-				"(all|the|) blocks in radius %number% [(of|around) %location%]",
-				"(all|the|) blocks around %location% in radius %number%");
+		Skript.registerExpression(ExprBlockSphere.class, Block.class, ExpressionType.COMBINED, "(all|the|) blocks in radius %number% [(of|around) %location%]", "(all|the|) blocks around %location% in radius %number%");
 	}
 	
 	@SuppressWarnings("null")
@@ -88,11 +87,11 @@ public class ExprBlockSphere extends SimpleExpression<Block> {
 		final ArrayList<Block> list = new ArrayList<Block>((int) (1.1 * 4 / 3. * Math.PI * Math.pow(r.doubleValue(), 3)));
 		for (final Block b : new IteratorIterable<Block>(iterator(e)))
 			list.add(b);
-		return list.toArray(new Block[list.size()]);
+		return list.toArray(new Block[0]);
 	}
 	
 	@Override
-	public Class<? extends Block> getReturnType() {
+	public Class<Block> getReturnType() {
 		return Block.class;
 	}
 	
@@ -103,7 +102,7 @@ public class ExprBlockSphere extends SimpleExpression<Block> {
 	
 	@Override
 	public boolean isLoopOf(final String s) {
-		return s.equalsIgnoreCase("block");
+		return "block".equalsIgnoreCase(s);
 	}
 	
 	@Override

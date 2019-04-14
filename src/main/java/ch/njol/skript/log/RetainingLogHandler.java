@@ -21,6 +21,11 @@
 
 package ch.njol.skript.log;
 
+import ch.njol.skript.Skript;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,11 +33,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.Skript;
 
 /**
  * @author Peter Güttinger
@@ -40,9 +41,9 @@ import ch.njol.skript.Skript;
 public class RetainingLogHandler extends LogHandler {
 	
 	private final Deque<LogEntry> log = new LinkedList<LogEntry>();
-	private int numErrors = 0;
+	private int numErrors;
 	
-	boolean printedErrorOrLog = false;
+	boolean printedErrorOrLog;
 	
 	@Override
 	public LogResult log(final LogEntry entry) {

@@ -21,11 +21,6 @@
 
 package ch.njol.skript.effects;
 
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Sheep;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -36,19 +31,22 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Sheep;
+import org.bukkit.event.Event;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 @Name("Shear")
 @Description("Shears or 'un-shears' a sheep. Please note that no wool is dropped, this only sets the 'sheared' state of the sheep.")
-@Examples({"on rightclick on a sheep holding a sword:",
-		"	shear the clicked sheep"})
+@Examples({"on rightclick on a sheep holding a sword:", "	shear the clicked sheep"})
 @Since("2.0")
 public class EffShear extends Effect {
 	static {
-		Skript.registerEffect(EffShear.class,
-				"shear %livingentities%",
-				"un[-]shear %livingentities%");
+		Skript.registerEffect(EffShear.class, "shear %livingentities%", "un[-]shear %livingentities%");
 	}
 	
 	@SuppressWarnings("null")
